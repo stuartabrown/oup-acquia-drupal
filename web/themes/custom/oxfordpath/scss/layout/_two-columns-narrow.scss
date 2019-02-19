@@ -1,0 +1,35 @@
+.layout.layout--two-columns-narrow {
+  .layout__region {
+    padding: rem-calc(35);
+  }
+
+  .layout__region--left {
+    border-bottom: 1px solid $color_blue_8;
+  }
+}
+
+@include breakpoint(medium) {
+  .layout.layout--two-columns-narrow {
+    display: flex;
+    max-width: rem-calc(650px) + $mobile_common_hpadding * 2;
+    margin: rem-calc(40) auto 0;
+
+    .layout__region--left,
+    .layout__region--right {
+      width: 50%;
+      padding: 0;
+    }
+
+    .layout__region--left {
+      padding-left: $mobile_common_hpadding;
+      padding-right: rem-calc(24);
+      border-bottom: 0;
+      border-right: 1px solid $color_blue_8;
+    }
+
+    .layout__region--right {
+      padding-left: rem-calc(24);
+      padding-right: $mobile_common_hpadding;
+    }
+  }
+}

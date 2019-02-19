@@ -1,0 +1,181 @@
+<?php
+
+/**
+ * @file
+ * Contains op_member.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\user\UserInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Drupal\op_member\Form\SalesforceMemberForm;
+
+/**
+ * Implements hook_help().
+ */
+function op_member_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the op_member module.
+    case 'help.page.op_member':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Getting members from Salesforce') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_user_login
+ */
+function op_member_user_login(UserInterface $account){
+  try {
+    if ($account->field_member_id) {
+      $memberId = $account->field_member_id->value;
+      if($memberId){
+        $member_manager = \Drupal::service('op_member.member_manager');
+        $result = $member_manager->loadMemberFromSalesforce($memberId);
+        if($result->result && $result->result->membershipNo){
+          $expiryDate = $result->result->expiryDate?$result->result->expiryDate:NULL;
+          if($expiryDate) {
+            $expiry_jsDateTS = strtotime($expiryDate);
+            $expiryDate = date('Y-m-d', $expiry_jsDateTS);
+          }else{
+            $expiryDate = '';
+          }
+          $effectiveDate = $result->result->effectiveDate?$result->result->effectiveDate:NULL;
+          if($effectiveDate) {
+            $effective_jsDateTS = strtotime($effectiveDate);
+            $effectiveDate = date('Y-m-d', $effective_jsDateTS);
+          }else{
+            $effectiveDate = '';
+          }
+          $account->field_member_expiry_date = $expiryDate;
+          $account->field_member_effective_date = $effectiveDate;
+          $account->save();
+          if($effective_jsDateTS && $expiry_jsDateTS){
+            $now = time();
+            if($now < $effective_jsDateTS){
+              drupal_set_message(t('Your membership is not yet effective.'));
+            }
+            if($now > $expiry_jsDateTS){
+              drupal_set_message(t('Your membership is expired.'));
+            }
+//            drupal_set_message(t('Your membership is active now.'));
+          }
+        }
+      }
+    }
+  }catch(\Exception $x){
+    $test = '123';
+  }
+}
+
+/**
+ * Implements hook_user_presave()
+ */
+function op_member_user_presave(Drupal\Core\Entity\EntityInterface $entity){
+  // NULL means new user is being created
+  $uid = $entity->id();
+
+  // username and email should be the same
+  $username = $entity->getUsername();
+  $email = $entity->getEmail();
+
+  // If username and email are not the same, set them to be the same
+  if($email !== $username){
+    $entity->setEmail($username);
+  }
+
+  // Check username whether it is a valid email address
+  $valid_email = \Drupal::service('email.validator')->isValid($username);
+  if(!$valid_email){
+    $response = new RedirectResponse(\Drupal::request()->getRequestUri());
+    $response->send();
+    drupal_set_message(t('Please check that the username is using a valid email address.'), 'error', TRUE);
+    exit;
+  }
+
+  $config = \Drupal::config(SalesforceMemberForm::$adminSettingKey);
+  $magic_member_id = $config->get('salesforce_member.magic_member_id');
+
+  // TODO: magic member id for admin to use
+  $memberId = $entity->field_member_id;
+  if($memberId && $memberId->value && trim($memberId->value) !== ''){
+    $memberIdValue = strtolower(trim($memberId->value));
+    $entity->field_member_id = strtolower(trim($memberId->value));
+
+    // Check uniqueness of member id
+    $users = \Drupal::entityTypeManager()->getStorage('user')->loadByProperties(['field_member_id'=> strtolower(trim($memberId->value))]);
+    if(is_null($uid)){
+      // New user is being created
+      if(count($users) > 0 && $magic_member_id !== $memberIdValue){
+        // More than zero user are found but they are not magic member id
+        $email_list = array();
+        foreach($users as $user){
+          $email_list[] = $user->getEmail();
+        }
+        $response = new RedirectResponse(\Drupal::request()->getRequestUri());
+        $response->send();
+        drupal_set_message(t('[03] Users with emails: @email are having the same member id, please resolve first, thank you.', [ '@email' => json_encode($email_list)]), 'error', TRUE);
+        exit;
+      }else{
+        // No user with given member id is found
+      }
+    }else{
+      // Old user is being modified
+      if(count($users) > 1){
+        // More than zero user are found
+        if($magic_member_id !== $memberIdValue) {
+          // Not magic member id is used
+          $email_list = [];
+          foreach ($users as $user) {
+            $email_list[] = $user->getEmail();
+          }
+          $response = new RedirectResponse(\Drupal::request()->getRequestUri());
+          $response->send();
+          drupal_set_message(t('[01] Users with emails: @email are having the same member id, please resolve first, thank you.', ['@email' => json_encode($email_list)]), 'error', TRUE);
+          exit;
+        }
+      }elseif(count($users) === 1){
+        $user = reset($users);
+        if($user->id() === $uid){
+          // Good to go, because same uid are detected.
+        }else{
+          if($magic_member_id !== $memberIdValue) {
+            $response = new RedirectResponse(\Drupal::request()
+              ->getRequestUri());
+            $response->send();
+            drupal_set_message(t('[02] Users with emails: @email are having the same member id, please resolve first, thank you.', ['@email' => $user->getEmail()]), 'error', TRUE);
+            exit;
+          }
+        }
+      }else{
+        // No user with given member id is found
+        // Good to go
+      }
+    }
+  }else{
+    $response = new RedirectResponse(\Drupal::request()->getRequestUri());
+    $response->send();
+    drupal_set_message(t('Normal user should have member id input during account creation.'), 'error', TRUE);
+    exit;
+  }
+}
+
+/**
+ * Implements hook_form_FORM_ID_alter()
+ */
+function op_member_form_user_form_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id){
+  // No sure whether other pages have the set form id, therefore, remove all pass fields in admin pages first
+//  if (\Drupal::service('router.admin_context')->isAdminRoute()) {
+//    unset($form['account']['pass']);
+//  }
+
+  // Unset the mail, such that code level will do this job
+  unset($form['account']['mail']);
+  // Update the description and field type on username
+  $form['account']['name']['#description'] = t('Please use email as username for user.');
+  $form['account']['name']['#type'] = 'email';
+}

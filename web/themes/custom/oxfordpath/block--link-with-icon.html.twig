@@ -1,0 +1,53 @@
+{#
+/**
+ * @file
+ * Theme override to display a block.
+ *
+ * Available variables:
+ * - plugin_id: The ID of the block implementation.
+ * - label: The configured label of the block if visible.
+ * - configuration: A list of the block's configuration values.
+ *   - label: The configured label for the block.
+ *   - label_display: The display settings for the label.
+ *   - provider: The module or other provider that provided this block plugin.
+ *   - Block plugin specific settings will also be stored here.
+ * - content: The content of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *   - id: A valid HTML ID and guaranteed unique.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ *
+ * @see template_preprocess_block()
+ */
+#}
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {% if label %}
+        <h2{{ title_attributes }}>{{ label }}</h2>
+    {% endif %}
+    {{ title_suffix }}
+    {% block content %}
+        {% set icon_position = content.field_icon_position?content.field_icon_position|render|striptags|trim:'left' %}
+        {% set link_class = [
+            "#{block_type}__field_link",
+            "#{block_type}__field_link--icon-#{icon_position}"
+        ]|join(' ') %}
+
+        {% set link_title = content.field_link.0['#title']|render|striptags|trim %}
+
+        <a class="{{ link_class }}" title="{{ link_title }}" href="{{ content.field_link.0['#url']|render|striptags|trim }}" target="{{ content.field_link_format|render|striptags|trim }}">
+            {% if icon_position != 'right' %}
+                {{ content.field_icon }}
+            {% endif %}
+            <span class="{{ block_type }}__link-text">{{ content.field_link.0['#title']|render|striptags|trim }}</span>
+            {% if icon_position == 'right' %}
+                {{ content.field_icon }}
+            {% endif %}
+        </a>
+    {% endblock %}
+</div>

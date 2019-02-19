@@ -1,0 +1,14 @@
+{
+  "name": "drupal/op_member",
+  "type": "drupal-module",
+  "description": "Getting members from Salesforce",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/op_member",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/op_member",
+    "source": "http://cgit.drupalcode.org/op_member"
+  },
+  "require": { }
+}

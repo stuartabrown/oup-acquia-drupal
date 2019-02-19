@@ -1,0 +1,22 @@
+name: OxfordPath
+type: theme
+description: 'Oxford Path'
+package: BaseTheme
+core: 8.x
+libraries:
+  - oxfordpath/global-styling
+  - oxfordpath/global-js
+ 
+base theme: stable
+
+regions:
+  header: Header
+  header_right: Heading Right
+  floating_top: Floating Top
+  mobile_menu: Mobile Menu
+  content: Content
+  footer_blocks: Footer Blocks
+  footer: Footer
+
+settings:
+

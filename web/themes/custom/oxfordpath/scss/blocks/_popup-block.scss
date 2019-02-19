@@ -1,0 +1,53 @@
+.custom-block.popup_block{
+  display: none;
+  box-shadow: $color_black_50 0 2px 4px;
+  &.active{
+    display: block;
+  }
+  .popup_block{
+    &__body{
+      @include fs12_lh18;
+      font-weight: 600;
+      a{
+        color: $color_orange;
+      }
+      p{
+        margin-bottom: rem-calc(11);
+      }
+    }
+    &__field_title{
+      @include fs15_lh22;
+      display: inline-block;
+      background-color: $color_light_yellow;
+      border-radius: rem-calc(20);
+      padding: rem-calc(9) rem-calc(18);
+      min-width: rem-calc(106);
+      text-align: center;
+      font-weight: 600;
+      cursor: pointer;
+      color: $color_blue;
+    }
+  }
+}
+
+@include breakpoint(large){
+  .custom-block.popup_block {
+    &.active {
+      display: flex;
+    }
+
+    .popup_block {
+      &__body {
+        margin: auto auto auto 0;
+
+        p {
+          margin-bottom: 0;
+        }
+      }
+
+      &__field_title {
+        margin: auto 0;
+      }
+    }
+  }
+}

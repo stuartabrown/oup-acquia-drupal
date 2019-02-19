@@ -1,0 +1,25 @@
+.contextual-region.local_tasks_block{
+  list-style: none;
+  z-index: 2;
+  ul{
+    text-align: center;
+    margin: 0;
+    padding: 0 rem-calc(35);
+    >li{
+      @include fs12_lh22;
+      display: inline-block;
+    }
+  }
+}
+.help_block{
+  @include fs12_lh22;
+  padding: 0 rem-calc(20);
+}
+
+.layout-container.layout-container--styleset3{
+  .contextual-region.local_tasks_block {
+    ul{
+      text-align: center;
+    }
+  }
+}

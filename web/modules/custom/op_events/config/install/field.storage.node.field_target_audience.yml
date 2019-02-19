@@ -1,0 +1,23 @@
+uuid: f511a510-dc32-49a8-9c6c-88be76889fc0
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: 8fDgwJDgMEDsP3Rx70cI9xGxIOERZWBMkNAsmFwGiK8
+id: node.field_target_audience
+field_name: field_target_audience
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,9 @@
+salesforce_connector.admin_settings_form:
+  path: '/admin/config/salesforce_connector/adminsettings'
+  defaults:
+    _form: '\Drupal\salesforce_connector\Form\SalesforceConnectorForm'
+    _title: 'Salesforce Connector Form'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

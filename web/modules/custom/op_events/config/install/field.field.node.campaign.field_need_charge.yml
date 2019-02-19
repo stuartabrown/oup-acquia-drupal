@@ -1,0 +1,25 @@
+uuid: 4c1f804b-70c8-460c-878a-fa3e3f678927
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_need_charge
+    - node.type.campaign
+_core:
+  default_config_hash: MusLE-wvVviqs6UubB5jMcnDQBN25IuV6SOcWLEQv0U
+id: node.campaign.field_need_charge
+field_name: field_need_charge
+entity_type: node
+bundle: campaign
+label: 'Need Charge'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

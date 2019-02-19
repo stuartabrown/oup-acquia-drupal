@@ -1,0 +1,73 @@
+page_content:
+  label: Page Content ( Max Width 1070px )
+  category: OxfordPath Layouts
+  template: templates/page-content
+  regions:
+    main:
+      label: Main Content
+page_content_bg:
+  label: Page Content ( Max Width 1070px ) - With Background
+  category: OxfordPath Layouts
+  template: templates/page-content-bg
+  regions:
+    main:
+      label: Main Content
+page_content_720:
+  label: Page Content ( Max Width 720 with 35px padding )
+  category: OxfordPath Layouts
+  template: templates/page-content-720
+  regions:
+    main:
+      label: Main Content
+full_width_page_content:
+  label: Page Content ( Full Width in All Sceren Size )
+  category: OxfordPath Layouts
+  template: templates/full-width-page-content
+  regions:
+    main:
+      label: Main Content
+two_column_in_mobile:
+  label: Two Columns ( Also as Column In Mobile )
+  category: OxfordPath Layouts
+  template: templates/two-column-in-mobile
+  regions:
+    left:
+      label: Left
+    right:
+      label: Right
+two_columns_narrow:
+  label: Two Columns ( Responsive, Max Width 650px )
+  category: OxfordPath Layouts
+  template: templates/two-columns-narrow
+  regions:
+    section_content_left:
+      label: Left
+    section_content_right:
+      label: Right
+card_two_columns:
+  label: Two Columns ( Responsive, Max Width 1070px )
+  category: OxfordPath Layouts
+  template: templates/card-two-columns
+  regions:
+    card_section_content_left:
+      label: Left
+    card_section_content_right:
+      label: Right
+card_two_columns_bg:
+  label: Two Columns ( Responsive, Max Width 1070px ) - With Background
+  category: OxfordPath Layouts
+  template: templates/card-two-columns-bg
+  regions:
+    card_section_content_left:
+      label: Left
+    card_section_content_right:
+      label: Right
+two_columns_fullwidth:
+  label: Two Columns ( Responsive, Full Width )
+  category: OxfordPath Layouts
+  template: templates/two-columns-fullwidth
+  regions:
+    left:
+      label: Left
+    right:
+      label: Right

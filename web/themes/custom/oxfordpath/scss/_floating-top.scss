@@ -1,0 +1,34 @@
+.layout-container {
+  > #floating-top {
+    position: fixed;
+    top: $mobile_header_height;
+    left: 0;
+    z-index: 50;
+    width: 100%;
+    height: auto;
+    padding: 0 rem-calc(18);
+
+    > div > * {
+      margin-bottom: rem-calc(20px);
+
+      &:last-child {
+        margin-bottom: 0;
+      }
+
+      background-color: $color_white_95;
+      border-radius: rem-calc(20);
+      padding: rem-calc(15) rem-calc(18);
+    }
+  }
+}
+
+@include breakpoint(large){
+  .layout-container {
+    > #floating-top {
+      top: $large_header_height;
+      > div > * {
+        padding: rem-calc(15) rem-calc(24);
+      }
+    }
+  }
+}

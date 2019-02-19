@@ -1,0 +1,25 @@
+.expert.expert--sharing-dialog{
+  display: flex;
+  width: 100%;
+  margin: 0 auto;
+  .expert__icon{
+    img{
+      width: rem-calc(75);
+      border-radius: 50%;
+      margin-right: rem-calc(11);
+    }
+  }
+  .expert__info{
+    @include fs15_lh22;
+    flex: 1;
+    font-weight: 600;
+    .expert__title{
+      @include fs18_lh22;
+      color: $color_orange;
+    }
+    .expert__field_background{
+      @include fs12_lh18;
+      color: $color_light_grey_blue;
+    }
+  }
+}

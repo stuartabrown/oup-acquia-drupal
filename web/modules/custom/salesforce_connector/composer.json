@@ -1,0 +1,14 @@
+{
+  "name": "drupal/salesforce_connector",
+  "type": "drupal-module",
+  "description": "Salesforce SOAP client",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/salesforce_connector",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/salesforce_connector",
+    "source": "http://cgit.drupalcode.org/salesforce_connector"
+  },
+  "require": { }
+}

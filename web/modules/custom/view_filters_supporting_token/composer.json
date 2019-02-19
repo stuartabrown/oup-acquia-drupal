@@ -1,0 +1,14 @@
+{
+  "name": "drupal/view_filters_supporting_token",
+  "type": "drupal-module",
+  "description": "View's filters by default doesn't support token, this module is adding fix on it",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/view_filters_supporting_token",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/view_filters_supporting_token",
+    "source": "http://cgit.drupalcode.org/view_filters_supporting_token"
+  },
+  "require": { }
+}

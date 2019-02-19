@@ -1,0 +1,12 @@
+.custom-block.basic_title_block{
+  .basic_title_block__field_icon{
+    margin-bottom: rem-calc(8);
+  }
+  .basic_title_block--text-center{
+    text-align: center;
+  }
+  .basic_title_block--text-larger{
+    // TODO
+    @include fs28_lh40;
+  }
+}

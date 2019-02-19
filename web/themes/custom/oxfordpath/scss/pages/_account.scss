@@ -1,0 +1,15 @@
+.views-view-container--account_profile_block{
+  .views-label{
+    display: block;
+    width: 100%;
+  }
+  .views-label-field-first-name{
+    @include imgAsBg(center bottom, contain);
+    @include fs28_lh40;
+    background-image: url(../images/mobile-member-banner.png);
+    font-weight: 600;
+    background-color: #FFDEC6;
+    padding: rem-calc(26) rem-calc(35) 0;
+    min-height: rem-calc(200);
+  }
+}

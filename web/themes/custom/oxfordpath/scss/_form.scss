@@ -1,0 +1,47 @@
+form.user-login-form,
+form.user-pass{
+  padding: rem-calc(35);
+  label{
+    @include fs15_lh22;
+    font-weight: 600;
+    color: $color_blue;
+    margin-bottom: rem-calc(5);
+  }
+  .user_login_form__forget{
+    @include fs15_lh22;
+    text-align: center;
+    font-weight: 600;
+    color: $color_light_grey_blue;
+    a{
+      color: $color_orange;
+    }
+  }
+  input.form-text{
+    @include fs15_lh22;
+    padding: rem-calc(12) rem-calc(15);
+    margin-bottom: rem-calc(20);
+    border-radius: rem-calc(10);
+    border: $color_border_grey 2px solid;
+  }
+  button[type="submit"]{
+    @include fs15_lh22;
+    padding: rem-calc(14);
+    display: block;
+    width: 100%;
+    text-align: center;
+    font-weight: 600;
+    border-radius: rem-calc(25);
+    background-color: $color_orange;
+    color: $color_blue;
+    outline: none;
+    margin-bottom: rem-calc(15);
+  }
+}
+
+@include breakpoint(medium){
+  form.user-login-form,
+  form.user-pass{
+    max-width: rem-calc(375);
+    margin: 0 auto;
+  }
+}

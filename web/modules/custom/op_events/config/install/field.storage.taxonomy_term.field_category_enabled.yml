@@ -1,0 +1,18 @@
+uuid: 8c24f430-f46f-4d32-8ae6-8d3de817c117
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - taxonomy
+id: taxonomy_term.field_category_enabled
+field_name: field_category_enabled
+entity_type: taxonomy_term
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

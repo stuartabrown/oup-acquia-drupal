@@ -1,0 +1,41 @@
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    <div style="line-height: 0; margin-top: {{ content.field_block_margin_top.0}};">
+        {% if content.field_left_hill_bg_color.0 or content.field_right_hill_bg_color.0 %}
+        <svg width="100%" height="130" viewBox="0 0 1280 130" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <path id="a" d="M0 0h1280v130H0z"/>
+                <path id="c" d="M0 0h1280v25H0z"/>
+            </defs>
+            <g transform="matrix(-1 0 0 1 1280 0)" fill="none" fill-rule="evenodd">
+                <mask id="b" fill="#fff">
+                    <use xlink:href="#a"/>
+                </mask>
+                <ellipse fill="{{ content.field_left_hill_bg_color.0 }}" mask="url(#b)" cx="1280" cy="365" rx="1246" ry="365"/>
+                <ellipse fill="{{ content.field_right_hill_bg_color.0 }}" mask="url(#b)" cx="-97.5" cy="469.5" rx="1602.5" ry="469.5"/>
+                <g mask="url(#b)">
+                    <g transform="translate(0 105)">
+                        <mask id="d" fill="#fff">
+                            <use xlink:href="#c"/>
+                        </mask>
+                        <ellipse fill="{{ content.field_bottom_hill_bg_color.0 }}" mask="url(#d)" cx="638.293" cy="141.5" rx="1160.533" ry="141.5"/>
+                    </g>
+                </g>
+            </g>
+        </svg>
+        {% else %}
+        <svg width="100%" height="25" viewBox="0 0 1280 25" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <defs>
+                <path id="a" d="M0 0h1280v25H0z"/>
+            </defs>
+            <g transform="matrix(-1 0 0 1 1280 0)" fill="none" fill-rule="evenodd">
+                <mask id="b" fill="#fff">
+                    <use xlink:href="#a"/>
+                </mask>
+                <ellipse fill="{{ content.field_bottom_hill_bg_color.0 }}" mask="url(#b)" cx="638.293" cy="141.5" rx="1160.533" ry="141.5"/>
+            </g>
+        </svg>
+        {% endif %}
+    </div>
+</div>

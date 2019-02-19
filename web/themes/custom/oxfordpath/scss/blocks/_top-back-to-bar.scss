@@ -1,0 +1,16 @@
+.top-back-to-bar{
+  background-color: $color_orange;
+  a{
+    @include fs15_lh22;
+    padding: rem-calc(19) rem-calc(35);
+    display: block;
+    font-weight: 600;
+    &:before{
+      content: '';
+      @include imgAsBg;
+      @include prepareIcon(16px, 12px);
+      margin-right: rem-calc(5px);
+      background-image: $sym_arrow_blue_left;
+    }
+  }
+}

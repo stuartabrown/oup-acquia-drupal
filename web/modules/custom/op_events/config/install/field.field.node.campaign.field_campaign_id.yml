@@ -1,0 +1,21 @@
+uuid: a4a13d8d-7001-4549-8948-2fc69fca03df
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_campaign_id
+    - node.type.campaign
+_core:
+  default_config_hash: 6MAcvXQnFIrBKr12FqfwWRDG9LTZMCUnvSoiOP8pbAg
+id: node.campaign.field_campaign_id
+field_name: field_campaign_id
+entity_type: node
+bundle: campaign
+label: 'Campaign ID'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

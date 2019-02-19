@@ -1,0 +1,19 @@
+uuid: d4682be3-8cfc-41a4-8a24-5e498b00b004
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_event_category
+    - node.type.campaign
+id: node.campaign.field_event_category
+field_name: field_event_category
+entity_type: node
+bundle: campaign
+label: 'Event Category'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

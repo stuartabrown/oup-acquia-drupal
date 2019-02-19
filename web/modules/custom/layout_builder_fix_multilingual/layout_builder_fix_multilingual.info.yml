@@ -1,0 +1,7 @@
+name: 'Layout Builder Fix For Multilingual'
+type: module
+description: 'Layout Builder Fix For Multilingual Pages'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - layout_builder

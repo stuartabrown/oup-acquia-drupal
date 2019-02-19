@@ -1,0 +1,43 @@
+.card_section_title.custom-block{
+  background-color: $color_blue;
+  padding: rem-calc(14) rem-calc(16);
+  h2{
+    @include fs15_lh22;
+    font-weight: 600;
+    color: $color_orange;
+    margin: 0;
+  }
+}
+.card_section_subtitle.custom-block{
+  background-color: $color_white;
+  padding: rem-calc(14) rem-calc(16);
+  h3{
+    @include fs15_lh22;
+    font-weight: 600;
+    color: $color_orange;
+    margin: 0;
+  }
+}
+.card_content.custom-block{
+  background-color: $color_white;
+  padding: rem-calc(14px) rem-calc(16);
+  h4{
+    @include fs15_lh22;
+    color: $color_blue;
+    margin: 0;
+    font-weight: 600;
+  }
+  .card_content__body{
+    background-color: $color_white;
+    margin-top: rem-calc(5);
+    color: $color_light_grey_blue;
+    p{
+      @include fs15_lh22;
+      font-weight: 600;
+      margin-bottom: 0;
+    }
+    p+p{
+      margin-top: rem-calc(11);
+    }
+  }
+}

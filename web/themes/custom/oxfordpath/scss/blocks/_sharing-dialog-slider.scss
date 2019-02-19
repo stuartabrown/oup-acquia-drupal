@@ -1,0 +1,123 @@
+$sharing-dialog-slider-intercell-spacing: rem-calc(16); // applied to each slide of each cell
+
+.custom-block.sharing_dialog_slider {
+  @extend .mod--dots-color-orange-blue;
+
+  .expert.expert--teaser{
+    padding: 0 !important;
+    .expert__icon{
+      width: auto;
+      padding-right: 0;
+    }
+  }
+
+  .slick-slide {
+    padding-left: $sharing-dialog-slider-intercell-spacing;
+    padding-right: $sharing-dialog-slider-intercell-spacing;
+  }
+
+  .sharing_dialog_slider__field_sharing_list {
+    position: relative;
+    margin-left: -$sharing-dialog-slider-intercell-spacing;
+    margin-right: -$sharing-dialog-slider-intercell-spacing;
+
+    article {
+      position: relative;
+      padding: rem-calc(18);
+      border-radius: rem-calc(25);
+
+      &:after {
+        @include imgAsBg;
+        position: absolute;
+        bottom: 0;
+      }
+
+      .dialog-info {
+        display: flex;
+
+        img {
+          width: rem-calc(75);
+          border-radius: 50%;
+          margin-right: rem-calc(11);
+        }
+
+        .dialog-meta {
+          flex: 1;
+
+          padding-top: rem-calc(8);
+
+          > div {
+
+            @include fs12_lh18;
+
+            font-weight: 600;
+
+            &:first-child {
+              @include fs15_lh22;
+            }
+          }
+        }
+      }
+
+      .dialog-body {
+        @include fs22_lh30;
+        margin-top: rem-calc(20);
+        font-weight: 600;
+      }
+    }
+  }
+
+  &.sharing_dialog_slider--right {
+    .sharing_dialog_slider__field_sharing_list {
+      article {
+        background-color: $color_orange;
+
+        &:after {
+          @include prepareIcon(17px, 23px);
+          right: rem-calc(-8);
+          background-image: svg-uri('<svg height="23" viewBox="0 0 17 23" width="17" xmlns="http://www.w3.org/2000/svg"><path d="m0 17.4791913 9-17.4791913c0 10.6702837 1.8083496 17.4791913 8 23-6.8035482 0-12.47021484-1.8402696-17-5.5208087z" fill="#FF966C" fill-rule="evenodd"/></svg>');
+        }
+
+        .dialog-info {
+          .dialog-meta {
+            > div {
+              color: $color_grey;
+              &:first-child {
+                color: $color_blue;
+              }
+
+            }
+          }
+        }
+      }
+    }
+  }
+
+  &.sharing_dialog_slider--left {
+    .sharing_dialog_slider__field_sharing_list {
+      article {
+        background-color: $color_light_yellow;
+  
+        &:after {
+          @include prepareIcon(17px, 31px);
+          left: rem-calc(-8);
+          background-image: svg-uri('<svg height="31" viewBox="0 0 17 31" width="17" xmlns="http://www.w3.org/2000/svg"><path d="m0 23.55891 9-23.55891c0 14.3816868 1.8083496 23.55891 8 31-6.8035482 0-12.47021484-2.4803633-17-7.44109z" fill="#fdece0" fill-rule="evenodd" transform="matrix(-1 0 0 1 17 0)"/></svg>');
+        }
+  
+        .dialog-info {
+          .dialog-meta {
+            > div {
+              &:first-child {
+                color: $color_orange;
+              }
+
+              &:last-child {
+                color: $color_light_grey_blue;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

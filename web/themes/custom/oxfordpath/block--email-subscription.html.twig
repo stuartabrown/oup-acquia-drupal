@@ -1,0 +1,76 @@
+{#
+/**
+ * @file
+ * Theme override to display a block.
+ *
+ * Available variables:
+ * - plugin_id: The ID of the block implementation.
+ * - label: The configured label of the block if visible.
+ * - configuration: A list of the block's configuration values.
+ *   - label: The configured label for the block.
+ *   - label_display: The display settings for the label.
+ *   - provider: The module or other provider that provided this block plugin.
+ *   - Block plugin specific settings will also be stored here.
+ * - content: The content of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *   - id: A valid HTML ID and guaranteed unique.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ *
+ * @see template_preprocess_block()
+ */
+#}
+<script language="JavaScript">
+  <!--
+  function MailingListValidation(SubscriberForm) {
+    var counter = 0;
+    for (i = 1; i <= SubscriberForm.pf_CounterMailinglists.value; i++) {
+      var checkBoxName = "pf_MailinglistName" + i;
+      if (document.getElementsByName(checkBoxName)[0].checked || document.getElementsByName(checkBoxName)[0].type == "hidden") {
+        counter++;
+      }
+    }
+    if (counter == 0) {
+      alert("One or more mailing lists are required for this form.");
+      return false;
+    }
+  }//-->
+</script>
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {% if label %}
+    <h2{{ title_attributes }}>{{ label }}</h2>
+    {% endif %}
+    {{ title_suffix }}
+    {{ content.field_title }}
+    {{ content.field_description }}
+    {% set placeholder = content.field_placeholder|render|striptags|trim %}
+    <form name="SubscriberForm"
+          action="https://www.anpasia.com/public/process-subscription-form.aspx?formId=454B594A7745435B43"
+          onsubmit="return MailingListValidation(this);" method="post">
+        <input type="text" name="pf_SubscriberName" value="" style="display: none;">
+        <input type="text" class={{ "#{block_type}__email" }} name="pf_Email" placeholder="{{ placeholder }}" aria-label={{ placeholder }} value="">
+        <select name="pf_DeliveryFormat" style="display:none;">
+            <option value="HTML" selected="selected">HTML</option>
+            <option value="Text">Text</option>
+        </select>
+        <input type="hidden" name="Submit" value="Subscribe"/>
+        <!--<input type="submit" name="Submit" value="Subscribe" class={{ "#{block_type}__subscribe" }}>-->
+        <button aria-label={{ "Subscribe"|t }} type="submit" class={{ "#{block_type}__subscribe" }}>
+            <span>{{ "Subscribe"|t }}</span>
+        </button>
+        <input type="hidden" name="pf_FormType" value="OptInForm">
+        <input type="hidden" name="pf_OptInMethod" value="SingleOptInMethod">
+        <input type="hidden" name="pf_CounterDemogrFields" value="0">
+        <input type="hidden" name="pf_CounterMailinglists" value="1">
+        <input type="hidden" name="pf_AccountId" value="2265">
+        <input type="hidden" name="pf_ListById" value="1">
+        <input type="hidden" name="pf_Version" value="2">
+        <input type="hidden" name="pf_MailinglistName1" value="167022">
+    </form>
+</div>

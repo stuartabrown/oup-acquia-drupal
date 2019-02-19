@@ -1,0 +1,19 @@
+uuid: 27efdb19-718a-42b7-879f-8359cbf2182d
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_category_slug
+    - taxonomy.vocabulary.campaign_category
+id: taxonomy_term.campaign_category.field_category_slug
+field_name: field_category_slug
+entity_type: taxonomy_term
+bundle: campaign_category
+label: 'Category Slug'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

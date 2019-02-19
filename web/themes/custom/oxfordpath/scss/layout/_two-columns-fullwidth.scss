@@ -1,0 +1,39 @@
+.layout.layout--two-columns-fullwidth {
+  .layout__region__wrapper {
+    padding: 0 $mobile_common_hpadding;
+
+    // TODO: un-hardcode (warning: very difficult due to design of Drupal)
+    &.layout__region__wrapper--left {
+      background-color: $color_orange;
+    }
+
+    &.layout__region__wrapper--right {
+      background-color: $color_yellow;
+    }
+  }
+}
+
+@include breakpoint(medium) {
+  .layout.layout--two-columns-fullwidth {
+    display: flex;
+
+    .layout__region__wrapper {
+      display: flex;
+      width: 50%;
+    }
+
+    .layout__region {
+      position: relative;
+      margin: auto;
+      width: 100%;
+    }
+  }
+}
+
+@include breakpoint(large){
+  .layout.layout--two-columns-fullwidth {
+    .layout__region__wrapper {
+      padding: 0 ($mobile_common_hpadding * 2);
+    }
+  }
+}

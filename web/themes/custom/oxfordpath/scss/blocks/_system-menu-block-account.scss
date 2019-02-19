@@ -1,0 +1,32 @@
+.system_menu_block.account {
+  display: inline-block;
+  vertical-align: top;
+  .account__page,
+  .account__logout,
+  .account__login {
+    line-height: 1;
+    a {
+      display: inline-block;
+      padding: rem-calc(11px) 0 rem-calc(12px);
+      &:before {
+        @include prepareIcon(17px, 17px);
+        @include imgAsBg;
+        margin-right: 5px;
+        vertical-align: middle;
+        background-image: $sym_member;
+      }
+    }
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  span {
+    @include fs15_lh22;
+    vertical-align: middle;
+    font-weight: 600;
+  }
+}

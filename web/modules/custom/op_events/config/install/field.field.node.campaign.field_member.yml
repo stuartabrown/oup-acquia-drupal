@@ -1,0 +1,25 @@
+uuid: 45eafc6c-87a7-42c3-a41c-b62bd9607a64
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_member
+    - node.type.campaign
+_core:
+  default_config_hash: mUmdgMUEJyipePA2V5y3Efd1XTGlzkzgewqPsPasNEE
+id: node.campaign.field_member
+field_name: field_member
+entity_type: node
+bundle: campaign
+label: Member
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

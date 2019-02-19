@@ -1,0 +1,23 @@
+uuid: d8cfef99-28fd-4ecb-ba7b-72a280ba784b
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: mfjSX6vtioFiP8VGFldEvqRYQaZCfnXP_9vR6edbfIE
+id: node.field_speaker
+field_name: field_speaker
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

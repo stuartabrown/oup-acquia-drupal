@@ -1,0 +1,19 @@
+.custom-block.blur_bg_text_block_with_icon {
+  .wrapper {
+    padding: rem-calc(10); // allow space for the shadow background
+    position: relative;
+    max-width: rem-calc(300); // TODO: un-hardcode
+    margin: 0 auto;
+  }
+
+  .blur_bg_text_block_with_icon__field_description {
+    @include fs15_lh22;
+    background-color: $color_white_38;
+    display: block;
+    box-shadow: 0 0 10px 4px $color_white_38;
+    border-radius: rem-calc(25);
+    font-weight: 600;
+    text-align: center;
+    padding: rem-calc(18) rem-calc(30);
+  }
+}

@@ -1,0 +1,45 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a two-column layout.
+ *
+ * Available variables:
+ * - content: The content for this layout.
+ * - attributes: HTML attributes for the layout <div>.
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+    set classes = [
+    'layout',
+    'layout--twocol-in-mobile',
+]
+%}
+{% if content %}
+    <div{{ attributes.addClass(classes) }}>
+        {% if content.top %}
+            <div {{ region_attributes.top.addClass('layout__region', 'layout__region--top') }}>
+                {{ content.top }}
+            </div>
+        {% endif %}
+
+        {% if content.left %}
+            <div {{ region_attributes.left.addClass('layout__region', 'layout__region--left') }}>
+                {{ content.left }}
+            </div>
+        {% endif %}
+
+        {% if content.right %}
+            <div {{ region_attributes.right.addClass('layout__region', 'layout__region--right') }}>
+                {{ content.right }}
+            </div>
+        {% endif %}
+
+        {% if content.bottom %}
+            <div {{ region_attributes.bottom.addClass('layout__region', 'layout__region--bottom') }}>
+                {{ content.bottom }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

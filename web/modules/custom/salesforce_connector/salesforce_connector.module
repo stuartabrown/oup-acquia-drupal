@@ -1,0 +1,30 @@
+<?php
+
+/**
+ * @file
+ * Contains salesforce_connector.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+
+/**
+ * 1. Setting of username and password in backend CMS
+ * 2. Storage of session key
+ * 3.
+ */
+
+/**
+ * Implements hook_help().
+ */
+function salesforce_connector_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the salesforce_connector module.
+    case 'help.page.salesforce_connector':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Salesforce SOAP client') . '</p>';
+      return $output;
+
+    default:
+  }
+}

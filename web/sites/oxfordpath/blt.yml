@@ -1,0 +1,17 @@
+project:
+  local:
+    hostname: v2.local.ae-oxford-path.com
+    protocol: http
+  machine_name: v2.local.ae-oxford-path.com
+  human_name: v2.local.ae-oxford-path.com
+drush:
+  aliases:
+    local: oxfordpath.local
+    remote: oxfordpath.local
+drupal:
+  db:
+    database: oxfordpath
+    username: oxfordpathadmin
+    password: dh97cx.mgc4s
+    host: localhost
+    port: 3306

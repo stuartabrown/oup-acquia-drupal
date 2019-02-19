@@ -1,0 +1,43 @@
+<?php
+
+/**
+ * @file
+ * Contains view_filters_supporting_token.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use \Drupal\views\ViewExecutable;
+use \Drupal\views\Plugin\views\query\QueryPluginBase;
+
+/**
+ * Implements hook_help().
+ */
+function view_filters_supporting_token_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the view_filters_supporting_token module.
+    case 'help.page.view_filters_supporting_token':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('View&#039;s filters by default doesn&#039;t support token, this module is adding fix on it') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_views_query_alter(ViewExecutable $view, QueryPluginBase $query)
+ */
+function view_filters_supporting_token_views_query_alter(ViewExecutable $view, QueryPluginBase $query) {
+  $token = \Drupal::service('token');
+  foreach ($query->where as &$condition_group) {
+    foreach ($condition_group['conditions'] as &$condition) {
+      // If this is the part of the query filtering on title, chang the
+      // condition to filter on node ID.
+      if(is_string($condition['value'])){
+        // Only support simple token filter
+        $condition['value'] = $token->replace($condition['value']);
+      }
+    }
+  }
+}

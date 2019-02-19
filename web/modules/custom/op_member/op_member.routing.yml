@@ -1,0 +1,27 @@
+op_events.summary:
+  path: '/admin/op_member/member_lookup'
+  defaults:
+    _form: 'op_member.lookup_form'
+    _title: 'Oxford Path Member Lookup & Update'
+  requirements:
+    _permission: 'administrator'
+  options:
+    _admin_route: TRUE
+op_member.salesforce_member_config_form:
+  path: '/admin/config/op_member/salesforce_member'
+  defaults:
+    _form: '\Drupal\op_member\Form\SalesforceMemberForm'
+    _title: 'Salesforce Member Setting'
+  requirements:
+    _permission: 'administrator'
+  options:
+    _admin_route: TRUE
+op_member.authentication_config_form:
+  path: '/admin/config/op_member/authentication'
+  defaults:
+    _form: '\Drupal\op_member\Form\AuthenticationConfigForm'
+    _title: 'Authentication Configuration'
+  requirements:
+    _permission: 'administrator'
+  options:
+    _admin_route: TRUE

@@ -1,0 +1,11 @@
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    {% block content %}
+        <div class="hero-image__wrapper">
+            <div class="hero-image__image show-for-small-only" style="background-image: url({{ content.field_image.0 }})"></div>
+            <div class="hero-image__image show-for-medium-only" style="background-image: url({{ content.field_image_medium.0 }})"></div>
+            <div class="hero-image__image show-for-large" style="background-image: url({{ content.field_image_large.0 }})"></div>
+        </div>
+    {% endblock %}
+</div>

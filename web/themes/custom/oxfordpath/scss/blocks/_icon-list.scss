@@ -1,0 +1,33 @@
+.custom-block.icon_list{
+  .icon_list_item__field_icon{
+    &--sizing-format{
+      display: inline-block;
+      &-height{
+        img{
+          width: auto;
+          height: 100%;
+        }
+      }
+      &-width{
+        img{
+          width: 100%;
+          height: auto;
+        }
+      }
+    }
+  }
+  &.icon_list--inline{
+    .icon_list__field_icon_list_item{
+      display: inline-block;
+      margin-right: rem-calc(20);
+      &:last-child{
+        margin-right: 0;
+      }
+    }
+  }
+  &.icon_list--middle{
+    .icon_list__field_icon_list_item {
+      vertical-align: middle;
+    }
+  }
+}

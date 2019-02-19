@@ -1,0 +1,25 @@
+uuid: 3e9bbdcd-2b7d-439b-a6d9-1269a32c6798
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_charge_paid
+    - node.type.campaign
+_core:
+  default_config_hash: rOG0SjWUcvrJvKqE1LwVLznf9T9zMQTt4bVBdv2cB5U
+id: node.campaign.field_charge_paid
+field_name: field_charge_paid
+entity_type: node
+bundle: campaign
+label: 'Charge Paid'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: 'On'
+  off_label: 'Off'
+field_type: boolean

@@ -1,0 +1,23 @@
+uuid: 9f15ff7d-83d8-4e9b-9106-27685f35e62b
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_start_date
+    - node.type.campaign
+_core:
+  default_config_hash: lw7y2h8VIIMRT7Vkgr5INMY187e3ulDKxPj1YalhQyM
+id: node.campaign.field_start_date
+field_name: field_start_date
+entity_type: node
+bundle: campaign
+label: 'Start Date'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1547088354
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

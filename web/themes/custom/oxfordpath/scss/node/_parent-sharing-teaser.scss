@@ -1,0 +1,48 @@
+.parent-sharing.parent-sharing--teaser{
+  .parent-sharing__info{
+    display: flex;
+    margin-bottom: rem-calc(20);
+  }
+  .parent_sharing__field_icon{
+    width: 100%; // for IE. REF: https://stackoverflow.com/a/33485315/3787446
+    max-width: rem-calc(75 + 11);
+    padding-right: rem-calc(11);
+  }
+  .parent-sharing__meta{
+    @include fs12_lh18;
+    flex: 1;
+    font-weight: 600;
+  }
+  .parent_sharing__field_icon_title{
+    color: $color_orange;
+    padding-top: rem-calc(8);
+  }
+  .parent_sharing__field_icon_subtitle_multiline,
+  .parent_sharing__field_usage{
+    color: $color_light_grey_blue;
+  }
+
+  .parent-sharing__title{
+    a {
+      @include fs22_lh30;
+      font-weight: 600;
+    }
+  }
+  .parent_sharing__field_know_more{
+    margin-top: rem-calc(15);
+    a{
+      @include fs15_lh22;
+      font-weight: 600;
+      color: $color_orange;
+      span{
+        vertical-align: middle;
+      }
+      &:after{
+        @include prepareIcon(14px, 14px);
+        @include imgAsBg;
+        vertical-align: middle;
+        background-image: $sym_gt_orange;
+      }
+    }
+  }
+}

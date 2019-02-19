@@ -1,0 +1,34 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a two-column layout.
+ *
+ * Available variables:
+ * - content: The content for this layout.
+ * - attributes: HTML attributes for the layout <div>.
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+    set classes = [
+    'layout',
+    'layout--page-content',
+    'layout--page-content--full-width',
+    content.hero_image_bg ? 'layout--has-hero-image-bg',
+]
+%}
+{% if content %}
+    <div{{ attributes.addClass(classes) }}>
+        {% if content.hero_image_bg %}
+            <div class="layout__region layout__region--hero-image-bg">
+                {{ content.hero_image_bg }}
+            </div>
+        {% endif %}
+        {% if content.main %}
+            <div {{ region_attributes.main.addClass('layout__region', 'layout__region--main') }}>
+                {{ content.main }}
+            </div>
+        {% endif %}
+    </div>
+{% endif %}

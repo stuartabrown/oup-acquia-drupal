@@ -1,0 +1,54 @@
+@include breakpoint(small only) {
+    .custom-block.email_subscription {
+      text-align: center;
+
+      .email_subscription{
+        &__field_title {
+          @include fs24_lh30;
+          color: $color_green;
+          font-weight: 600;
+        }
+        &__field_description{
+            @include fs15_lh22;
+            margin-top: rem-calc(6);
+            color: $color_grey_60;
+        }
+        &__email{
+            @include fs15_lh22;
+            background-color: $color_grey_15;
+            border-width: 0;
+            height: rem-calc(50);
+            border-radius: rem-calc(25);
+            padding: rem-calc(14) rem-calc(20);
+            text-align: center;
+            color: $color_white;
+            box-shadow: none;
+        }
+        &__subscribe{
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: rem-calc(50);
+            height: rem-calc(50);
+            border-radius: rem-calc(25);
+            background-color: transparent;
+            border-width: 0;
+            cursor: pointer;
+            &:after {
+              @include prepareIcon(50px, 50px);
+              @include imgAsBg;
+              background-image: $sym_arrow_green_right;
+            }
+            span{
+              display: none;
+            }
+        }
+      }
+
+      form{
+          position: relative;
+          margin-top: rem-calc(12);
+          width: 100%;
+      }
+    }
+  }

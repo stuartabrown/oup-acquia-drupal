@@ -1,0 +1,20 @@
+uuid: 67312751-135f-4d84-9a73-3ed173071ffd
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: uMtXZuSfw6t1Z4eXfJTeTGU1Hvtn_QI82UB9_A-4dFE
+id: node.field_start_date
+field_name: field_start_date
+entity_type: node
+type: timestamp
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

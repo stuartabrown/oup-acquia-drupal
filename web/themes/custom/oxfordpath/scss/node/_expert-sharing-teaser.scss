@@ -1,0 +1,30 @@
+.expert-sharing.expert-sharing--teaser{
+  @include clear;
+  padding: rem-calc(15);
+  background-color: $color_white_75;
+  border-radius: rem-calc(25);
+  box-shadow: $color_orange_5 0 5px 10px;
+  .expert-sharing-category__icon{
+    width: rem-calc(45);
+    height: rem-calc(45);
+    border-radius: rem-calc(50%);
+    float: left;
+    margin-right: rem-calc(10);
+  }
+  .expert_sharing_category__name{
+    @include fs12_lh18;
+    > div{
+      color: inherit;
+      font-weight: 600;
+    }
+  }
+  .expert-sharing__title{
+    @include fs15_lh22;
+    font-weight: 600;
+    margin: 0;
+  }
+}
+
+@include breakpoint(small only){
+
+}

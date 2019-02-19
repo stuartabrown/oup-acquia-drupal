@@ -1,0 +1,4 @@
+services:
+  # Define a service for logging into Salesforce and get the session key, it will automatically update the session key in config when connection is established successfully.
+  salesforce_connector.connector:
+    class: Drupal\salesforce_connector\Connector

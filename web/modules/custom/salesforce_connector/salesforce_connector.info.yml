@@ -1,0 +1,5 @@
+name: 'Salesforce Connector'
+type: module
+description: 'Salesforce SOAP client'
+core: 8.x
+package: 'Custom'

@@ -1,0 +1,21 @@
+uuid: 929a3fc7-78f9-4026-a887-83b3c0ffd6e3
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_charge_for_child
+    - node.type.campaign
+_core:
+  default_config_hash: swLQh-TWLZdU18L_-iiKRJJsDo83aovSIhRB4scLong
+id: node.campaign.field_charge_for_child
+field_name: field_charge_for_child
+entity_type: node
+bundle: campaign
+label: 'Charge For Child'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

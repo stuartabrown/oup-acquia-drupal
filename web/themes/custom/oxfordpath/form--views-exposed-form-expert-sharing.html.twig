@@ -1,0 +1,21 @@
+{#
+/**
+ * @file
+ * Theme override for a 'form' element.
+ *
+ * Available variables
+ * - attributes: A list of HTML attributes for the wrapper element.
+ * - children: The child elements of the form.
+ *
+ * @see template_preprocess_form()
+ */
+#}
+<div class="expert_sharing_popup" id="expert_sharing_popup">
+  <div class="expert_sharing_popup__box__close" data-popupclose></div>
+  <div class="expert_sharing_popup__box">
+    <div class="expert_sharing_popup__title" data-targettitle></div>
+    <form{{ attributes }}>
+      {{ children }}
+    </form>
+  </div>
+</div>

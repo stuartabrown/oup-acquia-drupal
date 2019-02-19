@@ -1,0 +1,7 @@
+name: 'Oxford Path Member'
+type: module
+description: 'Getting members from Salesforce'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - salesforce_connector

@@ -1,0 +1,44 @@
+.product-age-range-list-wrapper{
+  display: block;
+  padding: 0 rem-calc(35);
+  .product-age-range-list {
+    list-style: none;
+    margin: 0;
+
+    li {
+      & + li {
+        margin-top: rem-calc(35);
+      }
+    }
+    .product-age-range__item{
+      position: relative;
+    }
+    .product-age-range__image{
+      img{
+        width: 100%;
+      }
+    }
+    .product-age-range__info{
+      position: absolute;
+      bottom: rem-calc(25);
+      &.product-age-range__info--right{
+        left: 52.459%;
+        right: rem-calc(15);
+      }
+      &.product-age-range__info--left{
+        text-align: right;
+        right: 52.459%;
+        left: rem-calc(15);
+      }
+    }
+    .product_age_range__field_card_title{
+      @include fs28_lh40;
+      margin-bottom: rem-calc(10);
+      font-weight: 600;
+    }
+    .product_age_range__field_card_summary{
+      @include fs15_lh22;
+      font-weight: 600;
+    }
+  }
+}

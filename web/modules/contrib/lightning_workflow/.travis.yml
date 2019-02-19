@@ -1,0 +1,62 @@
+dist: trusty
+language: php
+
+cache:
+  bundler: true
+  directories:
+    - "$HOME/.composer/cache"
+    - "$HOME/.drush/cache"
+    - "$HOME/.npm"
+php:
+  - 7.1
+
+env:
+  - VERSION=HEAD
+  - VERSION=3.3.0
+  # The final CI slot should be used to test the update path from the oldest
+  # available database fixture.
+  - VERSION=1.0.0-rc2
+
+addons:
+  chrome: stable
+
+before_install:
+  # Tweak PHP configuration.
+  - phpenv config-add ./tests/travis.php.ini
+  - phpenv rehash
+
+  - composer self-update
+  - composer --version
+  - google-chrome-stable --version
+
+  - ORCA=$TRAVIS_BUILD_DIR/../orca
+  - ORCA_FIXTURE=$ORCA-build
+  - ORCA_SUT=drupal/lightning_workflow
+
+  - export PATH="$HOME/.composer/vendor/bin:$PATH"
+  - export PATH="$ORCA/bin:$PATH"
+  - export PATH="$ORCA/vendor/bin:$PATH"
+  - export PATH="$ORCA_FIXTURE/vendor/bin:$PATH"
+
+install:
+  # Install ORCA so that we can build the fixture using that.
+  - git clone --depth 1 git@github.com:acquia/orca.git ../orca
+  - $ORCA/bin/travis/install
+
+  # Use ORCA to build the code base.
+  - orca fixture:init --force --sut-only --sut $ORCA_SUT
+  - # Install dev dependencies.
+  - composer require --dev drupal/inline_entity_form --working-dir $ORCA_FIXTURE
+
+before_script:
+  - cd $ORCA_FIXTURE/docroot
+  - $TRAVIS_BUILD_DIR/update.sh $VERSION
+  - drush runserver --default-server=builtin 8080 &>/dev/null &
+  - chromedriver --port=4444 &
+
+script:
+  - orca tests:run --no-servers --sut-only --sut $ORCA_SUT
+
+after_failure:
+  - cd docroot
+  - drush watchdog:show --count=100 --severity=Error --extended

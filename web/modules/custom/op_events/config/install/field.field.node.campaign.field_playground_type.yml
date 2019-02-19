@@ -1,0 +1,21 @@
+uuid: fc8f1e2a-5646-447d-a19f-a994036c12d5
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_playground_type
+    - node.type.campaign
+_core:
+  default_config_hash: p1Yiq-C3j8Vsdd1FzjtCW9ENm0Sw5BsFEqh5TcuUN1U
+id: node.campaign.field_playground_type
+field_name: field_playground_type
+entity_type: node
+bundle: campaign
+label: 'Playground Type'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

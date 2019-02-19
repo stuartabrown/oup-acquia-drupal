@@ -1,0 +1,4 @@
+lightning_scheduler.settings:
+  route_name: lightning_scheduler.settings
+  title: 'Scheduler'
+  parent: lightning_core.settings

@@ -1,0 +1,12 @@
+op_member.salesforce_member_config_form:
+  title: 'Salesforce Member Configuration'
+  route_name: op_member.salesforce_member_config_form
+  description: 'Manage Salesforce-related member configuration'
+  parent: system.admin_config_system
+  weight: 1100
+op_member.authentication_config_form:
+  title: 'Authentication Configuration'
+  route_name: op_member.authentication_config_form
+  description: 'Manage settings regarding authentication, log in and log out.'
+  parent: system.admin_config_system
+  weight: 1200

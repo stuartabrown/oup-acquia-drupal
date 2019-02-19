@@ -1,0 +1,303 @@
+@mixin clear{
+	&:after{
+		display: block;
+		clear: both;
+		content: '';
+	}
+}
+
+@mixin imgAsBg($backgroundPosition: center center, $backgroundSize: cover, $backgroundRepeat: no-repeat){
+	background-position: $backgroundPosition;
+	background-size: $backgroundSize;
+	background-repeat: $backgroundRepeat;
+}
+
+@mixin prepareIcon($width, $height){
+	display: inline-block;
+	content: '';
+	width: rem-calc($width);
+	height: rem-calc($height);
+}
+
+@mixin pageTitleContainer($backgroundColor: $color_blue, $fontColor: $color_orange, $icon: null, $iconWidth: 48px, $iconHeight: 48px, $iconMarginRight: 20px, $linkColor: null, $arrowIcon: null, $hasFilter: false, $paddingTop: 80px){
+	display: block;
+	max-width: 100%;
+	background-color: $backgroundColor;
+	margin: 0;
+	text-align: left;
+	@if($hasFilter) {
+		padding: rem-calc($paddingTop) rem-calc(35) rem-calc(45);
+	}@else {
+		padding: rem-calc($paddingTop) rem-calc(35) rem-calc(25);
+	}
+	.page_title_block__container {
+		position: relative;
+		color: $fontColor;
+		h1 {
+			@include fs28_lh40;
+			display: inline-block;
+			margin-bottom: 0;
+			font-weight: 600;
+			vertical-align: middle;
+			color: $fontColor;
+		}
+
+		@if ($icon) {
+			&:before {
+				@include prepareIcon($iconWidth, $iconHeight);
+				@include imgAsBg;
+				display: inline-block;
+				background-image: $icon;
+				margin-right: rem-calc($iconMarginRight);
+				vertical-align: middle;
+			}
+		}@else{
+
+		}
+		@if ($linkColor) {
+			.page_title_block__link {
+				display: block;
+				float: right;
+				span {
+					@include fs15_lh22;
+					font-weight: 600;
+					color: $linkColor;
+					margin-right: rem-calc(5);
+				}
+
+				@if ($arrowIcon) {
+					&:after {
+						@include prepareIcon(16px, 12px);
+						@include imgAsBg;
+						background-image: $arrowIcon;
+					}
+				}
+			}
+		}
+	}
+	@include breakpoint(small only) {
+		.page_title_block__container {
+			@if($icon) {
+				padding-top: rem-calc($iconHeight + 9px);
+			}@else{
+				padding-top: 0;
+			}
+			@if ($icon) {
+				&:before {
+					position: absolute;
+					top: 0;
+					left: 0;
+				}
+			}
+		}
+	}
+	@include breakpoint(medium) {
+		padding: rem-calc(30) 0;
+		.page_title_block__container {
+			margin-left: auto;
+			margin-right: auto;
+			max-width: rem-calc(1050px);
+			padding-left: rem-calc(25px);
+			padding-right: rem-calc(25px);
+
+			h1 {
+				@include fs38_lh48;
+			}
+
+			@if ($linkColor) {
+				.page_title_block__link {
+					span {
+						@include fs18_lh22;
+					}
+				}
+			}
+		}
+	}
+	@include breakpoint(medium only) {
+		.page_title_block__container {
+			padding-left: rem-calc(35px);
+			padding-right: rem-calc(35px);
+		}
+	}
+}
+
+@mixin detailProfileBlock(){
+	display: flex;
+	padding: rem-calc(20) rem-calc(35) rem-calc(40);
+	max-width: rem-calc(720);
+	width: 100%;
+	margin: 0 auto;
+	.profile__icon{
+		width: rem-calc(80);
+		padding-right: rem-calc(12);
+		img{
+			width: 100%;
+		}
+	}
+	.profile__info{
+		@include fs12_lh18;
+		flex: 1;
+		font-weight: 600;
+		color: $color_light_grey_blue;
+		[class$="_title"],
+		[class$="_name"]{
+			@include fs15_lh22;
+			color: $color_orange;
+		}
+	}
+	.profile_more{
+		@include fs12_lh18;
+		font-weight: 600;
+		span{
+			display: inline-block;
+			vertical-align: middle;
+		}
+		&:after{
+			@include prepareIcon(13px, 13px);
+			@include imgAsBg(center center, contain);
+			vertical-align: middle;
+			margin-left: rem-calc(5);
+			background-image: $sym_arrow_blue_right_small;
+		}
+	}
+	@include breakpoint(medium){
+		padding: rem-calc(20) rem-calc(35) rem-calc(50px);
+		.profile__icon{
+			width: rem-calc(115);
+			padding-right: rem-calc(15);
+		}
+		.profile__info{
+			@include fs15_lh22;
+			[class$="_title"],
+			[class$="_name"]{
+				@include fs18_lh22;
+			}
+		}
+		.profile_more{
+			@include fs15_lh22;
+			&:after{
+				@include prepareIcon(16px, 12px);
+			}
+		}
+	}
+}
+
+@mixin breadcrumbDecoration($top: -38px, $left: 25px, $fontColor: $color_blue){
+	@include fs12_lh18;
+	font-weight: 600;
+	position: absolute;
+	left: rem-calc($left);
+	top: rem-calc($top);
+	margin: 0;
+	list-style: none;
+	>li{
+		display: inline-block;
+		> a,
+		> span{
+			@include fs12_lh18;
+			color: $fontColor;
+			font-weight: 600;
+		}
+	}
+	> li + li{
+		margin-left: rem-calc(6);
+	}
+	li.arrow{
+		width: rem-calc(10);
+		height: rem-calc(10);
+		&:before{
+			@include prepareIcon(10px, 10px);
+			@include imgAsBg;
+			display: inline-block;
+			background-image: $sym_breadcrumb_arrow;
+		}
+	}
+	@include breakpoint(medium only){
+		left: rem-calc(35);
+	}
+}
+
+@mixin stylePager{
+	position: relative;
+	margin: rem-calc(5) rem-calc(25) rem-calc(35);
+	padding: 0 rem-calc(35);
+	list-style: none;
+	text-align: center;
+	font-size: 0;
+	> li{
+		display: inline-block;
+		line-height: 0;
+		margin: 0 rem-calc(4);
+		a{
+			@include fs18_lh22;
+			display: block;
+			text-align: center;
+			padding: rem-calc(7) rem-calc(10);
+			width: rem-calc(36);
+			height: rem-calc(36);
+			border-radius: rem-calc(18);
+			font-weight: 600;
+			background-color: $color_white;
+		}
+		.visually-hidden{
+			display: none;
+		}
+		&.pager__item--first,
+		&.pager__item--last{
+			display: none;
+		}
+		&.is-active{
+			a {
+				background-color: $color_orange;
+			}
+		}
+	}
+	@include breakpoint(small only){
+		> li {
+			&.pager__item--previous {
+				position: absolute;
+				top: 0;
+				left: 0;
+
+				a {
+					background-color: transparent !important;
+				}
+			}
+
+			&.pager__item--next {
+				position: absolute;
+				top: 0;
+				right: 0;
+
+				a {
+					background-color: transparent !important;
+				}
+			}
+		}
+	}
+	@include breakpoint(medium){
+		padding: 0 rem-calc(80px);
+		display: inline-block;
+		> li {
+			&.pager__item--previous {
+				position: absolute;
+				margin-right: rem-calc(40);
+				left: 0;
+				top: 0;
+				a {
+					background-color: transparent !important;
+				}
+			}
+
+			&.pager__item--next {
+				position: absolute;
+				right: 0;
+				top: 0;
+				margin-left: rem-calc(40);
+				a {
+					background-color: transparent !important;
+				}
+			}
+		}
+	}
+}

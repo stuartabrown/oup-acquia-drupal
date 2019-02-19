@@ -1,0 +1,14 @@
+{
+  "name": "drupal/layout_builder_fix_multilingual",
+  "type": "drupal-module",
+  "description": "Layout Builder Fix For Multilingual Pages",
+  "keywords": ["Drupal"],
+  "license": "GPL-2.0+",
+  "homepage": "https://www.drupal.org/project/layout_builder_fix_multilingual",
+  "minimum-stability": "dev",
+  "support": {
+    "issues": "https://www.drupal.org/project/issues/layout_builder_fix_multilingual",
+    "source": "http://cgit.drupalcode.org/layout_builder_fix_multilingual"
+  },
+  "require": { }
+}

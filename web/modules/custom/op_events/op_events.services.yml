@@ -1,0 +1,15 @@
+services:
+  # Define a service for managing the events in salesforce
+  op_events.event_manager:
+    class: Drupal\op_events\EventManager
+    arguments: [ '@salesforce_connector.connector' ]
+  op_events.summary_controller:
+    class: Drupal\op_events\Controller\SummaryController
+    arguments: [ '@op_events.event_manager' ]
+  op_events.download_controler:
+    class: Drupal\op_events\Controller\DownloadController
+    arguments: [ '@op_events.event_manager' ]
+  campaign_id:
+    class: Drupal\op_events\ParamConverter\CampaignConverter
+    tags:
+      - { name: paramconverter }

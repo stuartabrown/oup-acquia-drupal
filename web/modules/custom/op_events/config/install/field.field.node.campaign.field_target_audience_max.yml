@@ -1,0 +1,21 @@
+uuid: 726a435f-a7cf-4d52-b936-8df10625ba16
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_target_audience_max
+    - node.type.campaign
+_core:
+  default_config_hash: tMWPR61SC0xSzXfUSHPQMJ7buMKj-UQ25AL5NhJC0y0
+id: node.campaign.field_target_audience_max
+field_name: field_target_audience_max
+entity_type: node
+bundle: campaign
+label: 'Target Audience Max'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

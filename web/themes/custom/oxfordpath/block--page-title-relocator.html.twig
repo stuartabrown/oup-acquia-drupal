@@ -1,0 +1,25 @@
+{% set id = "_pta-#{random()}" %}
+
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    <div class="page-title-area__target" id="{{ id }}"></div>
+    <script>
+        (function() {
+            var targetDiv = document.getElementById('{{ id }}');
+            var titleBlock = document.getElementsByClassName('page_title_block')[0];
+
+            if (titleBlock) {
+                if (titleBlock.className.indexOf('contextual-region') != -1) {
+                    targetDiv.innerHTML =
+                        '<div id="block-oxfordpath-page-title" class="page_title_block"><div class="page_title_block__container">' +
+                        '<h1><span class="page__title">(Page Title will be displayed here)</span></h1>' +
+                        '</div></div>';
+                } else {
+                    targetDiv.appendChild(titleBlock);
+                }
+            }
+        })();
+    </script>
+</div>
+
