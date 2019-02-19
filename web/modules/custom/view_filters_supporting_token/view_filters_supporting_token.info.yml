@@ -1,0 +1,5 @@
+name: 'View Filters Supporting Token'
+type: module
+description: "View's filters by default doesn't support token, this module is adding fix on it"
+core: 8.x
+package: 'Custom'

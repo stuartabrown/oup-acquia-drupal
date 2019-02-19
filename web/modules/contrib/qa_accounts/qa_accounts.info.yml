@@ -1,0 +1,13 @@
+name: QA Accounts
+description: 'Creates dummy accounts to aid in testing. Never enable in production environments.'
+type: module
+# core: 8.x
+dependencies:
+  - user
+package: 'Development'
+
+# Information added by Drupal.org packaging script on 2017-04-07
+version: '8.x-1.0-alpha1'
+core: '8.x'
+project: 'qa_accounts'
+datestamp: 1491602965

@@ -1,0 +1,225 @@
+<?php
+
+/**
+ * @file
+ * Contains op_events.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\op_events\Form\SalesforceCampaignForm;
+use Drupal\node\Entity\Node;
+
+/**
+ * Implements hook_help().
+ */
+function op_events_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the op_events module.
+    case 'help.page.op_events':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Getting events from Salesforce') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function op_events_preprocess_node(array &$variables) {
+  if ($variables['node']->getType() === 'campaign') {
+    if($variables['view_mode'] === 'full'){
+      $variables['#cache']['max-age'] = 0;
+//      $form_html = ($variables['node']->field_form_html?$variables['node']->field_form_html->value:null);
+      $formIds = $variables['node']->field_form_id?$variables['node']->field_form_id->value:NULL;
+      if($formIds){
+        try {
+          $member = ($variables['node']->field_member?$variables['node']->field_member->value:'0');
+          $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+          $campaignId = ($variables['node']->field_campaign_id?$variables['node']->field_campaign_id->value:NULL);
+          $formIds = json_decode($formIds, TRUE);
+          if(isset($formIds[$language])) {
+            $current_timestamp = time();
+            $registration_start_date = ($variables['node']->field_registration_start_date?$variables['node']->field_registration_start_date->value:NULL);
+            $registration_end_date = ($variables['node']->field_registration_end_date?$variables['node']->field_registration_end_date->value:NULL);
+            if($registration_start_date && $registration_end_date){
+              $registration_start_date = intval($registration_start_date);
+              $registration_end_date = intval($registration_end_date);
+              if($registration_start_date <= $current_timestamp && $current_timestamp <= $registration_end_date) {
+                $form_content = file_get_contents('https://app.formassembly.com/rest/forms/view/' . $formIds[$language]);
+
+                $variables['content']['registration_form'] = [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['campaign_form'],
+                    'id' => 'campaign_form'
+                  ],
+                  '#weight' => 9997,
+                  'form_title' => [
+                    '#type' => 'html_tag',
+                    '#tag' => 'h2',
+                    '#value' => t($member === '0'?'Event Registration':'Member Event Registration', [], ['context' => 'campaign']),
+                    '#weight' => 1,
+                    '#attributes' => array(
+                      'class' => 'campaign_form__title'
+                    )
+                  ],
+                  'form_content' => [
+                    '#template' => '{{form|raw}}',
+                    '#type' => 'inline_template',
+                    '#context' => [
+                      'form' => ($campaignId?str_replace('{CAMPAIGN_ID}', $campaignId, $form_content):$form_content)
+                    ],
+                    '#weight' => 2
+                  ]
+                ];
+              }
+            }
+          }
+        }catch(\Exception $x){
+
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_cron()
+ */
+function op_events_cron(){
+  try {
+    $config = \Drupal::config(SalesforceCampaignForm::$adminSettingKey);
+    $form_id_mapping = $config->get('salesforce_campaign.form_id_mapping');
+
+    if($form_id_mapping){
+      $form_id_mapping = json_decode($form_id_mapping, true);
+      if(!$form_id_mapping){
+        throw new Exception('Mapping is probably not a valid JSON');
+      }
+    }else{
+      throw new Exception('Mapping is not found.');
+    }
+
+
+    $timestamp = time();
+    $eventManager = \Drupal::service('op_events.event_manager');
+    $result = $eventManager->loadEventsFromSalesforce();
+    // 1. Download
+    if ($result === NULL) {
+
+    }else {
+      if ($result->result && is_array($result->result)) {
+        foreach($result->result as $event){
+          $node = Node::create(['type' => 'campaign']);
+          $node->set('title', $event->campaignName);
+
+          $node->set('field_campaign_code', $event->campaignCode);
+          $node->set('field_campaign_id', $event->campaignId);
+          $node->set('field_charge_for_child', $event->chargeforChild);
+          $node->set('field_charge_for_parent', $event->chargeforParent);
+          $node->set('field_charge_paid', $event->chargePaid);
+
+          if($event->eventCategory !== NULL && $event->eventCategory !== ''){
+            $eventCategories = explode(';', $event->eventCategory);
+            $node->set('field_event_category', $eventCategories);
+          }
+
+          if($event->displayDate !== NULL){
+            $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $event->displayDate);
+            $node->set('field_display_date', $datetime->getTimestamp());
+          }
+
+          if($event->endDate !== NULL){
+            $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $event->endDate);
+            $node->set('field_end_date', $datetime->getTimestamp());
+          }
+
+          $node->set('field_event_end_time', $event->eventEndTime);
+          $node->set('field_event_start_time', $event->eventStartTime);
+
+          $node->set('field_location', $event->location);
+          $node->set('field_max_capacity', $event->maxCapacity);
+          $node->set('field_max_child_capacity', $event->maxChildCapacity);
+          $node->set('field_max_parent_capacity', $event->maxParentCapacity);
+          $node->set('field_member', $event->member);
+          $node->set('field_need_charge', $event->needCharge);
+          $node->set('field_parent_campaign_id', $event->parentCampaignId);
+          $node->set('field_playground_type', $event->playgroupType);
+          $node->set('field_product_dimension', $event->productDimension);
+          $node->set('field_registration', $event->registration);
+
+          if($event->registrationEndDate !== NULL){
+            $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $event->registrationEndDate);
+            $node->set('field_registration_end_date', $datetime->getTimestamp());
+          }
+
+          if($event->registrationStartDate !== NULL){
+            $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $event->registrationStartDate);
+            $node->set('field_registration_start_date', $datetime->getTimestamp());
+          }
+
+          $node->set('field_speaker', $event->speaker);
+          if($event->startDate !== NULL){
+            $datetime = \DateTime::createFromFormat('Y-m-d\TH:i:s+', $event->startDate);
+            $node->set('field_start_date', $datetime->getTimestamp());
+          }
+          $node->set('field_target_audience', $event->targetAudience);
+          $node->set('field_target_audience_max', $event->targetAudienceMax);
+          $node->set('field_version', $timestamp);
+          $node->set('field_displaying', true);
+
+          // Find corresponding IDs for the form
+          $targetAudienceMax = strtolower($event->targetAudienceMax);
+          if($event->member){
+            // Member Event
+            if($targetAudienceMax === 'parent'){
+              // assumed is parent
+              $form_ids = $form_id_mapping['parent']['member'];
+            }else{
+              // assumed is parent and child
+              $form_ids = $form_id_mapping['parent and child']['member'];
+            }
+          }else{
+            // Public Event
+            if($targetAudienceMax === 'parent'){
+              // assumed is parent
+              $form_ids = $form_id_mapping['parent']['public'];
+            }else{
+              // assumed is parent and child
+              $form_ids = $form_id_mapping['parent and child']['public'];
+            }
+          }
+          // Because form_id has more than 2 versions, e.g. zh-hant, en
+          $node->set('field_form_id', json_encode($form_ids));
+
+          // TODO uid = 1 is admin?
+          $node->set('uid', 1);
+          $node->status = 1;
+          $node->enforceIsNew();
+          $node->save();
+        }
+      }
+
+      // changed the field_version to timestamp first
+      // delete the old events ( using timestamp not equal to this batch )
+
+      // 2. Delete old campaigns
+      $query = \Drupal::entityTypeManager()
+        ->getStorage('node')->getQuery();
+      $query->condition('type', 'campaign')
+        ->condition('field_version', $timestamp, '<>');
+      $nids = $query->execute();
+      if($nids && is_array($nids)  && count($nids) > 0) {
+        $storage_handler = \Drupal::entityTypeManager()->getStorage('node');
+        $entities = $storage_handler->loadMultiple($nids);
+        $storage_handler->delete($entities);
+      }
+
+      // Success, no matter need to add or empty events detected
+    }
+  }catch(\Exception $x){
+  }
+}

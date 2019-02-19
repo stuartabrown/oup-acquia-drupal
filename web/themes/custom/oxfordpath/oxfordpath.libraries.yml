@@ -1,0 +1,14 @@
+global-styling:
+  version: 1.0
+  css:
+    theme:
+      css/app.css: { minified: true, preprocess: false }
+global-js:
+  version: 1.0
+  js:
+    js/clipboard.min.js: { minified: true, preprocess: false }
+    js/slick.min.js: { minified: true, preprocess: false }
+    js/foundation.js: { minified: true, preprocess: false }
+    js/app.js: { minified: true, preprocess: false }
+  dependencies:
+    - core/jquery

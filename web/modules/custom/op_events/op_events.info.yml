@@ -1,0 +1,7 @@
+name: 'Oxford Path Events'
+type: module
+description: 'Getting events from Salesforce'
+core: 8.x
+package: 'Custom'
+dependencies:
+  - salesforce_connector

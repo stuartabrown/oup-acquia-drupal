@@ -1,0 +1,101 @@
+.layout-container {
+  >footer {
+    @include clear;
+    // the "padding above" should be provided by first module
+    padding-bottom: rem-calc(20px);
+    background-color: $color_light_orange;
+
+    .language_block{
+      margin: rem-calc(20) $mobile_common_hpadding;
+      float: left;
+      .current-language{
+        &:before {
+          background-image: $sym_footer_menu_language;
+        }
+      }
+    }
+
+    .language_block + .link_with_icon__related-website {
+      float: right;
+      clear: none;
+
+    }
+
+    .custom-block {
+      clear: both;
+      padding: 0 $mobile_common_hpadding;
+      margin-top: rem-calc(24px);
+
+      &.link_with_icon__related-website {
+        padding-left: 0;
+        padding-right: 0;
+        margin: rem-calc(20) $mobile_common_hpadding;
+      }
+
+      &.full_width_horizontal_line {
+        max-width: none;
+        clear: both;
+        margin: 0;
+      }
+
+      &.copyright_auto_increment {
+        @include fs12_lh18;
+        color: $color_grey_blue;
+        display: inline-block;
+        margin-top: rem-calc(20px);
+        font-weight: 600;
+      }
+
+      &.text_link_list--footer-link-list {
+        margin-top: rem-calc(8px);
+        li {
+          display: inline-block;
+        }
+        a {
+          @include fs12_lh22;
+          font-weight: 600;
+          color: $color_grey_blue;
+          vertical-align: middle;
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(medium) {
+  .layout-container {
+    > footer {
+      .language_block {
+        margin-left: $medium_common_hpadding;
+      }
+
+      .custom-block {
+        padding-left: $medium_common_hpadding;
+        //right: $medium_common_hpadding;
+
+        &.link_with_icon__related-website {
+          margin-left: $medium_common_hpadding;
+          margin-right: $medium_common_hpadding;
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(large){
+  .layout-container {
+    > footer {
+      .custom-block {
+        &.copyright_auto_increment {
+          @include fs12_lh22; // line up with footer link list to allow them to be displayed on same line
+        }
+
+        &.copyright_auto_increment + .custom-block.text_link_list--footer-link-list {
+          clear: none;
+          float: right;
+          margin-top: rem-calc(20px);
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+op_events.admin_settings_form:
+  title: 'Salesforce Campaign Configuration'
+  route_name: op_events.admin_settings_form
+  description: 'The form for different campaigns'
+  parent: system.admin_config_system
+  weight: 1000

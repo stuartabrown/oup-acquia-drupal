@@ -1,0 +1,12 @@
+name: 'caps_lock_warning'
+type: module
+description: 'This module will show your keyboard CapsLock is enable or not enable.'
+# core: 8.x
+package: 'Custom'
+configure: user_default_page.action
+
+# Information added by Drupal.org packaging script on 2018-04-04
+version: '8.x-1.0'
+core: '8.x'
+project: 'caps_lock_warning'
+datestamp: 1522846687

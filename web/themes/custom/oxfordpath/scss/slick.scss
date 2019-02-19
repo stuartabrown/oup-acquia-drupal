@@ -1,0 +1,226 @@
+/*
+In addition to default slick scss, following changes are applied:
+- Dots size, positioning and spacing
+- Dots color (inactive: white, active: blue)
+- Dots are hidden when there is only only dot
+
+Two modifier class are made available (to be applied to _parent_ elements)
+- mod--hanging-dots
+  When set, the dots does not take rendering area and overlaps onto next element / space below
+- mod--dots-color-white-blue (default when no class is applied)
+  mod--dots-color-white-orange
+  mod--dots-color-orange-blue
+  These class changes the color of the pagination dots, first one represents inactive and last one for active
+*/
+
+.slick-slider {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -ms-touch-action: pan-y;
+  touch-action: pan-y;
+  -webkit-tap-highlight-color: transparent;
+  margin-bottom: rem-calc(20);
+}
+.slick-dots{
+  line-height: 0;
+  margin: 0;
+  text-align: center;
+  list-style: none;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  margin-bottom: rem-calc(-20);
+
+  li {
+    display: inline-block;
+    margin: 0;
+    line-height: 0;
+    margin: 0 2px;
+
+    button {
+      line-height: 0;
+      outline: none;
+      cursor: pointer;
+
+      span {
+        display: none;
+      }
+
+      &:before {
+        display: inline-block;
+        content: '';
+        border-radius: 2.5px;
+        width: 5px;
+        height: 5px;
+        background-color: $color_white;
+      }
+    }
+
+    &:only-child { // hide the dot when there is only one dot
+      display: none;
+    }
+
+    &.slick-active button:before {
+      background-color: $color_blue;
+    }
+  }
+}
+.slick-list {
+  position: relative;
+  overflow: hidden;
+  display: block;
+  margin: 0;
+  padding: 0;
+
+  &:focus {
+    outline: none;
+  }
+
+  &.dragging {
+    cursor: pointer;
+    cursor: hand;
+  }
+}
+.slick-slider .slick-track,
+.slick-slider .slick-list {
+  -webkit-transform: translate3d(0, 0, 0);
+  -moz-transform: translate3d(0, 0, 0);
+  -ms-transform: translate3d(0, 0, 0);
+  -o-transform: translate3d(0, 0, 0);
+  transform: translate3d(0, 0, 0);
+}
+
+.slick-track {
+  position: relative;
+  left: 0;
+  top: 0;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+
+  &:before,
+  &:after {
+    content: "";
+    display: table;
+  }
+
+  &:after {
+    clear: both;
+  }
+
+  .slick-loading & {
+    visibility: hidden;
+  }
+}
+.slick-slide {
+  float: left;
+  height: 100%;
+  min-height: 1px;
+  outline: none;
+
+  a{
+    outline: none;
+  }
+
+  [dir="rtl"] & {
+    float: right;
+  }
+  img {
+    display: block;
+  }
+  &.slick-loading img {
+    display: none;
+  }
+
+  display: none;
+
+  &.dragging img {
+    pointer-events: none;
+  }
+
+  .slick-initialized & {
+    display: block;
+  }
+
+  .slick-loading & {
+    visibility: hidden;
+  }
+
+  .slick-vertical & {
+    display: block;
+    height: auto;
+    border: 1px solid transparent;
+  }
+}
+.slick-arrow.slick-hidden {
+  display: none;
+}
+
+@include breakpoint(large) {
+  .slick-slider {
+    margin-bottom: rem-calc(40);
+  }
+
+  .slick-dots {
+    margin-bottom: rem-calc(-40);
+
+    li {
+      margin: 0 5px;
+
+      button {
+        &:before {
+          border-radius: 7.5px;
+          width: 15px;
+          height: 15px;
+        }
+      }
+    }
+  }
+}
+
+
+.mod--hanging-dots {
+  .slick-slider {
+    margin-bottom: 0 !important;
+  }
+}
+
+// START: pagination dots color schemes
+.mod--dots-color-white-blue {
+  .slick-dots li button:before {
+    background-color: $color_white;
+  }
+
+  .slick-dots li.slick-active button:before {
+    background-color: $color_blue;
+  }
+}
+
+.mod--dots-color-white-orange {
+  .slick-dots li button:before {
+    background-color: $color_white;
+  }
+
+  .slick-dots li.slick-active button:before {
+    background-color: $color_orange;
+  }
+}
+
+.mod--dots-color-orange-blue {
+  .slick-dots li button:before {
+    background-color: $color_orange;
+  }
+
+  .slick-dots li.slick-active button:before {
+    background-color: $color_blue;
+  }
+}
+// END: pagination dots color schemes

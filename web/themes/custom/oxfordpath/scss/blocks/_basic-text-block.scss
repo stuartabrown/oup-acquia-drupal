@@ -1,0 +1,11 @@
+.custom-block.basic_text_block{
+  &.basic_text_block--left {
+    text-align: left;
+  }
+  &.basic_text_block--center{
+    text-align: center;
+  }
+  &.basic_text_block--right{
+    text-align: right;
+  }
+}

@@ -1,0 +1,20 @@
+uuid: c5a1b05d-89a4-4c66-97fb-2f8f219f5b7a
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - menu_ui
+third_party_settings:
+  menu_ui:
+    available_menus:
+      - main
+    parent: 'main:'
+_core:
+  default_config_hash: YFKZLQABNNfkX5Lc8a8j0ksgrv_0XgmDIv96XXAieJo
+name: Campaign
+type: campaign
+description: 'Campaigns retrieved from Salesforce'
+help: ''
+new_revision: true
+preview_mode: 2
+display_submitted: true

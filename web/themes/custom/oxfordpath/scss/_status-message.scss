@@ -1,0 +1,33 @@
+.status-message {
+  margin: 0 auto rem-calc(-10px);
+  max-width: rem-calc(720px);
+  padding: 0 $mobile_common_hpadding;
+}
+
+.status-message-type {
+  margin-top: rem-calc(25px);
+  border-radius: rem-calc(20px);
+  min-height: rem-calc(40px);
+  background-color: $color_medium_orange;
+  color: $color_blue;
+  padding: rem-calc(10px) rem-calc(20px);
+  font-size: rem-calc(14px);
+  line-height: rem-calc(20px);
+  font-weight: 600;
+  text-align: center;
+
+  ul {
+    list-style: none;
+    margin: 0;
+  }
+
+  li {
+    &:not(:first-child){
+      margin-top: rem-calc(10px);
+    }
+  }
+
+  &:not(:first-child){
+    margin-top: rem-calc(15px);
+  }
+}

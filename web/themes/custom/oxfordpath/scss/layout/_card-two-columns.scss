@@ -1,0 +1,102 @@
+.layout.layout--card-column {
+  padding: 0 rem-calc(35);
+  max-width: rem-calc(1070px);
+}
+
+.layout.layout--card-column-bg {
+  display: flex;
+  .layout__region--left,
+  .layout__region--right{
+    @include clearfix;
+    width: 50%;
+    flex: 1;
+  }
+  .layout__region--left{
+    > div {
+      float: right;
+      clear: right;
+      max-width: rem-calc(535);
+      padding-left: rem-calc(35);
+      width: 100%;
+    }
+  }
+  .layout__region--right{
+    > div {
+      float: left;
+      clear: left;
+      max-width: rem-calc(535);
+      padding-right: rem-calc(35);
+      width: 100%;
+    }
+  }
+}
+
+@include breakpoint(small only){
+  .layout.layout--card-column{
+    .layout__region--right{
+      margin-top: rem-calc(35);
+    }
+  }
+  .layout.layout--card-column-bg {
+    display: block;
+    .layout__region--left,
+    .layout__region--right{
+      width: 100%;
+      padding: 0 rem-calc(35);
+    }
+    .layout__region--left,
+    .layout__region--right{
+      > div {
+        float: none;
+        max-width: 100%;
+        padding: 0;
+        width: 100%;
+      }
+    }
+  }
+}
+
+@include breakpoint(medium) {
+  .layout.layout--card-column {
+    display: flex;
+    margin: 0 auto;
+
+    .layout__region--left,
+    .layout__region--right {
+      width: 50%;
+    }
+
+    .layout__region--left {
+      padding-right: rem-calc(17.5);
+    }
+
+    .layout__region--right {
+      padding-left: rem-calc(17.5);
+    }
+  }
+
+  .layout.layout--card-column-bg {
+    .layout__region--left{
+      > div {
+        padding-right: rem-calc(17.5);
+      }
+    }
+    .layout__region--right{
+      > div {
+        padding-left: rem-calc(17.5);
+      }
+    }
+  }
+}
+
+@include breakpoint(large) {
+  .layout.layout--card-column {
+    .layout__region--left {
+      padding-right: rem-calc(25);
+    }
+
+    .layout__region--right {
+      padding-left: rem-calc(25);
+    }
+  }
+}

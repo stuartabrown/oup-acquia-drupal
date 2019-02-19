@@ -1,0 +1,7 @@
+.responsive_background.custom-block{
+  position: relative;
+  z-index: 1;
+  .responsive_background__image{
+    position: absolute;
+  }
+}

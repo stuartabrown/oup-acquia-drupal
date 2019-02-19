@@ -1,0 +1,21 @@
+uuid: c8d3d6f7-d353-4899-9259-01bd8fb7df55
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_version
+    - node.type.campaign
+_core:
+  default_config_hash: 2aFmM6EAJRKtpFDa190GM9wPrFKk0HK_xm1JGYSf8_M
+id: node.campaign.field_version
+field_name: field_version
+entity_type: node
+bundle: campaign
+label: 'Version Number'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,20 @@
+uuid: 48ed61aa-24fa-432a-a7bf-1193988cc0b2
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: jyQl0LP9ouRXli-KlxhaZD4Id1shPKfR4K7wit8i0wc
+id: node.field_member
+field_name: field_member
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

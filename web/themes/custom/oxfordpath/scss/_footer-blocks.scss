@@ -1,0 +1,99 @@
+.layout-container {
+  >.footer_blocks {
+    background-color: $color_bg_blue;
+    overflow: hidden;
+
+    hr {
+      margin: 0;
+      border-bottom-color: $color_white_15;
+    }
+
+    .enquiry {
+      position: relative;
+      padding: rem-calc(39px) $mobile_common_hpadding rem-calc(44px);
+      &__field_link a:before{
+        @include prepareIcon(140px, 112px);
+        @include imgAsBg;
+        background-image: url(../images/icon-enquiry.png);
+        position: absolute;
+        left: calc( 100% - #{rem-calc(10)} );
+        top: rem-calc(12);
+        z-index: 1;
+        pointer-events: none;
+      }
+    }
+    .email_subscription{
+      padding: rem-calc(28px) $mobile_common_hpadding rem-calc(34px);
+    }
+    .menu-block{
+      .menu{
+        padding: 0 $mobile_common_hpadding 0;
+        .menu-item{
+          a{
+            color: $color_white;
+          }
+          &.footer-blocks-menu--first-level-highlight{
+            > a{
+              color: $color_orange;
+            }
+          }
+        }
+      }
+      &.footer-blocks-menu{
+        .menu{
+          padding-top: rem-calc(27px);
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(small only){
+  .layout-container{
+    > .footer_blocks{
+      padding-bottom: rem-calc(25px);
+    }
+  }
+}
+
+@include breakpoint(medium){
+  .layout-container {
+    > .footer_blocks {
+      .enquiry {
+        padding: rem-calc(35) $medium_common_hpadding rem-calc(64);
+
+        &__field_link a:before {
+          width: rem-calc(150);
+          height: rem-calc(120);
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(large){
+  .layout-container {
+    >.footer_blocks {
+      @include clearfix;
+      .menu-block{
+        display: inline-block;
+        vertical-align: top;
+        width: 25vw;
+        float: left;
+        .menu{
+          padding: rem-calc(27) $mobile_common_hpadding;
+          .menu-item{
+            a{
+              color: $color_white;
+            }
+            &.footer-blocks-menu--first-level-highlight{
+              > a{
+                color: $color_orange;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

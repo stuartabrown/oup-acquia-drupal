@@ -1,0 +1,16 @@
+uuid: c6600d6d-83c3-4010-90b0-02c9e2214b8c
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - taxonomy.vocabulary.campaign_category
+  module:
+    - content_translation
+third_party_settings:
+  content_translation:
+    enabled: true
+id: taxonomy_term.campaign_category
+target_entity_type_id: taxonomy_term
+target_bundle: campaign_category
+default_langcode: site_default
+language_alterable: true

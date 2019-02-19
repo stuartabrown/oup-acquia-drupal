@@ -1,0 +1,6 @@
+salesforce_connector.admin_settings_form:
+  title: 'Salesforce Connector Configuration'
+  route_name: salesforce_connector.admin_settings_form
+  description: 'The credentials to access Salesforce API'
+  parent: system.admin_config_system
+  weight: 999

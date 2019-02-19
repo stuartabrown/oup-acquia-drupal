@@ -1,0 +1,25 @@
+uuid: 727c0d9d-49c9-4c13-b602-367eb6da16f8
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_max_parent_capacity
+    - node.type.campaign
+_core:
+  default_config_hash: EUPAJCLuO7cYFgSaXP8MVyzg3EXfc291LR7B-yyNnJA
+id: node.campaign.field_max_parent_capacity
+field_name: field_max_parent_capacity
+entity_type: node
+bundle: campaign
+label: 'Max Parent Capacity'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

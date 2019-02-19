@@ -1,0 +1,48 @@
+@mixin fs12_lh22(){
+	font-size: rem-calc(12px);
+	line-height: rem-calc(22px);
+}
+@mixin fs12_lh18(){
+	font-size: rem-calc(12px);
+	line-height: rem-calc(18px);
+}
+
+@mixin fs24_lh30(){
+	font-size: rem-calc(24px);
+	line-height: rem-calc(30px);
+}
+
+@mixin fs28_lh40(){
+	font-size: rem-calc(28px);
+	line-height: rem-calc(40px);
+}
+
+@mixin fs15_lh22(){
+	font-size: rem-calc(15px);
+	line-height: rem-calc(22px);
+}
+
+@mixin fs18_lh22(){
+	font-size: rem-calc(18px);
+	line-height: rem-calc(22px);
+}
+
+@mixin fs22_lh30(){
+	font-size: rem-calc(22px);
+	line-height: rem-calc(30px);
+}
+
+@mixin fs33_lh38(){
+	font-size: rem-calc(33px);
+	line-height: rem-calc(38px);
+}
+
+@mixin fs38_lh48(){
+	font-size: rem-calc(38px);
+	line-height: rem-calc(48px);
+}
+
+@mixin fs50_lh50(){
+	font-size: rem-calc(50px);
+	line-height: rem-calc(50px);
+}

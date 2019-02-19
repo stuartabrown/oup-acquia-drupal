@@ -1,0 +1,25 @@
+uuid: c2854e14-7821-49d6-9230-863272c39780
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_max_child_capacity
+    - node.type.campaign
+_core:
+  default_config_hash: Jwetxbx77dEyITsfTM32rq1sN9Zk4xw3aKGZPHalgXs
+id: node.campaign.field_max_child_capacity
+field_name: field_max_child_capacity
+entity_type: node
+bundle: campaign
+label: 'Max Child Capacity'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

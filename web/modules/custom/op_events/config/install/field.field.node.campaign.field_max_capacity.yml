@@ -1,0 +1,25 @@
+uuid: 035b5f70-8c11-4d30-84e1-9373b56c9704
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_max_capacity
+    - node.type.campaign
+_core:
+  default_config_hash: fpBinujsVK8O3QQ0O52BRCnjWfLnKPY5Z0iMBXLMy0c
+id: node.campaign.field_max_capacity
+field_name: field_max_capacity
+entity_type: node
+bundle: campaign
+label: 'Max Capacity'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings:
+  min: null
+  max: null
+  prefix: ''
+  suffix: ''
+field_type: integer

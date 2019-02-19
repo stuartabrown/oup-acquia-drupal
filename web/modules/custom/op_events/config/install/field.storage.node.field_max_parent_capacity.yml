@@ -1,0 +1,22 @@
+uuid: cfd7f9a1-878a-4cdb-a89f-3a06c5a91e6d
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: GHYTzKi742kcaUXhgZkdE9_ImJlrov6sOv3G8g7ihK4
+id: node.field_max_parent_capacity
+field_name: field_max_parent_capacity
+entity_type: node
+type: integer
+settings:
+  unsigned: false
+  size: normal
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

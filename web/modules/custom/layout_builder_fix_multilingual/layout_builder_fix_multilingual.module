@@ -1,0 +1,46 @@
+<?php
+
+/**
+ * @file
+ * Contains layout_builder_fix_multilingual.module.
+ */
+
+use Drupal\Core\Routing\RouteMatchInterface;
+use Drupal\layout_builder\SectionStorage\SectionStorageDefinition;
+
+/**
+ * Implements hook_help().
+ */
+function layout_builder_fix_multilingual_help($route_name, RouteMatchInterface $route_match) {
+  switch ($route_name) {
+    // Main module help for the layout_builder_fix_multilingual module.
+    case 'help.page.layout_builder_fix_multilingual':
+      $output = '';
+      $output .= '<h3>' . t('About') . '</h3>';
+      $output .= '<p>' . t('Layout Builder Fix For Multilingual Pages') . '</p>';
+      return $output;
+
+    default:
+  }
+}
+
+/**
+ * Implements hook_layout_builder_section_storage_alter().
+ */
+function layout_builder_fix_multilingual_layout_builder_section_storage_alter(array &$info){
+  if(isset($info['overrides']) && $info['overrides'] instanceof SectionStorageDefinition){
+  	$info['overrides']->set('class', 'Drupal\layout_builder_fix_multilingual\Plugin\SectionStorage\OverridesSectionStorageExtended');
+  }
+}
+
+/**
+ * Implements hook_layout_alter().
+ */
+function layout_builder_fix_multilingual_layout_alter(&$definitions) {
+  // rename onecol, disable all other default layouts.
+  $definitions['layout_onecol']->setLabel(t('Page Content ( Full Width without Padding )'));
+  unset($definitions['layout_twocol']);
+  unset($definitions['layout_twocol_bricks']);
+  unset($definitions['layout_threecol_25_50_25']);
+  unset($definitions['layout_threecol_33_34_33']);
+}

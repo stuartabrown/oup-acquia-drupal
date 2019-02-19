@@ -1,0 +1,12 @@
+<div{{ attributes }}>
+    {{ title_prefix }}
+    {{ title_suffix }}
+    {% set bg_color = content.field_background_color.0?content.field_background_color.0|render:'transparent' %}
+    <div style="background-color:{{ bg_color }};line-height: 0; margin-top: {{ content.field_block_margin_top.0}};">
+        <svg width="100%" height="100px" viewBox="0 0 1280 100" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+            <g transform="translate(0.000000, -660.000000)" fill="{{ content.field_bottom_hill_bg_color.0 }}">
+                <path d="M0,662.181324 C183.146667,654.472569 374.844444,667.195755 575.093333,700.350883 C875.466667,750.083575 992.746667,756 1280,756 L1280,760 L0,760 L0,662.181324 Z"></path>
+            </g>
+        </svg>
+    </div>
+</div>

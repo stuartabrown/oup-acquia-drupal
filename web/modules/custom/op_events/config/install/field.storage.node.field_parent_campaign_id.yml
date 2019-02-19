@@ -1,0 +1,23 @@
+uuid: 124bcd76-dabe-4c6e-8592-6629b34251b2
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: 1ezJUuzbNTpyPUNnwqs2SPWI2PDNzTp9ABqdnjoTy6E
+id: node.field_parent_campaign_id
+field_name: field_parent_campaign_id
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

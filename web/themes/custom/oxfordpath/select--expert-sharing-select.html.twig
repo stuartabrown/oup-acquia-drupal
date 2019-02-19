@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Theme override for a select element.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the select tag.
+ * - options: The option element children.
+ *
+ * @see template_preprocess_select()
+ */
+#}
+{% spaceless %}
+  <ul{{ attributes.addClass("menu vertical nested is-active") }}>
+    {% for option in options %}
+      {% if option.type == 'optgroup' %}
+        {% for sub_option in option.options %}
+          {% set hidden = sub_option.value == 'All'?'hidden':'' %}
+          <li class="{{ hidden }}"><label><input type="checkbox" name="{{ attributes.name }}" value="{{ sub_option.value }}"{{ sub_option.selected ? ' checked="checked"' }}><span>{{ sub_option.label }}</span></label></li>
+        {% endfor %}
+      {% elseif option.type == 'option' %}
+        {% set hidden = option.value == 'All'?'hidden':'' %}
+        <li class="{{ hidden }}"><label><input type="checkbox" name="{{ attributes.name }}" value="{{ option.value }}"{{ option.selected ? ' checked="checked"' }}><span data-selectedstyle="{{ option.selectedstyle }}">{{ option.label }}</span></label></li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+{% endspaceless %}

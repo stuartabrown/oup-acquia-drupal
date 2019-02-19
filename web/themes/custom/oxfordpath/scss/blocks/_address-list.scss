@@ -1,0 +1,95 @@
+.custom-block.address_list {
+  & + .custom-block.address_list {
+    border-top: $color_blue_8 1px solid;
+  }
+
+  .address_list {
+    &__field_title {
+      @include fs15_lh22;
+      display: inline-block;
+      color: $color_orange;
+      border-bottom: $color_orange 2px solid;
+      padding-bottom: rem-calc(4);
+      margin-bottom: rem-calc(25);
+      font-weight: 600;
+    }
+
+    &__field_address {
+      display: block;
+      @include fs15_lh22;
+      color: $color_light_grey_blue;
+      font-weight: 600;
+
+      h2 {
+        @include fs15_lh22;
+        font-weight: 600;
+        margin: 0;
+      }
+    }
+
+    &__field_address + .address_list__field_address {
+      margin-top: rem-calc(25);
+    }
+  }
+
+  .address {
+    &__field_body {
+      margin-top: rem-calc(4);
+    }
+
+    &__field_phone {
+      margin-top: rem-calc(22);
+    }
+
+    &__field_opening_hours {
+      margin-top: rem-calc(22);
+    }
+
+    &__field_map_links {
+      @include clear;
+      list-style: none;
+      margin: rem-calc(5) 0 0;
+
+      > li {
+        display: inline-block;
+        float: left;
+
+        & + li {
+          margin-left: rem-calc(15);
+        }
+
+        &:before {
+          @include prepareIcon(10px, 15px);
+          @include imgAsBg;
+          background-image: $sym_map_pin;
+          vertical-align: middle;
+          margin-right: rem-calc(5);
+        }
+
+        a {
+          @include fs15_lh22;
+          color: $color_orange;
+          vertical-align: middle;
+          display: inline-block;
+        }
+      }
+    }
+
+    &__field_phone,
+    &__field_fax {
+      @include clear;
+
+      .field-label {
+        float: left;
+
+        &:after {
+          content: '：';
+        }
+      }
+
+      .field-content {
+        float: left;
+      }
+    }
+  }
+}

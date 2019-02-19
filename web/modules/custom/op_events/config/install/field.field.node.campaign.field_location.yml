@@ -1,0 +1,21 @@
+uuid: cfca3e99-3e24-4a76-995e-e8cd93bc1626
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_location
+    - node.type.campaign
+_core:
+  default_config_hash: aX-FwU0XjtZlFpY4BW0TOWb5pRWYI-MHnOjaG4chRdg
+id: node.campaign.field_location
+field_name: field_location
+entity_type: node
+bundle: campaign
+label: Location
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

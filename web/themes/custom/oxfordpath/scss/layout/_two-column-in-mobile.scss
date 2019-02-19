@@ -1,0 +1,22 @@
+.layout.layout--twocol-in-mobile {
+  display: flex;
+
+  .layout__region--left,
+  .layout__region--right {
+    width: 50%;
+  }
+
+  .layout__region--left {
+    > div {
+      padding-left: $mobile_common_hpadding;
+      padding-right: rem-calc(8px);
+    }
+  }
+
+  .layout__region--right {
+    > div {
+      padding-left: rem-calc(8px);
+      padding-right: $mobile_common_hpadding;
+    }
+  }
+}

@@ -1,0 +1,5 @@
+services:
+  twig_extensions.DrupalConfigGetter:
+    class: Drupal\twig_extensions\DrupalConfigGetter
+    tags:
+      - { name: twig.extension }

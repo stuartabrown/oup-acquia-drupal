@@ -1,0 +1,20 @@
+uuid: b11e0eaa-8d09-484f-8c5d-5e8d3b0470dd
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: iGABvtGhFlchdnUg3X78iMiefVHPGRZOeT3GwQhEBFw
+id: node.field_need_charge
+field_name: field_need_charge
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

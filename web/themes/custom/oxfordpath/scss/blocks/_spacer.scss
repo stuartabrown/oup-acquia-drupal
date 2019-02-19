@@ -1,0 +1,17 @@
+// visible-ize in layout builder
+#layout-builder {
+  .custom-block.spacer {
+    .spacer__main {
+      border: 1px dashed #888888;
+      background-color: rgba(#888888, 0.15);
+      opacity: 0.6;
+      display: flex;
+
+      &:after {
+        display: inline-block;
+        margin: auto;
+        content: 'Spacer';
+      }
+    }
+  }
+}

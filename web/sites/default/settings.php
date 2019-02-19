@@ -280,7 +280,7 @@ $config_directories = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = 'iLXRy4KtXw1Hv4QJLVjXpfRa9b_QsxnDfPoCLsJlCrR2dzmNIluL2J9B6RB0Inqt7ru7q1uF4w';
+$settings['hash_salt'] = '';
 
 /**
  * Deployment identifier.
@@ -768,6 +768,7 @@ $settings['entity_update_batch_size'] = 50;
 # if (file_exists($app_root . '/' . $site_path . '/settings.local.php')) {
 #   include $app_root . '/' . $site_path . '/settings.local.php';
 # }
+// require DRUPAL_ROOT . "/../vendor/acquia/blt/settings/blt.settings.php";
 $config_directories['sync'] = '../config/sync';
 $databases['default']['default'] = array (
   'database' => 'drupal',

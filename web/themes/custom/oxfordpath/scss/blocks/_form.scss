@@ -1,0 +1,40 @@
+.custom-block.form {
+  .form__wrapper {
+    padding: rem-calc(40) $mobile_common_hpadding;
+    max-width: rem-calc(650) + $mobile_common_hpadding * 2;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .form__field_title {
+    @include fs28_lh40;
+    color: $color_orange;
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .form__field_description {
+    @include fs15_lh22;
+    color: $color_grey_blue;
+    font-weight: 600;
+    margin-top: rem-calc(20);
+  }
+
+  &.form--left {
+    .form__field_title {
+      text-align: left;
+    }
+  }
+
+  &.form--center {
+    .form__field_title {
+      text-align: center;
+    }
+  }
+
+  &.form--right {
+    .form__field_title {
+      text-align: right;
+    }
+  }
+}

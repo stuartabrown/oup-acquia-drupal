@@ -1,0 +1,23 @@
+uuid: 7ec7d5db-0827-475f-9cf4-a2dec808b858
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: uD54Dc9v16JjisFL0LrcBTGTcmg1GviKJCPiiz_qL8c
+id: node.field_playground_type
+field_name: field_playground_type
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

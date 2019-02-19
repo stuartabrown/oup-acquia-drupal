@@ -1,0 +1,23 @@
+uuid: e59e688a-ff09-45b2-8230-7bd7cc2c2d2f
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.taxonomy_term.field_category_enabled
+    - taxonomy.vocabulary.campaign_category
+id: taxonomy_term.campaign_category.field_category_enabled
+field_name: field_category_enabled
+entity_type: taxonomy_term
+bundle: campaign_category
+label: 'Category Enabled'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 0
+default_value_callback: ''
+settings:
+  on_label: Enabled
+  off_label: Disabled
+field_type: boolean

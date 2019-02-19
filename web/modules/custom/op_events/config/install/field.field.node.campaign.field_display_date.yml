@@ -1,0 +1,23 @@
+uuid: 2395cd30-bf0e-4413-a1b4-038ebb2c44fc
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_display_date
+    - node.type.campaign
+_core:
+  default_config_hash: TaeJmcbbZTO_4SfOYKNsF5ge3kEuQRgAGlcPF1kqN0k
+id: node.campaign.field_display_date
+field_name: field_display_date
+entity_type: node
+bundle: campaign
+label: 'Display Date'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1547088195
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

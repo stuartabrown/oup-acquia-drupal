@@ -1,0 +1,13 @@
+.product-series__item{
+  &.product-series__item--teaser{
+    position: relative;
+    .product-series__info{
+      @include fs15_lh22;
+      position: absolute;
+      bottom: rem-calc(16);
+      left: rem-calc(18);
+      right: rem-calc(18);
+      font-weight: 600;
+    }
+  }
+}

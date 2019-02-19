@@ -1,0 +1,21 @@
+uuid: 0817b3b7-e022-4dcc-9416-89d78d3af7a4
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_form_id
+    - node.type.campaign
+_core:
+  default_config_hash: 5NkVFS-WGmlX5t26xdgBEL7cLT4DBW00x_ePQ-fWx-c
+id: node.campaign.field_form_id
+field_name: field_form_id
+entity_type: node
+bundle: campaign
+label: 'Form ID'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

@@ -1,0 +1,56 @@
+.system_menu_block.menu-block,
+.system_menu_block.mobile-menu{
+  .menu {
+    display: block;
+    list-style: none;
+
+    .menu-item {
+      display: block;
+
+      a {
+        @include fs15_lh22;
+        display: inline-block;
+        font-weight: 600;
+      }
+    }
+
+    .sub-menu {
+      margin-left: rem-calc(15px);
+    }
+
+    .is-accordion-submenu-parent {
+      > a {
+        display: block;
+        position: relative;
+
+        &:after {
+          @include imgAsBg;
+          position: absolute;
+          top: 50%;
+          right: 0;
+          transform: translate3d(0, -50%, 0);
+          display: inline-block;
+          content: '';
+          width: rem-calc(14);
+          height: rem-calc(14);
+        }
+      }
+
+      &[aria-expanded="false"] {
+        > a {
+          &:after {
+            background-image: $sym_accordion_plus;
+          }
+        }
+      }
+
+      &[aria-expanded="true"] {
+        > a {
+          &:after {
+            background-image: $sym_accordion_minus;
+          }
+        }
+      }
+    }
+  }
+}

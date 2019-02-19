@@ -1,0 +1,21 @@
+uuid: 1ec82be0-98a6-40a2-899c-d6307a1e10e8
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_target_audience
+    - node.type.campaign
+_core:
+  default_config_hash: Uoze0OUct0gWGZeXilLTeyuF3lE_fY-MWbj5EPn8FCU
+id: node.campaign.field_target_audience
+field_name: field_target_audience
+entity_type: node
+bundle: campaign
+label: 'Target Audience'
+description: ''
+required: false
+translatable: false
+default_value: {  }
+default_value_callback: ''
+settings: {  }
+field_type: string

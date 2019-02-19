@@ -1,0 +1,38 @@
+op_events.summary:
+  path: '/admin/op_events/summary'
+  defaults:
+    _controller: 'op_events.summary_controller:summaryPage'
+    _title: 'Oxford Path Events Summary'
+  requirements:
+    _permission: 'administrator'
+  options:
+    _admin_route: TRUE
+op_events.download_from_salesforce:
+  path: '/admin/op_events/download_events'
+  defaults:
+    _controller: 'op_events.download_controler:download'
+    _title: 'Oxford Path Events Summary'
+  requirements:
+    _permission: 'administrator'
+  options:
+    _admin_route: TRUE
+op_events.load_campaign:
+  path: '/public_campaign/{node}'
+  defaults:
+    _controller: '\Drupal\node\Controller\NodeViewController::view'
+    _title_callback: '\Drupal\node\Controller\NodeViewController::title'
+  requirements:
+    _entity_access: 'node.view'
+  options:
+    parameters:
+      node:
+        type: campaign_id
+op_events.admin_settings_form:
+  path: '/admin/config/op_events/adminsettings'
+  defaults:
+    _form: '\Drupal\op_events\Form\SalesforceCampaignForm'
+    _title: 'Salesforce Campaign Setting'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

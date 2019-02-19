@@ -1,0 +1,260 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+ Web Services API : OPEventService
+-->
+<definitions targetNamespace="http://soap.sforce.com/schemas/class/OPEventService" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://soap.sforce.com/schemas/class/OPEventService">
+    <types>
+        <xsd:schema elementFormDefault="qualified" targetNamespace="http://soap.sforce.com/schemas/class/OPEventService">
+            <xsd:element name="AllowFieldTruncationHeader">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="allowFieldTruncation" type="xsd:boolean"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="CallOptions">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="client" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="DebuggingHeader">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="categories" minOccurs="0" maxOccurs="unbounded" type="tns:LogInfo"/>
+                        <xsd:element name="debugLevel" type="tns:LogType"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:complexType name="LogInfo">
+                <xsd:sequence>
+                    <xsd:element name="category" type="tns:LogCategory"/>
+                    <xsd:element name="level" type="tns:LogCategoryLevel"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:simpleType name="LogCategory">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="Db"/>
+                    <xsd:enumeration value="Workflow"/>
+                    <xsd:enumeration value="Validation"/>
+                    <xsd:enumeration value="Callout"/>
+                    <xsd:enumeration value="Apex_code"/>
+                    <xsd:enumeration value="Apex_profiling"/>
+                    <xsd:enumeration value="Visualforce"/>
+                    <xsd:enumeration value="System"/>
+                    <xsd:enumeration value="Wave"/>
+                    <xsd:enumeration value="Nba"/>
+                    <xsd:enumeration value="All"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="LogCategoryLevel">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="None"/>
+                    <xsd:enumeration value="Finest"/>
+                    <xsd:enumeration value="Finer"/>
+                    <xsd:enumeration value="Fine"/>
+                    <xsd:enumeration value="Debug"/>
+                    <xsd:enumeration value="Info"/>
+                    <xsd:enumeration value="Warn"/>
+                    <xsd:enumeration value="Error"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:simpleType name="LogType">
+                <xsd:restriction base="xsd:string">
+                    <xsd:enumeration value="None"/>
+                    <xsd:enumeration value="Debugonly"/>
+                    <xsd:enumeration value="Db"/>
+                    <xsd:enumeration value="Profiling"/>
+                    <xsd:enumeration value="Callout"/>
+                    <xsd:enumeration value="Detail"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:element name="DebuggingInfo">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="debugLog" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="SessionHeader">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="sessionId" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:simpleType name="ID">
+                <xsd:restriction base="xsd:string">
+                    <xsd:length value="18"/>
+                    <xsd:pattern value="[a-zA-Z0-9]{18}"/>
+                </xsd:restriction>
+            </xsd:simpleType>
+            <xsd:complexType name="CampaignInfo">
+                <xsd:sequence>
+                    <xsd:element name="campaignCode" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="campaignId" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="campaignName" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="chargeforChild" minOccurs="0" type="xsd:decimal" nillable="true"/>
+                    <xsd:element name="chargeforParent" minOccurs="0" type="xsd:decimal" nillable="true"/>
+                    <xsd:element name="chargePaid" minOccurs="0" type="xsd:boolean" nillable="true"/>
+                    <xsd:element name="displayDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="endDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="errorCode" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="eventCategory" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="eventEndTime" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="eventStartTime" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="imageURL" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="location" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="maxCapacity" minOccurs="0" type="xsd:int" nillable="true"/>
+                    <xsd:element name="maxChildCapacity" minOccurs="0" type="xsd:int" nillable="true"/>
+                    <xsd:element name="maxParentCapacity" minOccurs="0" type="xsd:int" nillable="true"/>
+                    <xsd:element name="member" minOccurs="0" type="xsd:boolean" nillable="true"/>
+                    <xsd:element name="needCharge" minOccurs="0" type="xsd:boolean" nillable="true"/>
+                    <xsd:element name="parentCampaignId" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="playgroupType" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="productDimension" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="registration" minOccurs="0" type="xsd:boolean" nillable="true"/>
+                    <xsd:element name="registrationEndDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="registrationStartDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="remark" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="speaker" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="startDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="targetAudience" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="targetAudienceMax" minOccurs="0" type="xsd:string" nillable="true"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="MemberInfo">
+                <xsd:sequence>
+                    <xsd:element name="effectiveDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="errorCode" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="expiryDate" minOccurs="0" type="xsd:dateTime" nillable="true"/>
+                    <xsd:element name="member" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="membershipNo" minOccurs="0" type="xsd:string" nillable="true"/>
+                    <xsd:element name="productDimension" minOccurs="0" type="xsd:string" nillable="true"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:complexType name="address">
+                <xsd:complexContent>
+                    <xsd:extension base="tns:location">
+                        <xsd:sequence>
+                            <xsd:element name="city" type="xsd:string"/>
+                            <xsd:element name="country" type="xsd:string"/>
+                            <xsd:element name="countryCode" type="xsd:string"/>
+                            <xsd:element name="geocodeAccuracy" type="xsd:string"/>
+                            <xsd:element name="postalCode" type="xsd:string"/>
+                            <xsd:element name="state" type="xsd:string"/>
+                            <xsd:element name="stateCode" type="xsd:string"/>
+                            <xsd:element name="street" type="xsd:string"/>
+                        </xsd:sequence>
+                    </xsd:extension>
+                </xsd:complexContent>
+            </xsd:complexType>
+            <xsd:complexType name="location">
+                <xsd:sequence>
+                    <xsd:element name="latitude" type="xsd:double"/>
+                    <xsd:element name="longitude" type="xsd:double"/>
+                </xsd:sequence>
+            </xsd:complexType>
+            <xsd:element name="getCampaignInfo">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="pType" type="xsd:string" nillable="true"/>
+                        <xsd:element name="pIsActive" type="xsd:string" nillable="true"/>
+                        <xsd:element name="pEndDate" type="xsd:string" nillable="true"/>
+                        <xsd:element name="pProductDimension" type="xsd:string" nillable="true"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getCampaignInfoResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" minOccurs="0" maxOccurs="unbounded" type="tns:CampaignInfo" nillable="true"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getMemberInfo">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="pMemberId" type="xsd:string" nillable="true"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="getMemberInfoResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element name="result" type="tns:MemberInfo" nillable="true"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </types>
+    <!-- Message for the header parts -->
+    <message name="Header">
+        <part name="AllowFieldTruncationHeader" element="tns:AllowFieldTruncationHeader"/>
+        <part name="CallOptions" element="tns:CallOptions"/>
+        <part name="DebuggingHeader" element="tns:DebuggingHeader"/>
+        <part name="DebuggingInfo" element="tns:DebuggingInfo"/>
+        <part name="SessionHeader" element="tns:SessionHeader"/>
+    </message>
+    <!-- Operation Messages -->
+    <message name="getCampaignInfoRequest">
+        <part element="tns:getCampaignInfo" name="parameters"/>
+    </message>
+    <message name="getCampaignInfoResponse">
+        <part element="tns:getCampaignInfoResponse" name="parameters"/>
+    </message>
+    <message name="getMemberInfoRequest">
+        <part element="tns:getMemberInfo" name="parameters"/>
+    </message>
+    <message name="getMemberInfoResponse">
+        <part element="tns:getMemberInfoResponse" name="parameters"/>
+    </message>
+    <portType name="OPEventServicePortType">
+        <operation name="getCampaignInfo">
+            <input message="tns:getCampaignInfoRequest"/>
+            <output message="tns:getCampaignInfoResponse"/>
+        </operation>
+        <operation name="getMemberInfo">
+            <input message="tns:getMemberInfoRequest"/>
+            <output message="tns:getMemberInfoResponse"/>
+        </operation>
+    </portType>
+    <binding name="OPEventServiceBinding" type="tns:OPEventServicePortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <operation name="getCampaignInfo">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
+                <soap:header use="literal" part="CallOptions" message="tns:Header"/>
+                <soap:header use="literal" part="DebuggingHeader" message="tns:Header"/>
+                <soap:header use="literal" part="AllowFieldTruncationHeader" message="tns:Header"/>
+                <soap:body use="literal" parts="parameters"/>
+            </input>
+            <output>
+                <soap:header use="literal" part="DebuggingInfo" message="tns:Header"/>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="getMemberInfo">
+            <soap:operation soapAction=""/>
+            <input>
+                <soap:header use="literal" part="SessionHeader" message="tns:Header"/>
+                <soap:header use="literal" part="CallOptions" message="tns:Header"/>
+                <soap:header use="literal" part="DebuggingHeader" message="tns:Header"/>
+                <soap:header use="literal" part="AllowFieldTruncationHeader" message="tns:Header"/>
+                <soap:body use="literal" parts="parameters"/>
+            </input>
+            <output>
+                <soap:header use="literal" part="DebuggingInfo" message="tns:Header"/>
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+    </binding>
+    <service name="OPEventServiceService">
+        <documentation></documentation>
+        <port binding="tns:OPEventServiceBinding" name="OPEventService">
+            <soap:address location="https://cs76.salesforce.com/services/Soap/class/OPEventService"/>
+        </port>
+    </service>
+</definitions>

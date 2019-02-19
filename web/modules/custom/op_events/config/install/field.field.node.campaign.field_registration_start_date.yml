@@ -1,0 +1,23 @@
+uuid: 99417390-1400-4677-af21-768f3022d9db
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_registration_start_date
+    - node.type.campaign
+_core:
+  default_config_hash: tuW9bpqOYy3SK4qedmAMsBkMGEzUkz4FDCD2BuIhzDE
+id: node.campaign.field_registration_start_date
+field_name: field_registration_start_date
+entity_type: node
+bundle: campaign
+label: 'Registration Start Date'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1547049147
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

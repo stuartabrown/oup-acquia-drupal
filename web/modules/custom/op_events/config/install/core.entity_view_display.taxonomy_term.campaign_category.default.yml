@@ -1,0 +1,42 @@
+uuid: 979d5ef5-71eb-44d6-aadc-e39fff3359f3
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.field.taxonomy_term.campaign_category.field_category_enabled
+    - field.field.taxonomy_term.campaign_category.field_category_slug
+    - taxonomy.vocabulary.campaign_category
+  module:
+    - text
+id: taxonomy_term.campaign_category.default
+targetEntityType: taxonomy_term
+bundle: campaign_category
+mode: default
+content:
+  description:
+    label: hidden
+    type: text_default
+    weight: 0
+    region: content
+    settings: {  }
+    third_party_settings: {  }
+  field_category_enabled:
+    weight: 2
+    label: above
+    settings:
+      format: default
+      format_custom_false: ''
+      format_custom_true: ''
+    third_party_settings: {  }
+    type: boolean
+    region: content
+  field_category_slug:
+    weight: 1
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+hidden:
+  langcode: true

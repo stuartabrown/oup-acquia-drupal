@@ -1,0 +1,5 @@
+name: 'Twig Extensions'
+type: module
+description: Provides extension functions and filters for Twig
+package: 'Custom'
+core: 8.x

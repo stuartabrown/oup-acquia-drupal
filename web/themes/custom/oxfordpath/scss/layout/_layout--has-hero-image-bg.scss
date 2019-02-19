@@ -1,0 +1,18 @@
+.layout.layout--has-hero-image-bg {
+  .layout__region--hero-image-bg {
+    position: absolute;
+    width: 100%;
+  }
+
+  @include breakpoint(small only) {
+    min-height: $hero_image_height_small;
+  }
+
+  @include breakpoint(medium only) {
+    min-height: $hero_image_height_medium;
+  }
+
+  @include breakpoint(large) {
+    min-height: $hero_image_height_large;
+  }
+}

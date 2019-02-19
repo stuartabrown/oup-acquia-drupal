@@ -1,0 +1,20 @@
+uuid: 8f5e4f8b-eadf-47cb-9223-0f4c5cf3130d
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: YrB5stRvaYItpbg4SYfA2U4Im_bfn_BwkKhvbGFyEFk
+id: node.field_charge_paid
+field_name: field_charge_paid
+entity_type: node
+type: boolean
+settings: {  }
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

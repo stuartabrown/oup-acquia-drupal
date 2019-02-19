@@ -1,0 +1,240 @@
+/**
+Reference: Creating a New Theme in Form Builder 5 | FormAssembly Resource Center
+https://help.formassembly.com/help/creating-a-new-theme-in-form-builder-5    
+ */
+
+.wFormContainer {
+  max-width: none !important;
+}
+
+.wFormFooter {
+  .supportInfo {
+    @include fs12_lh22;
+    margin: rem-calc(10);
+    padding: 0;
+    a {
+      font-size: 1em !important;
+    }
+  }
+}
+
+.wForm.wForm { // beat specificity of base .wForm
+  padding: 0;
+
+  .htmlSection {
+    @include fs15_lh22;
+    color: $color_grey_blue;
+    font-weight: 600;
+    margin: rem-calc(20) 0 0;
+    padding: 0;
+    border-width: 0;
+
+    a {
+      color: $color_orange;
+    }
+
+    hr {
+      border-bottom: 1px solid $color_blue_8;
+      margin: rem-calc(15) 0;
+    }
+  }
+
+  .oneField {
+    margin-top: rem-calc(20);
+    padding: 0;
+    border-width: 0;
+  }
+
+  .actions {
+    padding: 0;
+    margin: rem-calc(21) 0 0;
+
+    input[type="submit"] {
+      @include fs15_lh22;
+      display: block;
+      background-color: $color_orange;
+      color: $color_blue;
+      line-height: rem-calc(50);
+      border-radius: rem-calc(25);
+      text-align: center;
+      width: 100%;
+      max-width: rem-calc(305);
+      margin-left: auto;
+      margin-right: auto;
+      border-width: 0;
+      padding: 0;
+      outline: none;
+      font-weight: 600;
+    }
+  }
+
+  .oneField {
+    display: block;
+    line-height: 0;
+
+    &.offstate {
+      display: none !important;
+    }
+
+    &.errFld {
+      .errMsg {
+        @include fs12_lh22;
+        color: $color_orange;
+        margin-top: rem-calc(5);
+        font-weight: 600;
+      }
+
+      > .inputWrapper {
+        select, input:not([type="checkbox"]) {
+          border-color: $color_orange;
+        }
+      }
+    }
+
+    .preField { // each field's name/label
+      @include fs15_lh22;
+      font-weight: 600;
+      padding: 0;
+      white-space: normal; // override foundation .label nowrap
+    }
+
+    .postField { // radio/checkbox's <label> (clickable area and human readable value)
+      @include fs15_lh22;
+      margin: 0;
+      padding: 0;
+    }
+
+    .reqMark:after { // required "*" mark
+      @include fs18_lh22;
+      content: '*';
+      color: $color_orange;
+      margin-left: rem-calc(2);
+    }
+
+    .inputWrapper {
+      display: block;
+      margin-top: rem-calc(5);
+
+      .lengthIndicator {
+        display: none !important;
+      }
+
+      select,
+      input:not([type="checkbox"]):not([type="radio"]),
+      textarea {
+        @include fs15_lh22;
+        border-radius: rem-calc(10);
+        width: 100% !important;
+        margin-bottom: 0;
+        padding-top: rem-calc(13);
+        padding-bottom: rem-calc(13);
+      }
+
+      input:not([type="checkbox"]):not([type="radio"]),
+      textarea {
+        padding-left: rem-calc(13);
+        padding-right: rem-calc(13);
+      }
+    }
+
+    .choices { //  only checkbox and radio groups has .choices class
+      .postField {
+        position: relative;
+        font-weight: 600;
+
+        &:before { // shared styles of the checkbox/radio svg background
+          content: '';
+          display: block;
+          position: absolute;
+          width: rem-calc(22);
+          height: rem-calc(22);
+          background-size: contain;
+          background-repeat: no-repeat;
+          left: 0;
+          top: 0;
+        }
+      }
+
+      .oneChoice {
+        position: relative;
+        white-space: normal;
+
+        input[type="checkbox"],
+        input[type="radio"] {
+          display: none;
+        }
+
+        input[type="checkbox"] {
+          ~ .postField:before {
+            background-image: $sym_checkbox_unchecked;
+          }
+
+          &:checked ~ .postField:before {
+            background-image: $sym_checkbox_checked;
+          }
+        }
+
+        input[type="radio"] {
+          ~ .postField:before {
+            background-image: $sym_radio_unchecked;
+          }
+
+          &:checked ~ .postField:before {
+            background-image: $sym_radio_checked;
+          }
+        }
+      }
+
+      &.vertical {
+        .oneChoice {
+          display: block;
+
+          &:not(:first-child){
+            margin-top: rem-calc(15);
+          }
+
+          .postField {
+            padding-left: rem-calc(30);
+            color: $color_light_grey_blue;
+          }
+        }
+      }
+
+      &.horizontal {
+        .oneChoice {
+          display: inline-block;
+
+          &:not(:last-child){
+            margin-right: rem-calc(25);
+          }
+
+          .postField {
+            padding-left: rem-calc(26);
+            color: $color_grey_blue;
+          }
+        }
+      }
+    }
+  }
+}
+
+@include breakpoint(medium) {
+  .wForm.wForm { // beat specificity of base .wForm
+    .group {
+      $spacing-between-field: rem-calc(20);
+
+      @include clear;
+      margin-left: -$spacing-between-field;
+      margin-right: -$spacing-between-field;
+
+      .oneField {
+        float: left;
+        box-sizing: border-box;
+        width: 50%;
+        max-width: 50%; // beat the width from FA applied to #tfa_*
+        min-width: 50%;
+        padding: 0 #{$spacing-between-field};
+      }
+    }
+  }
+}

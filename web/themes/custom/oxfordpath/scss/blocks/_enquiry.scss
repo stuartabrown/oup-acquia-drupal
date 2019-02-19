@@ -1,0 +1,39 @@
+.custom-block.enquiry {
+  text-align: center;
+  padding: rem-calc(20);
+  .enquiry{
+    &__field_title {
+      @include fs24_lh30;
+      color: $color_orange;
+      font-weight: 600;
+    }
+    &__field_link{
+      margin-top: rem-calc(20px);
+      a{
+        @include fs24_lh30;
+        position: relative;
+        display: inline-block;
+        padding: rem-calc(10);
+        color: $color_blue;
+        font-weight: 600;
+        padding-left: rem-calc(25);
+        padding-right: rem-calc(50 + 14);
+        background-color: $color_white;
+        border-radius: rem-calc(25px);
+        &:after{
+          @include imgAsBg;
+          background-image: url(../images/icon-phone.png);
+          display: inline-block;
+          width: rem-calc(50);
+          height: rem-calc(50);
+          border-radius: rem-calc(25);
+          background-color: $color_orange;
+          position: absolute;
+          top: 0;
+          right: 0;
+          content: '';
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+uuid: 58f57271-ceb0-4d64-ae2d-d27cd713061e
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: qu8ttIvVXyPt45W6Z-Vndk570biwaQdJfOk2A_0A5x0
+id: node.field_product_dimension
+field_name: field_product_dimension
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

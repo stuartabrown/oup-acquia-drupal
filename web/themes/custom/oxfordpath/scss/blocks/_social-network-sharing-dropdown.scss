@@ -1,0 +1,313 @@
+.social_network_sharing_dropdown.custom-block{
+  @include fs15_lh22;
+  line-height: 0;
+  text-align: left;
+  height: rem-calc(50);
+  position: relative;
+  z-index: 10;
+
+  &.social_network_sharing_dropdown--left{
+    text-align: left !important;
+    .social_network_sharing_dropdown__field_link{
+      text-align: left !important;
+    }
+    .social_network_sharing_dropdown__field_link_title{
+      text-align: left !important;
+    }
+  }
+
+  &.social_network_sharing_dropdown--right{
+    text-align: right !important;
+    .social_network_sharing_dropdown__field_link{
+      text-align: left !important;
+    }
+    .social_network_sharing_dropdown__field_link_title{
+      text-align: left !important;
+    }
+  }
+
+  .social_network_sharing_dropdown__field_link_title{
+    display: block;
+    width: 100%;
+    cursor: pointer;
+    padding: rem-calc(14) rem-calc(22);
+    outline: none;
+    > span{
+      @include fs15_lh22;
+      display: inline-block;
+      vertical-align: middle;
+      font-weight: 600;
+      color: $color_blue;
+    }
+  }
+
+  .social_network_sharing_dropdown__field_link_container{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    background-color: $color_white;
+    border-radius: rem-calc(25);
+    transition: height 250ms;
+    height: 100%;
+    overflow: hidden;
+  }
+
+  .social_network_sharing_dropdown__field_social_networks{
+    display: none;
+  }
+
+  .social_network_sharing_dropdown__field_link{
+    position: relative;
+    display: inline-block;
+    min-width: rem-calc(145);
+    max-width: 100%;
+    height: 100%;
+    &--icon-right{
+      .link_with_icon__field_icon{
+        margin-left: rem-calc(8);
+      }
+    }
+    &--icon-left{
+      .link_with_icon__field_icon{
+        margin-right: rem-calc(8);
+      }
+    }
+    &:not(.active){
+      .social_network_sharing_dropdown__field_link_container {
+        height: 100% !important;
+      }
+    }
+    &.active{
+      .social_network_sharing_dropdown__field_link_container{
+        box-shadow: $color_orange_15 0 rem-calc(10px) rem-calc(20px);
+      }
+      .social_network_sharing_dropdown__field_social_networks{
+        display: block;
+        margin: 0;
+        list-style: none;
+        > li{
+          @include fs12_lh18;
+          font-weight: bold;
+          color: $color_light_grey_blue;
+          display: block;
+          padding: 0 rem-calc(22);
+          & + li {
+            margin-top: rem-calc(15);
+          }
+          > a {
+            &:before {
+              @include prepareIcon(20px, 16px);
+              @include imgAsBg(center center, contain);
+              vertical-align: middle;
+              margin-right: rem-calc(10);
+            }
+          }
+          &.facebook{
+            > a {
+              &:before {
+                background-image: $sym_social_fb_grey;
+              }
+            }
+          }
+          &.sms{
+            > a {
+              &:before {
+                background-image: $sym_social_sms_grey;
+              }
+            }
+          }
+          &.whatsapp{
+            > a {
+              &:before {
+                background-image: $sym_social_whatsapp_grey;
+              }
+            }
+          }
+          &.copy{
+            > a {
+              &:before {
+                background-image: $sym_social_copy_grey;
+              }
+            }
+          }
+          &.weibo{
+            > a {
+              &:before {
+                background-image: $sym_social_weibo_grey;
+              }
+            }
+          }
+          &.email{
+            > a {
+              &:before {
+                background-image: $sym_social_mail_grey;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .social_network_sharing_dropdown__field_icon{
+    display: inline-block;
+    float: right;
+    margin-top: rem-calc(2);
+    vertical-align: middle;
+    width: rem-calc(16px);
+    height: rem-calc(16px);
+    line-height: 0;
+    > img{
+      width: rem-calc(16px);
+      height: rem-calc(16px);
+    }
+  }
+
+  &.social_network_sharing_dropdown--white-bg-blue-text{
+    .social_network_sharing_dropdown__field_link{
+      background-color: $color_white;
+      color: $color_blue;
+    }
+  }
+
+  &.social_network_sharing_dropdown--orange-bg-blue-text{
+    .social_network_sharing_dropdown__field_link_container{
+      background-color: $color_medium_orange;
+      color: $color_blue;
+    }
+  }
+
+  &.social_network_sharing_dropdown--normal-orange-bg-blue-text{
+    .social_network_sharing_dropdown__field_link_container{
+      background-color: $color_orange;
+      color: $color_blue;
+    }
+  }
+
+  &.social_network_sharing_dropdown--blue-bg-orange-text {
+    .social_network_sharing_dropdown__field_link_container{
+      background-color: $color_blue;
+      color: $color_orange;
+    }
+  }
+
+
+  &.social_network_sharing_dropdown--white-bg-blue-text,
+  &.social_network_sharing_dropdown--orange-bg-blue-text,
+  &.social_network_sharing_dropdown--normal-orange-bg-blue-text {
+    .social_network_sharing_dropdown__field_link {
+      &.active {
+        .social_network_sharing_dropdown__field_social_networks {
+          > li {
+            &.facebook {
+              > a {
+                &:before {
+                  background-image: $sym_social_fb_blue;
+                }
+              }
+            }
+
+            &.sms {
+              > a {
+                &:before {
+                  background-image: $sym_social_sms_blue;
+                }
+              }
+            }
+
+            &.whatsapp {
+              > a {
+                &:before {
+                  background-image: $sym_social_whatsapp_blue;
+                }
+              }
+            }
+
+            &.copy {
+              > a {
+                &:before {
+                  background-image: $sym_social_copy_blue;
+                }
+              }
+            }
+
+            &.weibo {
+              > a {
+                &:before {
+                  background-image: $sym_social_weibo_blue;
+                }
+              }
+            }
+
+            &.email {
+              > a {
+                &:before {
+                  background-image: $sym_social_mail_blue;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+
+  &.social_network_sharing_dropdown--blue-bg-orange-text {
+    .social_network_sharing_dropdown__field_link {
+      &.active {
+        .social_network_sharing_dropdown__field_social_networks {
+          > li {
+            &.facebook {
+              > a {
+                &:before {
+                  background-image: $sym_social_fb_orange;
+                }
+              }
+            }
+
+            &.sms {
+              > a {
+                &:before {
+                  background-image: $sym_social_sms_orange;
+                }
+              }
+            }
+
+            &.whatsapp {
+              > a {
+                &:before {
+                  background-image: $sym_social_whatsapp_orange;
+                }
+              }
+            }
+
+            &.copy {
+              > a {
+                &:before {
+                  background-image: $sym_social_copy_orange;
+                }
+              }
+            }
+
+            &.weibo {
+              > a {
+                &:before {
+                  background-image: $sym_social_weibo_orange;
+                }
+              }
+            }
+
+            &.email {
+              > a {
+                &:before {
+                  background-image: $sym_social_mail_orange;
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+uuid: 29284eb7-bb50-45ce-8ba8-7c3388bfc966
+langcode: zh-hant
+status: true
+dependencies:
+  module:
+    - node
+_core:
+  default_config_hash: 07yHLzfdTOa7VsOGuvj4q6bMZ0Bwc7bPSy8vaJZ5UDw
+id: node.field_charge_for_parent
+field_name: field_charge_for_parent
+entity_type: node
+type: string
+settings:
+  max_length: 255
+  is_ascii: false
+  case_sensitive: false
+module: core
+locked: false
+cardinality: 1
+translatable: true
+indexes: {  }
+persist_with_no_fields: false
+custom_storage: false

@@ -1,0 +1,12 @@
+.custom-block {
+  font-weight: 600;
+
+  p {
+    @include fs15_lh22;
+    margin: 0;
+
+    & + p {
+      margin-top: rem-calc(22);
+    }
+  }
+}

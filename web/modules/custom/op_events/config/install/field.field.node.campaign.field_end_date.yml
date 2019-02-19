@@ -1,0 +1,23 @@
+uuid: b6ebcc95-b6fd-4dbf-8426-054918ae0946
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_end_date
+    - node.type.campaign
+_core:
+  default_config_hash: zFvRhqaJyR3liVli2B3xcTS7tQ4I2P-TPlTQViaH7DQ
+id: node.campaign.field_end_date
+field_name: field_end_date
+entity_type: node
+bundle: campaign
+label: 'End Date'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1547088245
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

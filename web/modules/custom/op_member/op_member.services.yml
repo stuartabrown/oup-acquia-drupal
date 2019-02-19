@@ -1,0 +1,13 @@
+services:
+  # Define a service for managing the events in salesforce
+  op_member.member_manager:
+    class: Drupal\op_member\MemberManager
+    arguments: [ '@salesforce_connector.connector' ]
+  op_member.lookup_form:
+    class: Drupal\op_member\Form\LookupForm
+    arguments: [ '@op_member.member_manager' ]
+  op_member.config_overrider:
+    class: Drupal\op_member\ConfigOverrides
+    tags:
+      - {name: config.factory.override, priority: 5}
+    arguments: [ '@config.factory' ]

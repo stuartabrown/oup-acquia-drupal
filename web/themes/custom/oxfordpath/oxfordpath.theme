@@ -1,0 +1,2182 @@
+<?php
+
+/**
+ * @file
+ * Functions to support theming in the oxfordpath theme.
+ */
+
+use Drupal\block_content\BlockContentInterface;
+use Drupal\Core\Entity\EntityInterface;
+use Drupal\Core\Entity\Display\EntityViewDisplayInterface;
+use Drupal\node\Entity\Node;
+
+//          'test' => [
+//            '#type' => 'inline_template',
+//            '#template' => '{% verbatim %}<script>alert(123);</script>{% endverbatim %}<span onclick="javascript:alert(\'{{lll455}}\');" >{{jhhjh|raw}}span</span><div>div</div><style>span{font-size:20px;}</style>{% endverbatim %}',
+//            '#allowed_tags' => ['script', 'style', 'span'],
+//            '#markup'  => '<script>alert(123);</script><span onclick="javascript:alert(455);" >span</span><div>div</div><style>span{font-size:20px;}</style>'
+//            '#type' => 'inline_template',
+//            '#template' => '{{form|raw}}',
+//            '#context' => [
+//              'form' => '{% verbatim %}<script>alert(123);</script>{% endverbatim %}<span onclick="javascript:alert(\'{{lll455}}\');" >{{jhhjh|raw}}span</span><div>div</div><style>span{font-size:20px;}</style>{% endverbatim %}',
+//            ]
+//          ],
+
+/**
+ * Implements hook_preprocess_HOOK() for html.html.twig.
+ */
+function oxfordpath_preprocess_html(array &$variables) {
+  /* Add class to html tag */
+  //$variables['html_attributes']->addClass('no-js');
+
+  // Don't display the site name twice on the front page (and potentially others)
+  /*if (isset($variables['head_title_array']['title']) && isset($variables['head_title_array']['name']) && ($variables['head_title_array']['title'] == $variables['head_title_array']['name'])) {
+    $variables['head_title'] = $variables['head_title_array']['name'];
+  }*/
+  // TODO: cache notice in the body class
+  $isFrontPage = \Drupal::service('path.matcher')->isFrontPage();
+  if ($isFrontPage) {
+    $variables['attributes']['class'][] = 'front-page';
+  }
+
+  $current_route_name = \Drupal::service('current_route_match')
+    ->getRouteObject();
+  if ($current_route_name) {
+    if ($current_route_name->getPath() === '/node/{node}' || $current_route_name->getPath() === '/node/{node}/layout') {
+      $node = \Drupal::routeMatch()->getParameter('node');
+      $node_type = $node->getType();
+      if ($node_type === 'past_campaign') {
+        $variables['attributes']['class'][] = 'node-past-campaign';
+      }
+      if ($node_type === 'campaign') {
+        $variables['attributes']['class'][] = 'node-campaign';
+      }
+      if ($node_type === 'parent_sharing') {
+        $variables['attributes']['class'][] = 'node-parent-sharing';
+      }
+      if($node_type === 'expert_sharing'){
+        $variables['attributes']['class'][] = 'node-expert-sharing';
+      }
+    }
+    if ($current_route_name->getPath() === '/public_campaign/{node}') {
+      $variables['attributes']['class'][] = 'node-campaign';
+    }
+    if($current_route_name->getPath() === '/expert/{arg_0}'){
+      $variables['attributes']['class'] = 'taxonomy-expert';
+    }
+    if ($current_route_name->getPath() === '/taxonomy/term/{taxonomy_term}') {
+      $term = \Drupal::routeMatch()->getParameter('taxonomy_term');
+      $bundle = $term->bundle();
+      if ($bundle === 'product_age_range') {
+        $variables['attributes']['class'] = 'taxonomy-product-age-range';
+        if ($term->field_detail_bg_color) {
+          $bg_color = $term->field_detail_bg_color->value;
+          if ($bg_color) {
+            $variables['page']['#attributes']['style'][] = 'background-color:' . $bg_color . ';';
+          }
+        }
+      }
+    }
+    try {
+      if (isset($variables['node_type'])) {
+        $node_type = $variables['node_type'];
+        if ($node_type === 'page') {
+          $node = \Drupal::routeMatch()->getParameter('node');
+          if ($node->field_body_class) {
+            $page_class = $node->field_body_class->value;
+            if ($page_class) {
+              $variables['page']['#attributes']['class'][] = $page_class;
+            }
+          }
+          if ($node->field_background_color) {
+            $page_background_color = $node->field_background_color->value;
+            if ($page_background_color) {
+              $variables['page']['#attributes']['style'][] = 'background-color:' . $page_background_color . ';';
+            }
+          }
+        }
+      }
+    } catch (\Exception $x) {
+
+    }
+  }
+}
+
+/**
+ * Implements hook_page_attachments_alter().
+ */
+function oxfordpath_page_attachments_alter(array &$page) {
+  // Tell IE to use latest rendering engine (not to use compatibility mode).
+  /*$ie_edge = [
+    '#type' => 'html_tag',
+    '#tag' => 'meta',
+    '#attributes' => [
+    'http-equiv' => 'X-UA-Compatible',
+    'content' => 'IE=edge',
+    ],
+  ];
+  $page['#attached']['html_head'][] = [$ie_edge, 'ie_edge'];*/
+}
+
+/**
+ * Implements hook_preprocess_page() for page.html.twig.
+ */
+function oxfordpath_preprocess_page(array &$variables) {
+  $current_route_name = \Drupal::service('current_route_match')
+    ->getRouteObject();
+  if ($current_route_name) {
+    if ($current_route_name->getPath() === '/taxonomy/term/{taxonomy_term}') {
+      unset($variables['page']['content']['oxfordpath_page_title']);
+    }
+  }
+  if (isset($variables['node'])) {
+    $node = $variables['node'];
+    if (is_object($node) && $node->getType() === 'page') {
+      // Check the page title hidden property
+      if($node->field_hide_page_title){
+        $page_title_hidden = $node->field_hide_page_title->value;
+        if($page_title_hidden === '1'){
+          unset($variables['page']['content']['oxfordpath_page_title']);
+        }
+      }
+      if ($node->field_page_style) {
+        $page_style = $node->field_page_style->value;
+        $variables['attributes']['class'][] = $page_style;
+      }
+      $back_to_link = $node->field_back_to_link;
+      if ($back_to_link && $back_to_link->count() > 0) {
+        $back_to_link = $back_to_link->get(0);
+        $variables['page']['content']['oxfordpath_back_action'] = [
+          '#type' => 'container',
+          '#attributes' => [
+            'class' => ['top-back-to-bar'],
+          ],
+          //          'test' => [
+          //            '#type' => 'inline_template',
+          //            '#template' => '{% verbatim %}<script>alert(123);</script>{% endverbatim %}<span onclick="javascript:alert(\'{{lll455}}\');" >{{jhhjh|raw}}span</span><div>div</div><style>span{font-size:20px;}</style>{% endverbatim %}',
+          //            '#allowed_tags' => ['script', 'style', 'span'],
+          //            '#markup'  => '<script>alert(123);</script><span onclick="javascript:alert(455);" >span</span><div>div</div><style>span{font-size:20px;}</style>'
+          //            '#type' => 'inline_template',
+          //            '#template' => '{{form|raw}}',
+          //            '#context' => [
+          //              'form' => '{% verbatim %}<script>alert(123);</script>{% endverbatim %}<span onclick="javascript:alert(\'{{lll455}}\');" >{{jhhjh|raw}}span</span><div>div</div><style>span{font-size:20px;}</style>{% endverbatim %}',
+          //            ]
+          //          ],
+          'link' => [
+            '#type' => 'link',
+            '#url' => $back_to_link->getUrl(),
+            '#attributes' => [
+              'target' => '_self',
+            ],
+            '#title' => [
+              '#type' => 'html_tag',
+              '#tag' => 'span',
+              '#value' => $back_to_link->title,
+            ],
+          ],
+          '#weight' => -99,
+        ];
+      }
+    }
+    elseif (is_object($node) && $node->getType() === 'past_campaign') {
+      $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+      try {
+        // Count the labels
+        $target = $variables['node']->field_pcampaign_target;
+        $type = $variables['node']->field_pcampaign_type;
+        $label_count = 0;
+        $labels = [];
+        if ($target) {
+          $label_count += $target->count();
+          if ($target->count() > 0) {
+            for ($i = 0; $i < $target->count(); $i++) {
+              $item = $target->get($i)->entity;
+              $labels[] = [
+                'name' => $item->getName(),
+                'bg_color' => ($item->field_pcampaign_bg_color ? $item->field_pcampaign_bg_color->value : ''),
+                'link' => '/' . $language . '/past-campaigns?past_campaign_target=' . $item->tid->value,
+              ];
+            }
+          }
+        }
+        if ($type) {
+          $label_count += $type->count();
+          if ($type->count() > 0) {
+            for ($i = 0; $i < $type->count(); $i++) {
+              $item = $type->get($i)->entity;
+              $labels[] = [
+                'name' => $item->getName(),
+                'bg_color' => ($item->field_pcampaign_bg_color ? $item->field_pcampaign_bg_color->value : 'transparent'),
+                'link' => '/' . $language . '/past-campaigns?past_campaign_type=' . $item->tid->value,
+              ];
+            }
+          }
+        }
+      } catch (Exception $x) {
+        $label_count = 0;
+      }
+      $variables['page']['content']['oxfordpath_types'] = [
+        '#type' => 'container',
+        '#weight' => -95,
+        '#attributes' => [
+          'class' => 'type_labels type_labels--node-past-campaign',
+        ],
+        '#name' => 'type_labels_node_past_campaign',
+        '#children' => [
+          'label_count' => $label_count,
+          'labels' => $labels,
+        ],
+      ];
+      $variables['page']['content']['oxfordpath_back_action'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => 'top-back-to-bar top-back-to-bar--node-past-campaign',
+        ],
+        'past_campaign' => [
+          '#weight' => -50,
+          '#type' => 'inline_template',
+          '#template' => '<a class="top-back-to-bar__past_campaign" href="/' . $language . '/past-campaigns"><span>' . t('Past Campaign', [], ['context' => 'past_campaign_node']) . '</span></a>',
+        ],
+        'latest_campaign' => [
+          '#weight' => -0,
+          '#type' => 'inline_template',
+          '#template' => '<a class="top-back-to-bar__latest_campaign" href="/' . $language . '/upcoming-campaigns"><span>' . t('Latest Campaign', [], ['context' => 'past_campaign']) . '</span></a>',
+        ],
+        '#weight' => -99,
+      ];
+    }
+  }
+  try {
+    $current_route_name = \Drupal::service('current_route_match')
+      ->getRouteObject();
+    if ($current_route_name) {
+      if ($current_route_name->getDefaults()) {
+        $defaults = $current_route_name->getDefaults();
+        if (isset($defaults['view_id'])) {
+          $variables['attributes']['class'][] = 'view ' . $defaults['view_id'];
+          switch ($defaults['view_id']) {
+            // TODO: cache of terms
+            case 'expert_sharing':
+              $accordion = [
+                '#type' => 'container',
+                '#name' => 'expert_sharing_popup_box_accordion',
+                '#attributes' => [
+                  'class' => ['expert_sharing_popup__box--accordion'],
+                ],
+                '#weight' => 50,
+              ];
+
+              $accordion['#children']['groups'] = [];
+
+              $variables['page']['content']['oxfordpath_page_control'] = [
+                '#weight' => -18,
+                '#type' => 'container',
+                '#attributes' => [
+                  'class' => ['expert_sharing_controls'],
+                ],
+                'expert_sharing_taxonomy' => [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['expert_sharing_control expert_sharing_controls__taxonomy'],
+                  ],
+                  'button' => [
+                    '#type' => 'html_tag',
+                    '#tag' => 'button',
+                    '#value' => '',
+                    '#attributes' => [
+                      'data-targettitle' => t('Filters', [], ['context' => 'expert_sharing']),
+                      'data-targethasfilters' => t('Filters', [], ['context' => 'expert_sharing']),
+                      'data-filtertarget' => 'expert_sharing_summary',
+                      'data-target' => 'expert_sharing_popup',
+                      'data-default' => t('Type', [], ['context' => 'expert_sharing']),
+                      'data-replaceoption' => "true",
+                      'class' => ['expert_sharing_control__button'],
+                    ],
+                  ],
+                ],
+                'expert_sharing_link' => [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['expert_sharing_control expert_sharing_controls__link'],
+                  ],
+                  'button' => [
+                    '#type' => 'inline_template',
+                    '#template' => '<a href="/parent-sharing" class="expert_sharing_control__link">' . t('Parent Sharing', [], ['context' => 'expert_sharing']) . '</a>',
+                  ],
+                ],
+              ];
+              break;
+            case 'parent_sharing':
+              $accordion = [
+                '#type' => 'container',
+                '#name' => 'parent_sharing_popup_box_accordion',
+                '#attributes' => [
+                  'class' => ['parent_sharing_popup__box--accordion'],
+                ],
+                '#weight' => 50,
+              ];
+
+              $accordion['#children']['groups'] = [];
+
+              $variables['page']['content']['oxfordpath_page_control'] = [
+                '#weight' => -18,
+                '#type' => 'container',
+                '#attributes' => [
+                  'class' => ['parent_sharing_controls'],
+                ],
+                'parent_sharing_taxonomy' => [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['parent_sharing_control parent_sharing_controls__taxonomy'],
+                  ],
+                  'button' => [
+                    '#type' => 'html_tag',
+                    '#tag' => 'button',
+                    '#value' => '',
+                    '#attributes' => [
+                      'data-targettitle' => t('Filters', [], ['context' => 'parent_sharing']),
+                      'data-targethasfilters' => t('Filters', [], ['context' => 'parent_sharing']),
+                      'data-filtertarget' => 'parent_sharing_summary',
+                      'data-default' => t('Type', [], ['context' => 'parent_sharing']),
+                      'data-replaceoption' => "true",
+                      'data-target' => 'parent_sharing_popup',
+                      'class' => ['parent_sharing_control__button'],
+                    ],
+                  ],
+                ],
+                'parent_sharing_link' => [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['parent_sharing_control parent_sharing_controls__link'],
+                  ],
+                  'button' => [
+                    '#type' => 'inline_template',
+                    '#template' => '<a href="/expert-sharing" class="parent_sharing_control__link">' . t('Expert Sharing', [], ['context' => 'parent_sharing']) . '</a>',
+                  ],
+                ],
+              ];
+              break;
+            case 'upcoming_campaign':
+              $variables['page']['content']['oxfordpath_page_control'] = [
+                '#weight' => -18,
+                '#type' => 'container',
+                '#attributes' => [
+                  'class' => ['upcoming_campaign_controls'],
+                ],
+              ];
+              break;
+            case 'past_campaign':
+              $accordion = [
+                '#type' => 'container',
+                '#name' => 'past_campaign_popup_box_accordion',
+                '#attributes' => [
+                  'class' => ['past_campaign_popup__box--accordion'],
+                ],
+                '#weight' => 50,
+              ];
+
+              $accordion['#children']['groups'] = [];
+
+              //              $vid = 'past_campaign_target';
+              //              $targetGroupVocabulary = \Drupal\taxonomy\Entity\Vocabulary::load($vid);
+              //              $targetGroup = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vid, 0, 1, TRUE);
+              //              $targetGroupArray = [];
+              //              if($targetGroup){
+              //                foreach($targetGroup as $target){
+              //                  $targetGroupArray[] = array(
+              //                    'id' => $target->id(),
+              //                    'name' => $target->getName()
+              //                  );
+              //                }
+              //                $accordion['#children']['groups']['target_group'] = array(
+              //                  'name' => $targetGroupVocabulary->get('name'),
+              //                  'id' => $targetGroupVocabulary->get('vid'),
+              //                  'data' => $targetGroupArray
+              //                );
+              //              }
+              //
+              //              $vid_type = 'past_campaign_type';
+              //              $targetTypeVocabulary = \Drupal\taxonomy\Entity\Vocabulary::load($vid_type);
+              //              $targetType = \Drupal::entityTypeManager()->getStorage('taxonomy_term')->loadTree($vid_type, 0, 1, TRUE);
+              //              $targetTypeArray = [];
+              //              if($targetType){
+              //                foreach($targetType as $target){
+              //                  $targetTypeArray[] = array(
+              //                    'id' => $target->id(),
+              //                    'name' => $target->getName()
+              //                  );
+              //                }
+              //                $accordion['#children']['groups']['target_type'] = array(
+              //                  'name' => $targetTypeVocabulary->get('name'),
+              //                  'id' => $targetTypeVocabulary->get('vid'),
+              //                  'data' => $targetTypeArray
+              //                );
+              //              }
+
+              //              $variables['page']['content']['oxfordpath_filter_type'] = array(
+              //                '#weight' => 99,
+              //                '#type' => 'container',
+              //                '#attributes' => array(
+              //                  'class' => ['past_campaign_popup'],
+              //                  'id' => 'past_campaign_popup__box--type',
+              //                ),
+              //                'box' => [
+              //                  '#type' => 'container',
+              //                  '#attributes' => array(
+              //                    'class' => ['past_campaign_popup__box'],
+              //                  ),
+              //                  'title' => [
+              //                    '#type' => 'html_tag',
+              //                    '#tag' => 'h6',
+              //                    '#value' => t('All Campaigns', array(), array('context' => 'past_campaign')),
+              //                    '#attributes' => array(
+              //                      'class' => ['past_campaign_popup__title']
+              //                    ),
+              //                    '#weight' => 10
+              //                  ],
+              //                  'accordion' => $accordion,
+              //                  'button' => [
+              //                    '#type' => 'html_tag',
+              //                    '#tag' => 'button',
+              //                    '#attributes' => array(
+              //                      'class' => ['past_campaign_popup__apply_filter']
+              //                    ),
+              //                    '#value' => t('Save Filters', array(), array('context' => 'past_campaign')),
+              //                    '#weight' => 90
+              //                  ]
+              //                ]
+              //              );
+              $variables['page']['content']['oxfordpath_page_control'] = [
+                '#weight' => -18,
+                '#type' => 'container',
+                '#attributes' => [
+                  'class' => ['past_campaign_controls'],
+                ],
+                'past_campaign_taxonomy' => [
+                  '#type' => 'container',
+                  '#attributes' => [
+                    'class' => ['past_campaign_control past_campaign_controls__taxonomy'],
+                  ],
+                  'button' => [
+                    '#type' => 'html_tag',
+                    '#tag' => 'button',
+                    '#value' => t('Type', [], ['context' => 'past_campaign']),
+                    '#attributes' => [
+                      'data-targettitle' => t('All Campaigns', [], ['context' => 'past_campaign']),
+                      'data-targethasfilters' => t('Filters', [], ['context' => 'past_campaign']),
+                      'data-filtertarget' => 'past_campaign_summary',
+                      'data-target' => 'past_campaign_popup',
+                      'class' => ['past_campaign_control__button'],
+                    ],
+                  ],
+                ],
+              ];
+              break;
+          }
+        }
+      }
+    }
+  } catch (Exception $x) {
+
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ */
+function oxfordpath_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+
+}
+
+/**
+ * Implements hook_theme_suggestions_node_alter().
+ */
+function oxfordpath_theme_suggestions_node_alter(array &$suggestions, array $variables) {
+  /*$node = $variables['elements']['#node'];
+
+  if ($variables['elements']['#view_mode'] == "full") {
+
+  }*/
+}
+
+/**
+ * Implements hook_preprocess_HOOK() for Block document templates.
+ */
+function oxfordpath_preprocess_block(array &$variables) {
+  if (isset($variables['elements']['content']['#menu_name'])) {
+    $variables['attributes']['class'][] = 'menu-block';
+  }
+  if (isset($variables['elements']['content']['#block_content'])) {
+    try {
+      $block_type = $variables['elements']['content']['#block_content']->bundle();
+      $variables['block_type'] = $block_type;
+      $variables['attributes']['class'][] = $block_type;
+      $variables['attributes']['class'][] = 'custom-block';
+      if($variables['elements']['content']['#block_content']->field_without_padding){
+        $value = $variables['elements']['content']['#block_content']->field_without_padding->value;
+        if($value === 1){
+          $variables['attributes']['class'][] = $block_type.'--without-padding';
+        }
+      }
+      switch ($block_type) {
+        case 'menu_group':
+          $field_menu_block = $variables['elements']['content']['#block_content']->field_menu_block;
+          if ($field_menu_block) {
+            //            $variables['field_menu_block_updated'] = $variables['elements']['content']['#block_content']->field_menu_block->value;
+            $blocks = $variables['elements']['content']['#block_content']->field_menu_block;
+            $block_ids = [];
+            if ($blocks->count() > 0) {
+              foreach ($blocks->getValue() as $index => $item) {
+                $variables['content']['field_menu_block_updated'][$index] = ['#plain_text' => $item['target_id']];
+              }
+            }
+            // Seems guest role cannot load
+            $variables['content']['field_menu_block_updated']['#theme'] = 'field';
+            $variables['content']['field_menu_block_updated']['#title'] = '';
+            $variables['content']['field_menu_block_updated']['#label_display'] = 'hidden';
+            $variables['content']['field_menu_block_updated']['#view_mode'] = 'full';
+            $variables['content']['field_menu_block_updated']['#object'] = $variables['elements']['content']['#block_content'];
+            $variables['content']['field_menu_block_updated']['#language'] = $variables['content']['field_title']['#language'];
+            $variables['content']['field_menu_block_updated']['#field_name'] = 'field_menu_block';
+            $variables['content']['field_menu_block_updated']['#field_type'] = 'entity_reference';
+            $variables['content']['field_menu_block_updated']['#entity_type'] = 'block_content';
+            $variables['content']['field_menu_block_updated']['#bundle'] = $block_type;
+            $variables['content']['field_menu_block_updated']['#items'] = $variables['elements']['content']['#block_content']->field_menu_block;
+            //            $variables['content']['field_menu_block_updated']['#formatter'] = 'entity_reference_entity_id';
+            $variables['content']['field_menu_block_updated']['#is_multiple'] = TRUE;
+          }
+          break;
+        case 'popup_block':
+          if ($variables['elements']['content']['#block_content']->field_show_once && $variables['elements']['content']['#block_content']->field_show_once->value === '1') {
+            $variables['attributes']['class'][] = 'show_once';
+            $variables['timestamp'] = $variables['elements']['content']['#block_content']->changed->value;
+          }
+          break;
+        case 'enquiry':
+        case 'basic_image_block':
+        case 'text_link_list':
+        case 'link_with_icon':
+        case 'search_bar':
+        case 'icon_list':
+        case 'page_header_v1':
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          break;
+        case 'social_network_sharing_dropdown':
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          if (isset($variables['content']) && isset($variables['content']['field_link'])) {
+            if(isset($variables['content']['field_link'][0])) {
+              // TODO: cache issue?
+              $request = \Drupal::request();
+              $variables['content']['field_link'][0]['#url_title'] = ($request->isSecure() ? 'https://' : 'http://') . $request->getHost() . $variables['content']['field_link'][0]['#url_title'];
+            }else{
+              $current_route_name = \Drupal::service('current_route_match')
+                ->getRouteObject();
+              if ($current_route_name) {
+                if ($current_route_name->getPath() === '/node/{node}') {
+                  $node = \Drupal::routeMatch()->getParameter('node');
+                  $request = \Drupal::request();
+                  $variables['content']['field_link'][0] = array(
+                    '#title' => $node->getTitle(),
+                    '#url_title' => ($request->isSecure() ? 'https://' : 'http://') . $request->getHost() . $node->toUrl('canonical', ['language' => $node->language])->toString()
+                  );
+                }
+              }
+            }
+          }
+          break;
+        case 'basic_title_block':
+          $text_color = ($variables['elements']['content']['#block_content']->field_title_color ? $variables['elements']['content']['#block_content']->field_title_color->value : '');
+          if ($text_color && trim($text_color) !== '') {
+            $variables['attributes']['style'][] = 'color:#000;' . $text_color . ';';
+          }
+          $background_color = ($variables['elements']['content']['#block_content']->field_background_color ? $variables['elements']['content']['#block_content']->field_background_color->value : '');
+          if ($background_color && trim($background_color) !== '') {
+            $variables['attributes']['style'][] = 'background-color:' . $background_color . ';';
+          }
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          break;
+        case 'basic_text_block':
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          $background_color = ($variables['elements']['content']['#block_content']->field_background_color ? $variables['elements']['content']['#block_content']->field_background_color->value : '');
+          if ($background_color && trim($background_color) !== '') {
+            $variables['attributes']['style'][] = 'background-color:' . $background_color . ';';
+          }
+          $text_color = ($variables['elements']['content']['#block_content']->field_color ? $variables['elements']['content']['#block_content']->field_color->value : '');
+          if ($text_color && trim($text_color) !== '') {
+            $variables['attributes']['style'][] = 'color:' . $text_color . ';';
+          }
+          $field_position = ($variables['elements']['content']['#block_content']->field_position ? $variables['elements']['content']['#block_content']->field_position->value : '');
+          if ($field_position) {
+            $variables['attributes']['class'][] = $block_type . '--' . $field_position;
+          }
+          break;
+        case 'form':
+          $id = ($variables['elements']['content']['#block_content']->field_form_id ? $variables['elements']['content']['#block_content']->field_form_id->value : '');
+          if ($id) {
+            $variables['attributes']['id'] = 'form-' . $id;
+          }
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          $background_color = ($variables['elements']['content']['#block_content']->field_background_color ? $variables['elements']['content']['#block_content']->field_background_color->value : '');
+          if ($background_color && trim($background_color) !== '') {
+            $variables['attributes']['style'][] = 'background-color:' . $background_color . ';';
+          }
+          $field_position = ($variables['elements']['content']['#block_content']->field_position ? $variables['elements']['content']['#block_content']->field_position->value : '');
+          if ($field_position) {
+            $variables['attributes']['class'][] = $block_type . '--' . $field_position;
+          }
+          break;
+        case 'sharing_dialog_slider':
+          $layout_style = ($variables['elements']['content']['#block_content']->field_dialog_layout ? $variables['elements']['content']['#block_content']->field_dialog_layout->value : '');
+          if ($layout_style && trim($layout_style) !== '') {
+            $variables['attributes']['class'][] = $block_type . '--' . $layout_style;
+          }
+          break;
+        case 'blur_bg_text_block_with_icon':
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          $background_color = ($variables['elements']['content']['#block_content']->field_background_color ? $variables['elements']['content']['#block_content']->field_background_color->value : '');
+          if ($background_color && trim($background_color) !== '') {
+            $variables['attributes']['style'][] = 'background-color:' . $background_color . ';';
+          }
+          break;
+        case 'copyright_auto_increment':
+          $variables['this_year'] = date('Y');
+          $css_class = ($variables['elements']['content']['#block_content']->field_css_class ? $variables['elements']['content']['#block_content']->field_css_class->value : '');
+          if ($css_class) {
+            $variables['attributes']['class'][] = $css_class;
+          }
+          break;
+        default:
+          break;
+      }
+    } catch (Exception $x) {
+    }
+  }
+  else {
+    // Probably a menu
+    try {
+      if (isset($variables['elements'])) {
+        $base_plugin_id = $variables['elements']['#base_plugin_id'];
+        if ($base_plugin_id) {
+          $variables['attributes']['class'][] = str_replace(':', '-', $base_plugin_id);
+        }
+        $derivative_plugin_id = $variables['elements']['#derivative_plugin_id'];
+        if ($derivative_plugin_id) {
+          $variables['attributes']['class'][] = str_replace(':', '-', $derivative_plugin_id);
+        }
+        switch($derivative_plugin_id){
+          case 'node:field_related_parent_sharing':
+            $language = \Drupal::languageManager()
+              ->getCurrentLanguage()
+              ->getId();
+            $variables['content']['back_to_listing'] = [
+              '#type' => 'container',
+              '#weight' => 9999,
+              '#attributes' => [
+                'class' => ['back_to_listing'],
+              ],
+              'link' => [
+                '#type' => 'inline_template',
+                '#template' => '<a href="/' . $language . '/parent-sharing"><span>' . t('More Parent Sharing', [], ['context' => 'parent_sharing']) . '</span></a>',
+              ],
+            ];
+            break;
+          case 'node:field_related_product_series':
+            break;
+        }
+        switch ($base_plugin_id) {
+          case 'page_title_block':
+            $current_route_name = \Drupal::service('current_route_match')
+              ->getRouteObject();
+            if ($current_route_name) {
+              if ($current_route_name->getPath() === '/node/{node}') {
+                $node = \Drupal::routeMatch()->getParameter('node');
+                $node_type = $node->getType();
+                if ($node_type === 'past_campaign') {
+                  $variables['attributes']['class'][] = 'page_title_block--node-past-campaign';
+                }
+                elseif ($node_type === 'campaign') {
+                  $variables['attributes']['class'][] = 'page_title_block--node-campaign';
+                }elseif($node_type === 'expert_sharing'){
+                  $language = \Drupal::languageManager()
+                    ->getCurrentLanguage()
+                    ->getId();
+                  $variables['attributes']['class'][] = 'page_title_block--node-expert-sharing';
+                  $breadcrumb = '<ul class="expert-sharing__breadcrumb">';
+                  $breadcrumb .= '<li><a class="page_title_block__link" href="/' . $language . '/expert-sharing"><span>' . t('Expert Sharing', [], ['context' => 'expert_sharing']) . '</span></a></li>';
+                  if($node->field_expert_sharing_category) {
+                    $terms = $node->get('field_expert_sharing_category')->referencedEntities();
+                    if(count($terms) > 0) {
+                      $breadcrumb .= '<li class="arrow"></li>';
+                      $translatedTerm = $terms[0]->getTranslation($language)?$terms[0]->getTranslation($language):$terms[0];
+                        $term_name = $translatedTerm->getName($translatedTerm);
+                      $bg_color = $translatedTerm->get('field_category_header_bg_color');
+                      if($bg_color){
+                        $variables['attributes']['style'][] = 'background-color:'.$bg_color->value.';';
+                      }
+
+                      $icon = $translatedTerm->get('field_icon');
+                      if($icon){
+                        $variables['post_children'] = [
+                          '#type' => 'container',
+                          '#attributes' => [
+                            'class' => ['page-title-block__icon'],
+                          ],
+                          'icon' => $icon->view()
+                        ];
+                      }
+
+                      $breadcrumb .= '<li><a href="/' . $language . '/expert-sharing?expert_sharing_category='. $terms[0]->id() . '"><span>'.$term_name.'</span></a></li>';
+                    }
+                  }
+                  $breadcrumb .= '</ul>';
+                  $variables['pre_children'] = [
+                    '#type' => 'inline_template',
+                    '#template' => $breadcrumb,
+                  ];
+                }elseif($node_type === 'parent_sharing'){
+                  $language = \Drupal::languageManager()
+                    ->getCurrentLanguage()
+                    ->getId();
+                  $variables['attributes']['class'][] = 'page_title_block--node-parent-sharing';
+                  $breadcrumb = '<ul class="parent-sharing__breadcrumb">';
+                  $breadcrumb .= '<li><a class="page_title_block__link" href="/' . $language . '/parent-sharing"><span>' . t('Parent Sharing', [], ['context' => 'parent_sharing']) . '</span></a></li>';
+                  $test = $node->field_children_age_range;
+                  if($node->field_children_age_range) {
+                    $terms = $node->get('field_children_age_range')->referencedEntities();
+                    if(count($terms) > 0) {
+                      $breadcrumb .= '<li class="arrow"></li>';
+                      $translatedTerm = $terms[0]->getTranslation($language)?$terms[0]->getTranslation($language):$terms[0];
+                      $term_name = $translatedTerm->getName($translatedTerm);
+                      $breadcrumb .= '<li><a href="/' . $language . '/parent-sharing?children_age_range='. $terms[0]->id() . '"><span>'.$term_name.'</span></a></li>';
+                    }
+                  }
+                  $breadcrumb .= '</ul>';
+                  $variables['pre_children'] = [
+                    '#type' => 'inline_template',
+                    '#template' => $breadcrumb,
+                  ];
+                }
+              }
+              if ($current_route_name->getDefaults()) {
+                $defaults = $current_route_name->getDefaults();
+                if (isset($defaults['view_id'])) {
+                  switch ($defaults['view_id']) {
+                    case 'expert_articles':
+                      $term_id = \Drupal::routeMatch()->getParameter('arg_0');
+                      $term = \Drupal::entityTypeManager()
+                        ->getStorage('taxonomy_term')
+                        ->load(intval($term_id));
+                      if ($term) {
+                        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+                        $variables['expert_title'] = t('Articles by @name', ['@name' => $term->get('name')->value]);
+                        $breadcrumb = '<ul class="expert__breadcrumb breadcrumb">';
+                        $breadcrumb .= '<li><a class="page_title_block__link" href="/' . $language . '/expert-sharing"><span>' . t('Expert Sharing', [], ['context' => 'expert_sharing']) . '</span></a></li>';
+                        $breadcrumb .= '<li class="arrow"></li>';
+                        $breadcrumb .= '<li><span>'.t('OxfordPath Experts').'</span></li>';
+                        $breadcrumb .= '</ul>';
+                        $variables['pre_children'] = [
+                          '#type' => 'inline_template',
+                          '#template' => $breadcrumb,
+                        ];
+                        if($term->field_detail_bg_color) {
+                          $variables['expert_bg_color'] = $term->field_detail_bg_color->value;
+                        }
+                      }
+                      break;
+                    case 'expert_sharing':
+                      $view = \Drupal::routeMatch()->getParameters();
+                      $category = \Drupal::request()->query->get('expert_sharing_category');
+                      if ($category !== 'All') {
+                        $term = \Drupal::entityTypeManager()
+                          ->getStorage('taxonomy_term')
+                          ->load(intval($category));
+                        if ($term) {
+                          if ($term->field_category_header_bg_color) {
+                            $variables['attributes']['style'] = 'background-color:' . $term->field_category_header_bg_color->value . ';';
+                          }
+                        }
+                      }
+                      break;
+                    case 'upcoming_campaign':
+                      $language = \Drupal::languageManager()
+                        ->getCurrentLanguage()
+                        ->getId();
+                      if (!isset($variables['post_children'])) {
+                        $variables['post_children'] = [];
+                      }
+                      $variables['post_children'] = [
+                        '#type' => 'inline_template',
+                        '#template' => '<a class="page_title_block__link" href="/' . $language . '/special-weather-arrangement"><span>' . t('Weather Arrangement', [], ['context' => 'campaign']) . '</span></a>',
+                      ];
+                      break;
+                      break;
+                    case 'past_campaign':
+                      $language = \Drupal::languageManager()
+                        ->getCurrentLanguage()
+                        ->getId();
+                      if (!isset($variables['post_children'])) {
+                        $variables['post_children'] = [];
+                      }
+                      $variables['post_children'] = [
+                        '#type' => 'inline_template',
+                        '#template' => '<a class="page_title_block__link" href="/' . $language . '/upcoming-campaigns"><span>' . t('Latest Campaign', [], ['context' => 'past_campaign']) . '</span></a>',
+                      ];
+                      break;
+                  }
+                }
+              }
+            }
+          //          case 'search_form_block':
+          //            $variables['elements']['content']['keys']['#attributes']['placeholder'][] = t('Search Products And Sharing');
+          //            break;
+        }
+      }
+    } catch (Exception $x) {
+
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_form_alter
+ */
+function oxfordpath_theme_suggestions_form_alter(array &$suggestions, array $variables) {
+  $suggestions[] = 'form__' . $variables['element']['#form_id'];
+  if ($variables['element']['#form_id'] === 'views_exposed_form') {
+    if (strpos($variables['element']['#id'], 'views-exposed-form-past-campaign') !== FALSE) {
+      $suggestions[] = 'form__views_exposed_form_past_campaign';
+    }
+    if (strpos($variables['element']['#id'], 'views-exposed-form-parent-sharing') !== FALSE) {
+      $suggestions[] = 'form__views_exposed_form_parent_sharing';
+    }
+    if (strpos($variables['element']['#id'], 'views-exposed-form-expert-sharing') !== FALSE) {
+      $suggestions[] = 'form__views_exposed_form_expert_sharing';
+    }
+  }
+}
+
+/**
+ * Implements hook_form_formID_alter().
+ */
+function oxfordpath_form_views_exposed_form_alter(&$form, &$form_state, $form_id) {
+  if (isset($form['past_campaign_target']) || isset($form['past_campaign_type'])) {
+    $form['actions']['submit']['#value'] = t('Save Filters', [], ['context' => 'past_campaign']);
+  }
+  if (isset($form['children_age_range'])) {
+    $form['actions']['submit']['#value'] = t('Save Filters', [], ['context' => 'parent_sharing']);
+  }
+  if (isset($form['expert_sharing_category'])) {
+    $form['actions']['submit']['#value'] = t('Save Filters', [], ['context' => 'expert_sharing']);
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_form_element_label_alter()
+ */
+function oxfordpath_theme_suggestions_form_element_label_alter(array &$suggestions, array $variables) {
+  try {
+    if ($variables['element']['#id'] === 'edit-past-campaign-type' || $variables['element']['#id'] === 'edit-past-campaign-target') {
+      $suggestions[] = 'form_element_label__past_campaign_label';
+    }
+    if ($variables['element']['#id'] === 'edit-children-age-range') {
+      $suggestions[] = 'form_element_label__parent_sharing_label';
+    }
+    if ($variables['element']['#id'] === 'edit-expert-sharing-category') {
+      $suggestions[] = 'form_element_label__expert_sharing_label';
+    }
+  } catch (Exception $x) {
+
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_select_alter()
+ */
+function oxfordpath_theme_suggestions_select_alter(array &$suggestions, array $variables) {
+  try {
+    if ($variables['element']['#name'] === 'past_campaign_type' || $variables['element']['#name'] === 'past_campaign_target') {
+      $suggestions[] = 'select__past_campaign_select';
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'select__past_campaign_select_for_display_label';
+      }
+    }
+    if ($variables['element']['#name'] === 'children_age_range') {
+      $suggestions[] = 'select__parent_sharing_select';
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'select__parent_sharing_select_for_display_label';
+      }
+    }
+    if ($variables['element']['#name'] === 'expert_sharing_category') {
+      $suggestions[] = 'select__expert_sharing_select';
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'select__expert_sharing_select_for_display_label';
+      }
+    }
+  } catch (Exception $x) {
+
+  }
+}
+
+/**
+ * Implements hook_form_element_alter()
+ */
+function oxfordpath_preprocess_form_element(&$variables) {
+  //  $variables['test'] = 1;
+}
+
+/**
+ * Implementation of hook_theme_suggestions_form_element_alter().
+ */
+function oxfordpath_theme_suggestions_form_element_alter(array &$suggestions, array $variables) {
+  try {
+    if ($variables['element']['#name'] === 'past_campaign_type' || $variables['element']['#name'] === 'past_campaign_target') {
+      $suggestions[] = 'form_element__' . $variables['element']['#name'];
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'form_element__' . $variables['element']['#name'] . '_for_display_label';
+      }
+    }
+    if ($variables['element']['#name'] === 'children_age_range') {
+      $suggestions[] = 'form_element__' . $variables['element']['#name'];
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'form_element__' . $variables['element']['#name'] . '_for_display_label';
+      }
+    }
+    if ($variables['element']['#name'] === 'expert_sharing_category') {
+      $suggestions[] = 'form_element__' . $variables['element']['#name'];
+      if (isset($variables['element']['#for_display_label']) && $variables['element']['#for_display_label'] === TRUE) {
+        $suggestions[] = 'form_element__' . $variables['element']['#name'] . '_for_display_label';
+      }
+    }
+  } catch (Exception $x) {
+
+  }
+}
+
+/**
+ * Implements hook_form_alter().
+ */
+function oxfordpath_form_alter(&$form, &$form_state, $form_id) {
+  switch ($form_id) {
+    case 'user_login_form':
+      if (function_exists('honeypot_add_form_protection')) {
+        honeypot_add_form_protection($form, $form_state, ['honeypot']);
+      }
+      unset($form['name']['#description']);
+      unset($form['pass']['#description']);
+      $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+      $form['forget'] = [
+        '#type' => 'container',
+        '#markup' => t("Foget <a href='@forgetusername'>Username</a> or Forget <a href='@forgetpassword'>Password</a>", [
+          "@forgetusername" => "/" . $language . "/user/login",
+          "@forgetpassword" => "/" . $language . "/user/password",
+        ]),
+        '#weight' => 999,
+        '#attributes' => [
+          'class' => 'user_login_form__forget',
+        ],
+      ];
+      break;
+    case 'search_block_form':
+      // Adding placeholders to fields
+      $form['keys']['#attributes']['placeholder'] = t('Search Products And Sharing');
+      break;
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_field_alter().
+ */
+function oxfordpath_theme_suggestions_field_alter(array &$suggestions, array $variables) {
+  /*$element = $variables['element'];
+  $suggestions[] = 'field__' . $element['#view_mode'];
+  $suggestions[] = 'field__' . $element['#view_mode'] . '__' . $element['#field_name'];*/
+}
+
+/**
+ * Implements hook_theme_suggestions_fieldset_alter().
+ */
+function oxfordpath_theme_suggestions_fieldset_alter(array &$suggestions, array $variables) {
+  /*$element = $variables['element'];
+  if (isset($element['#attributes']['class']) && in_array('form-composite', $element['#attributes']['class'])) {
+    $suggestions[] = 'fieldset__form_composite';
+  }*/
+}
+
+/**
+ * Implements hook_preprocess_taxonomy_term()
+ */
+function oxfordpath_preprocess_taxonomy_term(&$variables) {
+  if (isset($variables['elements']['#taxonomy_term'])) {
+    $bundle = $variables['elements']['#taxonomy_term']->bundle();
+    if ($bundle === 'product_age_range' || $bundle === 'product_series') {
+      if ($variables['elements']['#view_mode'] === 'teaser') {
+        $variables['term_url'] = $variables['term']->toUrl('canonical', ['language' => $variables['term']->language]);
+      }
+      if ($bundle === 'product_age_range' && $variables['elements']['#view_mode'] === 'link_item') {
+        // Get the term product_range_bg_color
+        $bg_color = ($variables['term']->get('field_product_range_bg_color') ? $variables['term']->get('field_product_range_bg_color')->value : '');
+      }
+      if($bundle === 'product_age_range' && $variables['elements']['#view_mode'] === 'full'){
+        $variables['description'] =  ($variables['term']->get('description') ? $variables['term']->get('description')->view([
+          'label' => 'hidden'
+        ]): '');
+        $variables['field_hero_image_small'] =  ($variables['term']->get('field_hero_image_small') ? $variables['term']->get('field_hero_image_small')->view([
+          'label' => 'hidden',
+          'type' => 'media_thumbnail'
+        ]): null);
+
+        $variables['field_hero_image_medium'] =  ($variables['term']->get('field_hero_image_medium') ? $variables['term']->get('field_hero_image_medium')->view([
+          'label' => 'hidden',
+          'type' => 'media_thumbnail'
+        ]): null);
+        $variables['field_hero_image_large'] =  ($variables['term']->get('field_hero_image_large') ? $variables['term']->get('field_hero_image_large')->view([
+          'label' => 'hidden',
+          'type' => 'media_thumbnail'
+        ]): null);
+      }
+    }
+    if($bundle === 'expert'){
+      if($variables['elements']['#view_mode'] === 'full'){
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['expert_title'] = t('Articles by @name', ['@name' => $variables['term']->get('name')->value]);
+        $breadcrumb = '<ul class="expert__breadcrumb breadcrumb">';
+        $breadcrumb .= '<li><a class="page_title_block__link" href="/' . $language . '/expert-sharing"><span>' . t('Expert Sharing', [], ['context' => 'expert_sharing']) . '</span></a></li>';
+        $breadcrumb .= '<li class="arrow"></li>';
+        $breadcrumb .= '<li><span>'.t('OxfordPath Experts').'</span></li>';
+        $breadcrumb .= '</ul>';
+        $variables['pre_children'] = [
+          '#type' => 'inline_template',
+          '#template' => $breadcrumb,
+        ];
+      }
+      if($variables['elements']['#view_mode'] === 'teaser'){
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['profile_url'] = '/'.$language.'/expert/'.$variables['term']->id();
+      }
+    }
+    if($bundle === 'expert_sharing_category') {
+      if ($variables['elements']['#view_mode'] === 'link_item') {
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['filter_url'] = '/' . $language . '/expert-sharing?expert_sharing_category='.$variables['term']->id();
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_taxonomy_term_alter()
+ */
+function oxfordpath_theme_suggestions_taxonomy_term_alter(array &$suggestions, array $variables) {
+  if (isset($variables['elements']['#view_mode'])) {
+    $bundle = $variables['elements']['#taxonomy_term']->bundle();
+    $view_mode = $variables['elements']['#view_mode'];
+    array_splice($suggestions, 1, 0, 'taxonomy_term__' . $bundle . '_' . $view_mode);
+    array_splice($suggestions, 1, 0, 'taxonomy_term__' . $view_mode);
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_list()
+ */
+function oxfordpath_preprocess_views_view_list(array &$variables){
+  $current_view_display = $variables['view']->current_display;
+  if($current_view_display === 'pager') {
+    if (count($variables['rows']) > 0) {
+      $node = \Drupal::routeMatch()->getParameter('node');
+      if($node) {
+        $nid = $node->id();
+        $nids = [];
+        foreach ($variables['rows'] as $row) {
+          if (isset($row['content']) && isset($row['content']['#row'])) {
+            $nids[] = $row['content']['#row']->nid;
+          }
+        }
+        $pos = array_search($nid, $nids);
+        if ($pos !== FALSE) {
+          if ($pos !== 0) {
+            $prev = $pos - 1;
+            $prev = $variables['rows'][$prev];
+            $prev['node_url'] = $prev['content']['#row']->_entity->toUrl('canonical', ['language' => $prev['content']['#row']->_entity->language]);
+          }
+          else {
+            $prev = NULL;
+          }
+          if ($pos < (count($nids) - 1)) {
+            $next = $pos + 1;
+            $next = $variables['rows'][$next];
+            $next['node_url'] = $next['content']['#row']->_entity->toUrl('canonical', ['language' => $next['content']['#row']->_entity->language]);
+          }
+          else {
+            $next = NULL;
+          }
+          $new_rows = [
+            $prev,
+            $next
+          ];
+          $variables['rows'] = $new_rows;
+        }
+        else {
+          $variables['rows'] = [];
+        }
+      }
+    }
+    else {
+      $variables['rows'] = [];
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_views_view_unformatted()
+ */
+function oxfordpath_preprocess_views_view_unformatted(array &$variables){
+  $current_view_display = $variables['view']->current_display;
+  $variables['attributes']['class'][] = 'views-view-container--'.$current_view_display;
+}
+
+/**
+ * Implements hook_theme_suggestions_views_view_unformatted_alter()
+ */
+//function oxfordpath_theme_suggestions_views_view_unformatted_alter(){
+//
+//}
+
+
+/**
+ * Implements hook_preprocess_node().
+ */
+function oxfordpath_preprocess_node(array &$variables) {
+  // Default to turning off byline/submitted.
+  $variables['display_submitted'] = FALSE;
+  if($variables['node']->getType() === 'expert_sharing'){
+    if($variables['view_mode'] === 'full') {
+      // Load the related expert sharing in the bottom
+      if($variables['node']->field_expert_sharing_category) {
+        $terms = $variables['node']->get('field_expert_sharing_category')->referencedEntities();
+        if(count($terms) > 0) {
+          $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+          $translatedTerm = $terms[0]->getTranslation($language)?$terms[0]->getTranslation($language):$terms[0];
+          $field_related_expert_sharing = $translatedTerm->get('field_related_expert_sharing');
+          if($field_related_expert_sharing && $field_related_expert_sharing->count() > 0) {
+            $variables['related_expert_sharing'] = [
+              '#type' => 'container',
+              '#attributes' => [
+                'class' => ['expert__related_expert_sharing']
+              ],
+              'title' => [
+                '#type' => 'html_tag',
+                '#weight' => 0,
+                '#tag' => 'h2',
+                '#value' => t('Related Expert Sharing', [], ['context' => 'expert_sharing']),
+              ],
+              'content' => $field_related_expert_sharing->view([
+                'label' => 'hidden',
+                'type' => 'entity_reference_entity_view',
+                'settings' => [
+                  'view_mode' => 'teaser'
+                ]
+              ]),
+              'back_to_list' => [
+                '#type' => 'container',
+                '#weight' => 9999,
+                '#attributes' => [
+                  'class' => ['back_to_listing'],
+                ],
+                'link' => [
+                  '#type' => 'inline_template',
+                  '#template' => '<a href="/' . $language . '/expert-sharing"><span>' . t('More Expert Sharing', [], ['context' => 'expert_sharing']) . '</span></a>',
+                ],
+              ]
+            ];
+            $variables['related_expert_sharing']['content']['#weight'] = 2;
+            $variables['related_expert_sharing']['content']['#label_hidden'] = false;
+          }
+
+          $field_related_product_package = $translatedTerm->get('field_related_product_package');
+          if($field_related_product_package && $field_related_product_package->count() > 0) {
+            $variables['related_product_series'] = [
+              '#type' => 'container',
+              '#attributes' => [
+                'class' => ['expert__related_product_package']
+              ],
+              'title' => [
+                '#type' => 'html_tag',
+                '#weight' => 0,
+                '#tag' => 'h2',
+                '#value' => t('Related Product Package', [], ['context' => 'expert_sharing']),
+              ],
+              'content' => $field_related_product_package->view([
+                'label' => 'hidden',
+                'type' => 'entity_reference_entity_view',
+                'settings' => [
+                  'view_mode' => 'teaser'
+                ]
+              ]),
+            ];
+            $test = '123';
+            $variables['related_product_series']['content']['#weight'] = 2;
+            $variables['related_product_series']['content']['#label_hidden'] = false;
+          }
+        }
+      }
+      // Load the related learning resource in the bottom
+    }
+  }elseif ($variables['node']->getType() === 'parent_sharing') {
+    $variables['node_url'] = $variables['node']->toUrl('canonical', ['language' => $variables['node']->language]);
+    if ($variables['view_mode'] === 'teaser') {
+      $variables['content']['more_detail'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => ['parent_sharing__field_know_more'],
+        ],
+        'link' => [
+          '#type' => 'link',
+          '#url' => $variables['node_url'],
+          '#attributes' => [
+            'target' => '_self',
+          ],
+          '#title' => [
+            '#type' => 'html_tag',
+            '#tag' => 'span',
+            '#value' => t('Know More', [], ['context' => 'parent_sharing']),
+          ],
+        ],
+      ];
+    }elseif($variables['view_mode'] === 'full') {
+      $variables['parent_profile'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => ['parent', 'profile']
+        ],
+        'parent__icon' => [
+          '#type' => 'container',
+          '#attributes' => [
+            'class' => ['parent__icon', 'profile__icon']
+          ],
+          '#weight' => 1
+        ],
+        'parent__info' => [
+          '#type' => 'container',
+          '#attributes' => [
+            'class' => ['parent__info', 'profile__info']
+          ],
+          '#weight' => 2
+        ]
+      ];
+      if ($variables['node']->field_body) {
+        $variables['sharing_summary'] = $variables['node']->field_body->view();
+        $variables['sharing_summary']['#label_display'] = 'visually_hidden';
+      }
+      if ($variables['node']->field_icon) {
+        $variables['parent_profile']['parent__icon']['icon'] = $variables['node']->field_icon->view();
+        $variables['parent_profile']['parent__icon']['icon']['#label_display'] = 'visually_hidden';
+      }
+      if ($variables['node']->field_icon_title) {
+        $variables['parent_profile']['parent__info']['title'] = $variables['node']->field_icon_title->view();
+        $variables['parent_profile']['parent__info']['title']['#label_display'] = 'visually_hidden';
+        $variables['parent_profile']['parent__info']['title']['#weight'] = 1;
+      }
+      if ($variables['node']->field_icon_subtitle_multiline) {
+        $variables['parent_profile']['parent__info']['subtitle'] = $variables['node']->field_icon_subtitle_multiline->view();
+        $variables['parent_profile']['parent__info']['subtitle']['#label_display'] = 'visually_hidden';
+        $variables['parent_profile']['parent__info']['subtitle']['#weight'] = 2;
+      }
+      if ($variables['node']->field_usage) {
+        $variables['parent_profile']['parent__info']['usage'] = $variables['node']->field_usage->view();
+        $variables['parent_profile']['parent__info']['usage']['#label_display'] = 'visually_hidden';
+        $variables['parent_profile']['parent__info']['usage']['#weight'] = 3;
+      }
+    }
+  }
+  elseif ($variables['node']->getType() === 'past_campaign') {
+    if ($variables['view_mode'] === 'teaser') {
+      $variables['node_url'] = $variables['node']->toUrl('canonical', ['language' => $variables['node']->language]);
+      try {
+        // Count the labels
+        $target = $variables['node']->field_pcampaign_target;
+        $type = $variables['node']->field_pcampaign_type;
+        $count = 0;
+        if ($target) {
+          $count += $target->count();
+        }
+        if ($type) {
+          $count += $type->count();
+        }
+        $variables['content']['label_count'] = $count;
+      } catch (Exception $x) {
+        $variables['content']['label_count'] = 0;
+      }
+      try {
+        // Process the date
+        $variables['content']['display_event_date'] = FALSE;
+        $startDate = ($variables['node']->field_pcampaign_start_date ? $variables['node']->field_pcampaign_start_date->value : NULL);
+        $endDate = ($variables['node']->field_pcampaign_end_date ? $variables['node']->field_pcampaign_end_date->value : NULL);
+        if ($startDate && $endDate) {
+          $variables['content']['display_event_date'] = TRUE;
+          if ($startDate !== $endDate) {
+            $dateArray = explode('-', $startDate);
+            $endDateArray = explode('-', $endDate);
+            $variables['content']['display_date_day'] = ltrim($dateArray[2], '0') . '-' . ltrim($endDateArray[2], '0');
+            $month = \DateTime::createFromFormat('!m', intval($dateArray[1]));
+            $variables['content']['display_date_month'] = t($month->format('F'), [], ['context' => 'past_campaign_month']);
+            $variables['content']['display_date_year'] = $dateArray[0];
+            $variables['content']['display_date'] = t('%day %month, %year', [
+              '%year' => $variables['content']['display_date_year'],
+              '%month' => $variables['content']['display_date_month'],
+              '%day' => $variables['content']['display_date_day'],
+            ], ['context' => 'past_campaign_text']);
+          }
+          else {
+            $dateArray = explode('-', $startDate);
+            $variables['content']['display_date_day'] = ltrim($dateArray[2], '0');
+            $month = \DateTime::createFromFormat('!m', intval($dateArray[1]));
+            $variables['content']['display_date_month'] = t($month->format('F'), [], ['context' => 'past_campaign_month']);
+            $variables['content']['display_date_year'] = $dateArray[0];
+            $variables['content']['display_date'] = t('%day %month, %year', [
+              '%year' => $variables['content']['display_date_year'],
+              '%month' => $variables['content']['display_date_month'],
+              '%day' => $variables['content']['display_date_day'],
+            ], ['context' => 'past_campaign_text']);
+          }
+        }
+      } catch (Exception $x) {
+      }
+
+      $variables['content']['more_detail'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => ['past_campaign__field_know_more'],
+        ],
+        'link' => [
+          '#type' => 'link',
+          '#url' => $variables['node_url'],
+          '#attributes' => [
+            'target' => '_self',
+          ],
+          '#title' => [
+            '#type' => 'html_tag',
+            '#tag' => 'span',
+            '#value' => t('Know More'),
+          ],
+        ],
+      ];
+    }
+    elseif ($variables['view_mode'] === 'full') {
+      $variables['content']['horizontal_line'] = [
+        '#type' => 'html_tag',
+        '#tag' => 'hr',
+        '#attributes' => [
+          'class' => ['bottom_content_hr'],
+        ],
+        '#weight' => 9998,
+      ];
+
+      $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+
+      $variables['content']['back_to_listing'] = [
+        '#type' => 'container',
+        '#weight' => 9999,
+        '#attributes' => [
+          'class' => ['back_to_listing'],
+        ],
+        'link' => [
+          '#type' => 'inline_template',
+          '#template' => '<a href="/' . $language . '/past-campaigns"><span>' . t('Past Campaign', [], ['context' => 'past_campaign_node_bottom']) . '</span></a>',
+        ],
+      ];
+    }
+  }
+  elseif ($variables['node']->getType() === 'campaign') {
+    if ($variables['view_mode'] === 'teaser') {
+
+      $field_campaign_id = ($variables['node']->field_campaign_id ? $variables['node']->field_campaign_id->value : NULL);
+      if ($field_campaign_id) {
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['node_url'] = '/' . $language . '/public_campaign/' . $field_campaign_id;
+      }
+      else {
+        $variables['node_url'] = '#';
+      }
+
+      try {
+        // Process the date
+        $variables['content']['display_event_date'] = FALSE;
+        $startDate = ($variables['node']->field_start_date ? $variables['node']->field_start_date->value : NULL);
+        $endDate = ($variables['node']->field_end_date ? $variables['node']->field_end_date->value : NULL);
+        if ($startDate && $endDate) {
+          $variables['content']['display_event_date'] = TRUE;
+          if ($startDate !== $endDate) {
+            $dateArray = explode('-', date('Y-m-d', $startDate));
+            $endDateArray = explode('-', date('Y-m-d', $endDate));
+            $variables['content']['display_date_day'] = ltrim($dateArray[2], '0') . '-' . ltrim($endDateArray[2], '0');
+            $month = \DateTime::createFromFormat('!m', intval($dateArray[1]));
+            $variables['content']['display_date_month'] = t($month->format('F'), [], ['context' => 'campaign_month']);
+            $variables['content']['display_date_year'] = $dateArray[0];
+            $variables['content']['display_date'] = t('%day %month, %year', [
+              '%year' => $variables['content']['display_date_year'],
+              '%month' => $variables['content']['display_date_month'],
+              '%day' => $variables['content']['display_date_day'],
+            ], ['context' => 'campaign_text']);
+          }
+          else {
+            $dateArray = explode('-', date('Y-m-d', $endDate));
+            $variables['content']['display_date_day'] = ltrim($dateArray[2], '0');
+            $month = \DateTime::createFromFormat('!m', intval($dateArray[1]));
+            $variables['content']['display_date_month'] = t($month->format('F'), [], ['context' => 'campaign_month']);
+            $variables['content']['display_date_year'] = $dateArray[0];
+            $variables['content']['display_date'] = t('%day %month, %year', [
+              '%year' => $variables['content']['display_date_year'],
+              '%month' => $variables['content']['display_date_month'],
+              '%day' => $variables['content']['display_date_day'],
+            ], ['context' => 'campaign_text']);
+          }
+        }
+      } catch (Exception $x) {
+      }
+
+      $variables['content']['more_detail'] = [
+        '#type' => 'container',
+        '#attributes' => [
+          'class' => ['campaign__field_know_more'],
+        ],
+        'link' => [
+          '#type' => 'inline_template',
+          '#template' => '<a href="' . $variables['node_url'] . '" target="_self"><span>' . t('Know More') . '</span></a>',
+        ],
+      ];
+    }
+    elseif ($variables['view_mode'] === 'full') {
+
+      // Full mode in campaign detail page, disable cache
+      $variables['#cache']['max-age'] = 0;
+
+      $summary = [
+        '#type' => 'container',
+        '#weight' => 30,
+        '#name' => 'campaign_summary',
+        '#attributes' => [
+          'class' => ['campaign_summary'],
+        ],
+        '#children' => [],
+      ];
+      $summary['#children']['items'] = [];
+
+      // Turn on page variable will hide the h2
+      $variables['page'] = TRUE;
+
+      try {
+        $start_date = ($variables['node']->field_start_date ? $variables['node']->field_start_date->value : NULL);
+        $end_date = ($variables['node']->field_start_date ? $variables['node']->field_end_date->value : NULL);
+        if ($start_date && $end_date) {
+          if ($start_date !== $end_date) {
+            $start_date = date('Y-m-d', $start_date);
+            $end_date = date('Y-m-d', $end_date);
+            $start_date = explode('-', $start_date);
+            $end_date = explode('-', $end_date);
+            $display_date = t('%year-%month-%day - %toDay', [
+              '%year' => $start_date[0],
+              '%month' => $start_date[1],
+              '%day' => $start_date[2],
+              '%toDay' => $end_date[2],
+            ], ['context' => 'campaign_summary']);
+          }
+          else {
+            $start_date = date('Y-m-d', $start_date);
+            $start_date = explode('-', $start_date);
+            $display_date = t('%year-%month-%day', [
+              '%year' => $start_date[0],
+              '%month' => $start_date[1],
+              '%day' => $start_date[2],
+            ], ['context' => 'campaign_summary']);
+          }
+          $summary['#children']['items'][] = [
+            'label' => t('Date', [], ['context' => 'campaign_summary']),
+            'value' => $display_date,
+            'separator' => t(': ', [], ['context' => 'campaign_summary']),
+          ];
+        }
+      } catch (Exception $x) {
+      }
+
+      try {
+        $speaker = ($variables['node']->field_speaker ? $variables['node']->field_speaker->value : NULL);
+        if ($speaker) {
+          // Speaker
+          $summary['#children']['items'][] = [
+            'label' => t('Speaker', [], ['context' => 'campaign_summary']),
+            'value' => $speaker,
+            'separator' => t(': ', [], ['context' => 'campaign_summary']),
+          ];
+        }
+      } catch (Exception $x) {
+
+      }
+
+      try {
+        $event_start_time = ($variables['node']->field_event_start_time ? $variables['node']->field_event_start_time->value : '');
+        $event_end_time = ($variables['node']->field_event_end_time ? $variables['node']->field_event_end_time->value : '');
+        if ($event_start_time !== '' && $event_end_time !== '') {
+          // Time
+          $summary['#children']['items'][] = [
+            'label' => t('Time', [], ['context' => 'campaign_summary']),
+            'value' => $event_start_time . '-' . $event_end_time,
+            'separator' => t(': ', [], ['context' => 'campaign_summary']),
+          ];
+        }
+      } catch (Exception $x) {
+      }
+
+      try {
+        $charge_for_child = ($variables['node']->field_charge_for_child ? $variables['node']->field_charge_for_child->value : '');
+        $charge_for_parent = ($variables['node']->field_charge_for_parent ? $variables['node']->field_charge_for_parent->value : '');
+        $charge_paid = ($variables['node']->field_charge_paid ? $variables['node']->field_charge_paid->value : FALSE);
+        if ($charge_paid === TRUE) {
+          $fee_value = $charge_for_parent . '/' . $charge_for_child;
+        }
+        else {
+          $fee_value = t('Free', [], ['context' => 'campaign_summary']);
+        }
+        // Fee
+        $summary['#children']['items'][] = [
+          'label' => t('Fee', [], ['context' => 'campaign_summary']),
+          'value' => $fee_value,
+          'separator' => t(': ', [], ['context' => 'campaign_summary']),
+        ];
+      } catch (Exception $x) {
+      }
+
+      try {
+        // Location
+        $summary['#children']['items'][] = [
+          'label' => t('Location', [], ['context' => 'campaign_summary']),
+          'value' => ($variables['node']->field_location ? $variables['node']->field_location->value : ''),
+          'separator' => t(': ', [], ['context' => 'campaign_summary']),
+        ];
+      } catch (Exception $x) {
+      }
+
+
+      $variables['content']['summary'] = $summary;
+      // TODO: cache management
+      $current_timestamp = time();
+      $registration_start_date = ($variables['node']->field_registration_start_date ? $variables['node']->field_registration_start_date->value : NULL);
+      $registration_end_date = ($variables['node']->field_registration_end_date ? $variables['node']->field_registration_end_date->value : NULL);
+      if ($registration_start_date && $registration_end_date) {
+        $registration_start_date = intval($registration_start_date);
+        $registration_end_date = intval($registration_end_date);
+        if ($registration_start_date <= $current_timestamp && $current_timestamp <= $registration_end_date) {
+          $variables['content']['quick_access'] = [
+            '#type' => 'container',
+            '#weight' => 10,
+            '#attributes' => [
+              'class' => ['quick_access_bar'],
+            ],
+            'link' => [
+              '#type' => 'inline_template',
+              '#template' => '<a href="#campaign_form"><span>' . t('Register Now!', [], ['context' => 'campaign']) . '</span></a>',
+            ],
+          ];
+          $variables['content']['horizontal_line'] = [
+            '#type' => 'html_tag',
+            '#tag' => 'hr',
+            '#attributes' => [
+              'class' => ['bottom_content_hr'],
+            ],
+            '#weight' => 9995,
+          ];
+        }
+      }
+
+      $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+
+      $variables['content']['back_to_listing'] = [
+        '#type' => 'container',
+        '#weight' => 9999,
+        '#attributes' => [
+          'class' => ['back_to_listing'],
+        ],
+        'link' => [
+          '#type' => 'inline_template',
+          '#template' => '<a href="/' . $language . '/upcoming-campaigns"><span>' . t('Upcoming Campaign', [], ['context' => 'campaign_node_bottom']) . '</span></a>',
+        ],
+      ];
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_views_view_alter().
+ */
+function oxfordpath_theme_suggestions_views_view_alter(array &$suggestions, array $variables) {
+  $path = $variables['view']->getPath();
+  if ($path === 'taxonomy/term/%') {
+    array_splice($suggestions, 1, 0, 'views_view__taxonomy_term');
+  }
+  else {
+    $current_view_display = $variables['view']->current_display;
+    // Only handle the display with id - menu
+    $view_id = $variables['view']->id();
+    if ($current_view_display === 'menu') {
+      array_splice($suggestions, 1, 0, 'views_view__' . $current_view_display);
+      array_splice($suggestions, 1, 0, 'views_view__' . $view_id . '_' . $current_view_display);
+    }
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_views_view_list_alter()
+ */
+function oxfordpath_theme_suggestions_views_view_list_alter(array &$suggestions, array $variables) {
+  $current_view_display = $variables['view']->current_display;
+  array_splice($suggestions, 1, 0, 'views_view_list__' . $current_view_display);
+}
+
+/**
+ * Implements hook_preprocess_views_view()
+ */
+function oxfordpath_preprocess_views_view(&$variables) {
+  if ($variables['display_id'] === 'menu') {
+    try {
+      $variables['attributes']['class'][] = $variables['id'] . '__' . $variables['display_id'];
+      $variables['title'] = [
+        '#type' => 'inline_template',
+        '#template' => '<a class="' . $variables['id'] . '__title' . '" href="#">' . $variables['view']->getTitle() . '</a>',
+      ];
+    } catch (\Exception $x) {
+
+    }
+  }
+  if ($variables['id'] === 'past_campaign') {
+    try {
+      $filters = $variables['view']->getExposedInput();
+      $filter_count = 0;
+      $needLabels = [];
+      foreach ($filters as $filter_key => $filter) {
+        if ($filter !== 'All') {
+          $filter_count++;
+          $needLabels[$filter_key] = $filter;
+        }
+      }
+      if (count($needLabels) > 0) {
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['header']['filter_summary'] = [
+          '#type' => 'container',
+          '#attributes' => [
+            'class' => ['past_campaign_summary'],
+            'id' => 'past_campaign_summary',
+          ],
+          'filter' => [
+            '#type' => 'inline_template',
+            '#template' => '<a class="past_campaign_summary__reset" href="/' . $language . '/past-campaigns"><span>' . t('Reset', [], ['context' => 'past_campaign']) . '</span></a>',
+            '#weight' => 10,
+          ],
+          'labels' => [
+            '#type' => 'container',
+            '#name' => 'past_campaign_summary_label',
+            '#attributes' => [
+              'class' => ['past_campaign_summary_label'],
+            ],
+            '#weight' => 20,
+          ],
+        ];
+        foreach ($needLabels as $filter_key => $filter) {
+          $term = \Drupal::entityTypeManager()
+            ->getStorage('taxonomy_term')
+            ->load($filter);
+          if ($term) {
+            $variables['header']['filter_summary']['labels']['#children']['items'][] = [
+              'id' => $term->id(),
+              'name' => $term->getName(),
+              'bg_color' => ($term->field_pcampaign_bg_color ? $term->field_pcampaign_bg_color->value : ''),
+            ];
+          }
+        }
+      }
+    } catch (Exception $x) {
+    }
+  }
+
+}
+
+/**
+ * Implements hook_preprocess_form().
+ */
+function oxfordpath_preprocess_form(array &$variables) {
+  //$variables['attributes']['novalidate'] = 'novalidate';
+}
+
+/**
+ * Implements hook_preprocess_select().
+ */
+function oxfordpath_preprocess_select(array &$variables) {
+  if (isset($variables['element']) && isset($variables['element']['#name'])) {
+    if ($variables['element']['#name'] === 'expert_sharing_category') {
+      if (isset($variables['options'])) {
+        foreach ($variables['options'] as &$option) {
+          if ($option['selected'] === TRUE) {
+            if ($option['value'] !== 'All') {
+              $term = \Drupal::entityTypeManager()
+                ->getStorage('taxonomy_term')
+                ->load(intval($option['value']));
+              if ($term) {
+                if ($term->field_category_header_bg_color) {
+                  $option['selectedstyle'] = 'color:' . $term->field_category_header_bg_color->value . ';';
+                }
+              }
+            }
+            break;
+          }
+        }
+      }
+    }
+  }
+  if (isset($variables['options'])) {
+    foreach ($variables['options'] as &$option) {
+      if ($option['type'] === 'option' && $option['value'] === 'All') {
+        try {
+          $option['label'] = t('- Any -', [], ['context' => $variables['element']['#name']]);
+        } catch (\Exception $x) {
+        }
+        break;
+      }
+    }
+  }
+  //$variables['attributes']['class'][] = 'select-chosen';
+}
+
+/**
+ * Implements hook_preprocess_field().
+ */
+function oxfordpath_preprocess_field(array &$variables, $hook) {
+  if (isset($variables['element']['#inherit_bundle'])) {
+    $field_name = $variables['element']['#inherit_bundle'] . '__' . $variables['element']['#field_name'];
+  }
+  else {
+    $field_name = $variables['element']['#bundle'] . '__' . $variables['element']['#field_name'];
+  }
+  $variables['attributes']['class'][] = $field_name;
+  $old_treatment_fields = [
+    'field_javascript',
+    'field_inline_css',
+    'field_form_id',
+  ];
+  if (in_array($variables['element']['#field_name'], $old_treatment_fields)) {
+    $original_field_name = $variables['element']['#field_name'];
+    switch ($original_field_name) {
+      case 'field_javascript':
+        if (isset($variables['items'])) {
+          foreach ($variables['items'] as &$item) {
+            $item['content']['#template'] = $item['content']['#context']['value'];
+          }
+        }
+        break;
+      case 'field_form_id':
+        if (isset($variables['items'])) {
+          foreach ($variables['items'] as &$item) {
+            try {
+              $form_content = file_get_contents('https://app.formassembly.com/rest/forms/view/' . $item['content']['#markup']);
+              $item['content']['#template'] = "{{form|raw}}";
+              $item['content']['#context'] = [
+                'form' => $form_content,
+              ];
+              $item['content']['#type'] = 'inline_template';
+            } catch (Exception $x) {
+
+            }
+          }
+        }
+        break;
+      case 'field_inline_css':
+        if (isset($variables['items'])) {
+          foreach ($variables['items'] as &$item) {
+            $item['content']['#template'] = $item['content']['#context']['value'];
+          }
+        }
+        break;
+    }
+  }
+  else {
+    switch ($field_name) {
+      case 'expert_sharing_category__field_icon':
+        $variables['label_hidden'] = true;
+        break;
+      case 'menu_group__field_menu_block':
+        if (isset($variables['items'])) {
+          foreach ($variables['items'] as &$item) {
+            $result = views_embed_view($item['content']['#plain_text'], 'menu');
+            if ($result) {
+              unset($item['content']['#plain_text']);
+              $item['content'] = array_merge($item['content'], $result);
+            }
+          }
+        }
+        break;
+      case 'product_age_range__field_related_product_age_range':
+        if ($variables['element']['#object']->get('field_product_range_bg_color')) {
+          $bg_color = $variables['element']['#object']->get('field_product_range_bg_color')->value;
+          if ($bg_color) {
+            $variables['attributes']['style'][] = 'background-color:' . $bg_color . ';';
+          }
+        }
+        $variables['block_title'] = t('Other Age Ranges');
+        $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+        $variables['block_detail'] = '<a href="/' . $language . '/product-age-ranges" target="_self"><span>' . t('More Product Age Ranges') . '</span></a>';
+        break;
+      case 'product_age_range__field_related_product_package':
+        if ($variables['element']['#object']->get('field_related_product_package_bg')) {
+          $bg_color = $variables['element']['#object']->get('field_related_product_package_bg')->value;
+          if ($bg_color) {
+            $variables['attributes']['style'][] = 'background-color:' . $bg_color . ';';
+          }
+        }
+        break;
+      case 'image_slider__field_image':
+        $popup_enabled = ($variables['element']['#object']->field_popup ? $variables['element']['#object']->field_popup->value : FALSE);
+        $itemCount = count($variables['items']);
+        for ($i = 0; $i < $itemCount; $i++) {
+          $variables['items'][$i]['popup_enabled'] = $popup_enabled;
+        }
+        if ($itemCount > 1) {
+          $variables['attributes']['data-slick'] = '{"dots":true,"infinite":true,"arrows":false}';
+        }
+      case 'past_campaign__field_pcampaign_target':
+      case 'past_campaign__field_pcampaign_type':
+        if (count($variables['items']) > 0) {
+          $language = \Drupal::languageManager()->getCurrentLanguage()->getId();
+          $itemCount = count($variables['items']);
+          for ($i = 0; $i < $itemCount; $i++) {
+            if (isset($variables['items'][$i]['content']['#taxonomy_term'])) {
+              $term = $variables['items'][$i]['content']['#taxonomy_term'];
+              $vocabulary_id = $term->bundle();
+              if ($vocabulary_id === 'past_campaign_target' || $vocabulary_id === 'past_campaign_type') {
+                $variables['items'][$i]['filter_link'] = '/' . $language . '/past-campaigns?' . $vocabulary_id . '=' . $term->tid->value;
+              }
+            }
+          }
+        }
+        break;
+      case 'form__field_title':
+        $block = $variables['element']['#object'];
+        $title_color = ($block->field_title_color ? $block->field_title_color->value : '');
+        if (isset($title_color)) {
+          $variables['attributes']['style'][] = 'color:' . $title_color . ';';
+        }
+        break;
+      case 'page_header_v1__field_action_button':
+        $variables['attributes']['class'][] = $variables['element']['#field_name'];
+        $variables['block_type'] = $variables['element']['#field_name'];
+        if (isset($variables['items'])) {
+          foreach ($variables['items'] as &$item) {
+            if (isset($item['content'])) {
+              if (isset($item['content']['field_icon_position'])) {
+                $item['content']['field_icon_position']['#inherit_bundle'] = $variables['element']['#field_name'];
+              }
+              if (isset($item['content']['field_icon'])) {
+                $item['content']['field_icon']['#inherit_bundle'] = $variables['element']['#field_name'];
+              }
+            }
+          }
+        }
+        break;
+      case 'icon_list__field_icon_list_item':
+        $variables['block_type'] = $variables['element']['#bundle'];
+        //      $link_enabled = $variables['element']['#object']->field_link_enabled->value;
+        //      if($link_enabled){
+        //        $variables['attributes']['class'][] = $field_name.'--link';
+        //      }
+        break;
+      case 'page__title':
+        try {
+          $node = \Drupal::routeMatch()->getParameter('node');
+          $node_type = $node->getType();
+          if ($node->getType() === 'page') {
+            $title_multiline = ($node->field_title_multiline ? $node->field_title_multiline->value : '');
+            if (trim($title_multiline) !== '') {
+              $variables['field_multiline'] = $title_multiline;
+            }
+          }
+        } catch (Exception $x) {
+
+        }
+        break;
+      case 'icon_list_item__field_icon':
+        $mode = ($variables['element']['#object']->field_sizing_mode ? $variables['element']['#object']->field_sizing_mode->value : '');
+        if ($mode === 'width' || $mode === 'height') {
+          $variables['attributes']['class'][] = 'icon_list_item__field_icon--sizing-format';
+          $variables['attributes']['class'][] = 'icon_list_item__field_icon--sizing-format-' . $mode;
+          $variables['attributes']['style'][] = $mode . ':' . ($variables['element']['#object']->field_size ? $variables['element']['#object']->field_size->value : '') . ';';
+        }
+        break;
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_details().
+ */
+function oxfordpath_preprocess_details(array &$variables) {
+  /*$variables['attributes']['class'][] = 'details';
+  $variables['summary_attributes']['class'] = 'summary';*/
+}
+
+/**
+ * Implements hook_theme_suggestions_details_alter().
+ */
+function oxfordpath_theme_suggestions_details_alter(array &$suggestions, array $variables) {
+
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function oxfordpath_preprocess_menu_local_tasks(array &$variables) {
+  $route_name = \Drupal::routeMatch()->getRouteName();
+
+  // remove menu_local_tasks for login and reset password page
+  if (in_array($route_name, ['user.login', 'user.pass'])) {
+    $variables['primary'] = [];
+  }
+}
+
+/**
+ * Implements hook_theme_suggestions_container_alter().
+ */
+function oxfordpath_theme_suggestions_container_alter(array &$suggestions, array $variables) {
+  $pieces = [];
+  if (isset($variables['element']['#type'])) {
+    $pieces[] = $variables['element']['#type'];
+    if ($variables['element']['#type'] === 'view') {
+      array_splice($suggestions, 1, 0, 'container__' . $variables['element']['#type'] . '__' . $variables['element']['#display_id']);
+    }
+  }
+  if (isset($variables['element']['#name'])) {
+    $pieces[] = $variables['element']['#name'];
+  }
+  if (count($pieces) > 0) {
+    array_splice($suggestions, 1, 0, 'container__' . implode('_', $pieces));
+  }
+}
+
+
+/**
+ * Implements hook_theme_suggestions_block_alter
+ */
+function oxfordpath_theme_suggestions_block_alter(array &$suggestions, array $variables) {
+  if (isset($variables['elements']['content']['#block_content'])) {
+    array_splice($suggestions, 1, 0, 'block__' . $variables['elements']['content']['#block_content']->bundle());
+  }
+  if(isset($variables['elements']['#id']) && $variables['elements']['#id'] === 'oxfordpath_page_title'){
+    $current_route_name = \Drupal::service('current_route_match')
+      ->getRouteObject();
+    if ($current_route_name) {
+      if ($current_route_name->getDefaults()) {
+        $defaults = $current_route_name->getDefaults();
+        if (isset($defaults['view_id'])) {
+          switch($defaults['view_id']){
+            case 'expert_articles':
+              $suggestions[] = 'block__page_title_block_expert';
+              break;
+          }
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Implements hook_preprocess_menu().
+ */
+function oxfordpath_preprocess_menu(&$variables) {
+  $menu_name = $variables['menu_name'];
+  switch ($menu_name) {
+    case 'footer-blocks-menu-2':
+    case 'footer-blocks-menu':
+      // Add the css class to the footer menu
+      foreach ($variables['items'] as &$item) {
+        $entity = $item['entity'];
+        $cssClass = $entity->get('field_css_class');
+        if ($cssClass) {
+          $item['attributes']->addClass($cssClass->value);
+        }
+        //      $test = $entity->get('children');
+        //      $test_length = count($test);
+      }
+      break;
+    case 'account':
+      if (isset($variables['attributes']['data-region'])) {
+        $region = $variables['attributes']['data-region'];
+        if ($region === 'header_right') {
+          // Add class to account items
+          if (isset($variables['items']['user.logout'])) {
+            if ($variables['items']['user.logout']['url']->getRouteName() === 'user.login') {
+              $variables['items']['user.logout']['attributes']->addClass($menu_name . '__login');
+              $variables['items']['user.logout']['title'] = t('Login');
+            }
+            else {
+              $variables['items']['user.logout']['attributes']->addClass($menu_name . '__logout');
+              $variables['items']['user.logout']['title'] = t('Logout');
+            }
+          }
+          if (isset($variables['items']['user.page'])) {
+            $variables['items']['user.page']['attributes']->addClass($menu_name . '__page');
+            $variables['items']['user.page']['title'] = t('Account');
+          }
+        }
+      }
+      foreach ($variables['items'] as $key => &$item) {
+        $entity = $item['entity'];
+        $cssClass = $entity->get('field_css_class');
+        if ($cssClass) {
+          $item['attributes']->addClass($cssClass->value);
+        }
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+/**
+ * Implements hook_preprocess_links__language_block().
+ */
+function oxfordpath_preprocess_links__language_block(&$variables) {
+  $currentLanguageId = \Drupal::languageManager()
+    ->getCurrentLanguage()->getId();
+  $currentLanguage = NULL;
+  foreach ($variables['links'] as $linkId => &$link) {
+    if ($linkId === $currentLanguageId) {
+      $currentLanguage = $link;
+    }
+  }
+  $variables['currentLanguage'] = $currentLanguage;
+}
+
+/**
+ * Implements hook_preprocess_page_title().
+ */
+function oxfordpath_preprocess_page_title(&$variables) {
+  $request = \Drupal::request();
+  $path = $request->getRequestUri();
+  if (strpos($path, '/user/login') !== FALSE) {
+    $variables['title'] = t('Login Member Zone');
+  }
+}
+
+/**
+ * Implements hook_preprocess_region().
+ */
+function oxfordpath_preprocess_region(&$variables) {
+}
+
+/**
+ * Implements hook_preprocess_HOOK().
+ */
+function oxfordpath_preprocess_layout(&$variables) {
+  // for page_content, move hero image with "display as background" option checked to another hidden region
+  $applicable_layouts = ['page_content', 'full_width_page_content'];
+
+  if (in_array($variables['theme_hook_original'], $applicable_layouts)) { // target $applicable_layouts
+    foreach ($variables['content']['main'] as $uuid => $twig_object) { // for each twig object in content.main
+      if (
+        isset($twig_object['#derivative_plugin_id']) &&
+        $twig_object['#derivative_plugin_id'] == 'hero_image' && // if is hero_image
+        $twig_object['content']['field_display_as_background'][0]['#markup'] == 1 // and display as background checked
+      ) {
+        unset($variables['content']['main'][$uuid]); // move the object to content.hero_image_bg
+        $variables['content']['hero_image_bg'] = [];
+        $variables['content']['hero_image_bg'][$uuid] = $twig_object;
+        break; // we are only interested in first instance, others let them display without modification
+      }
+    }
+  }
+}
+
+/*
+ * Implements hook_preprocess_card_two_columns_bg()
+ */
+function oxfordpath_preprocess_card_two_columns_bg(&$variables){
+  if(isset($variables['content'])){
+    $variables['styles'] = array();
+    if(isset($variables['content']['card_section_content_left']) && count($variables['content']['card_section_content_left']) > 1){
+      // Looks like #attriburte is being counted
+      $smallest_block_content = null;
+      $smallest_block_content_weight = null;
+      foreach($variables['content']['card_section_content_left'] as $block_content){
+        if(is_null($smallest_block_content_weight)){
+          if(isset($block_content['#weight'])) {
+            $smallest_block_content = $block_content;
+            $smallest_block_content_weight = $block_content['#weight'];
+          }
+        }else{
+          if(isset($block_content['#weight']) && $block_content['#weight'] < $smallest_block_content_weight){
+            $smallest_block_content = $block_content;
+            $smallest_block_content_weight = $block_content['#weight'];
+          }
+        }
+      }
+      $first_element = $smallest_block_content;
+      if($first_element && isset($first_element['content']) && isset($first_element['content']['#block_content']) && $first_element['content']['#block_content']->field_background_color){
+        $bg_color = $first_element['content']['#block_content']->field_background_color->value;
+        $variables['styles']['card_section_content_left'] = 'background-color:'.$bg_color.';';
+      }
+    }
+    if(isset($variables['content']['card_section_content_right']) && count($variables['content']['card_section_content_right']) > 1){
+      $first_element = reset($variables['content']['card_section_content_right']);
+      if($first_element && isset($first_element['content']) && isset($first_element['content']['#block_content']) && $first_element['content']['#block_content']->field_background_color){
+        $bg_color = $first_element['content']['#block_content']->field_background_color->value;
+        $variables['styles']['card_section_content_right'] = 'background-color:'.$bg_color.';';
+      }
+    }
+  }
+}
+
+/*
+ * Implements hook_preprocess_page_content_bg
+ */
+function oxfordpath_preprocess_page_content_bg(&$variables){
+  if(isset($variables['content'])){
+    $variables['styles'] = array();
+    if(isset($variables['content']['main']) && count($variables['content']['main']) > 1){
+      // Looks like #attriburte is being counted
+      $smallest_block_content = null;
+      $smallest_block_content_weight = null;
+      foreach($variables['content']['main'] as $block_content){
+        if(is_null($smallest_block_content_weight)){
+          if(isset($block_content['#weight'])) {
+            $smallest_block_content = $block_content;
+            $smallest_block_content_weight = $block_content['#weight'];
+          }
+        }else{
+          if(isset($block_content['#weight']) && $block_content['#weight'] < $smallest_block_content_weight){
+            $smallest_block_content = $block_content;
+            $smallest_block_content_weight = $block_content['#weight'];
+          }
+        }
+      }
+      // Looks like #attriburte is being counted
+      $first_element = $smallest_block_content;
+      if($first_element && isset($first_element['content']) && isset($first_element['content']['#block_content']) && $first_element['content']['#block_content']->field_background_color){
+        $bg_color = $first_element['content']['#block_content']->field_background_color->value;
+        $variables['attributes']['style'][] = 'background-color:'.$bg_color.';';
+      }
+    }
+  }
+}

@@ -1,0 +1,28 @@
+#block-buildnumber {
+  position: fixed;
+  right: 4px;
+  bottom: 50%;
+  font-size: 12px;
+  margin: 0;
+  padding: 0;
+  transform: translate3d(35%, 0, 0) rotate(-90deg);
+  background: rgba(#eeeeee, 0.9);
+  padding: 4px 10px;
+
+  h2 {
+    font-size: 9px;
+    margin: 0;
+    display: inline-block;
+  }
+
+  .basic__body {
+    display: inline-block;
+    margin-left: 6px;
+
+    p {
+      font-size: 9px;
+      margin: 0;
+      font-family: monospace;
+    }
+  }
+}

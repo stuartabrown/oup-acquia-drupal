@@ -1,0 +1,35 @@
+.pager{
+  ul{
+    @include clear;
+    list-style: none;
+    margin: 0;
+    .pager__control{
+      @include fs15_lh22;
+      font-weight: 600;
+      span{
+        display: inline-block;
+        vertical-align: middle;
+      }
+      &--next{
+        float: right;
+        &:after{
+          @include imgAsBg(center center, contain);
+          @include prepareIcon(35px, 35px);
+          background-image: $sym_pager_next;
+          vertical-align: middle;
+          margin-left: rem-calc(5);
+        }
+      }
+      &--prev{
+        float: left;
+        &:before{
+          @include imgAsBg(center center, contain);
+          @include prepareIcon(35px, 35px);
+          background-image: $sym_pager_prev;
+          vertical-align: middle;
+          margin-right: rem-calc(5);
+        }
+      }
+    }
+  }
+}

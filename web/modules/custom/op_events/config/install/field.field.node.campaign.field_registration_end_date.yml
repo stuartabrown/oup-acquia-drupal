@@ -1,0 +1,23 @@
+uuid: dbad275b-89b6-42f9-a8f8-5e15b8dc763a
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.storage.node.field_registration_end_date
+    - node.type.campaign
+_core:
+  default_config_hash: L_MHjSMXUe5poO9pVC8Qp8_Oa_lirBkrpT6PSSUzyw8
+id: node.campaign.field_registration_end_date
+field_name: field_registration_end_date
+entity_type: node
+bundle: campaign
+label: 'Registration End Date'
+description: ''
+required: false
+translatable: false
+default_value:
+  -
+    value: 1547049207
+default_value_callback: ''
+settings: {  }
+field_type: timestamp

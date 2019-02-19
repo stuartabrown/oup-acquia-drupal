@@ -1,0 +1,44 @@
+{#
+/**
+ * @file
+ * Theme override to display a block.
+ *
+ * Available variables:
+ * - plugin_id: The ID of the block implementation.
+ * - label: The configured label of the block if visible.
+ * - configuration: A list of the block's configuration values.
+ *   - label: The configured label for the block.
+ *   - label_display: The display settings for the label.
+ *   - provider: The module or other provider that provided this block plugin.
+ *   - Block plugin specific settings will also be stored here.
+ * - content: The content of this block.
+ * - attributes: array of HTML attributes populated by modules, intended to
+ *   be added to the main container tag of this template.
+ *   - id: A valid HTML ID and guaranteed unique.
+ * - title_attributes: Same as attributes, except applied to the main title
+ *   tag that appears in the template.
+ * - title_prefix: Additional output populated by modules, intended to be
+ *   displayed in front of the main title tag that appears in the template.
+ * - title_suffix: Additional output populated by modules, intended to be
+ *   displayed after the main title tag that appears in the template.
+ *
+ * @see template_preprocess_block()
+ */
+#}
+{% set block_margin_top = content.field_block_margin_top.0?"margin-top:#{content.field_block_margin_top.0|render|lower};":'' %}
+{% set block_margin_bottom = content.field_block_margin_bottom.0?"margin-bottom:#{content.field_block_margin_bottom.0|render|lower};":'' %}
+{% set block_background_color = content.field_background_color.0?"background-color:#{content.field_background_color.0|render|lower};":'' %}
+<div{{ attributes }} style="{{ block_margin_top }}{{ block_margin_bottom }}">
+    {{ title_prefix }}
+    {{ title_suffix }}
+    {% set background_height = content.field_background_height.0?"height:#{content.field_background_height.0|render|lower};":'' %}
+    {% set background_mode = content.field_background_display_mode.0?"#{block_type}__bg_image--#{content.field_background_display_mode.0|render|lower}":'' %}
+    <div class="{{ background_mode }} {{ "#{block_type}__bg_image" }}" style="{{ background_height }}{{ block_background_color }}">
+    {% if content.field_background_image.0 %}{{ content.field_background_image }}{% endif %}
+    </div>
+    {% set img_pos_left = content.field_image_position_left.0?"left:#{content.field_image_position_left.0|render|lower};":'' %}
+    {% set img_pos_right = content.field_image_position_right.0?"right:#{content.field_image_position_right.0|render|lower};":'' %}
+    {% set img_pos_top = content.field_image_position_top.0?"top:#{content.field_image_position_top.0|render|lower}":'' %}
+    {% set img_pos_bottom = content.field_image_position_bottom.0?"bottom:#{content.field_image_position_bottom.0|render|lower}":'' %}
+    {% if content.field_image.0 %}<div class="{{ "#{block_type}__image"}}" style="{{ img_pos_left }}{{ img_pos_right }}{{ img_pos_top }}{{ img_pos_bottom }}">{{ content.field_image }}</div>{% endif %}
+</div>

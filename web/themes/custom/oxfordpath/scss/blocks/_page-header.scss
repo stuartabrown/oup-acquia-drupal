@@ -1,0 +1,49 @@
+.custom-block.page_header_v1 {
+  position: relative;
+
+  .page_header_v1__field_action_button {
+    margin: 0 auto;
+    display: block;
+  }
+
+  .field_action_button {
+    text-align: center;
+
+    &__field_link {
+      display: inline-flex;
+      align-items: center;
+      padding: rem-calc(14) rem-calc(20);
+      border-radius: rem-calc(25);
+      background-color: $color_white;
+
+      > span {
+        @include fs15_lh22;
+        display: inline-block;
+        vertical-align: middle;
+        font-weight: 600;
+        flex: 1;
+      }
+
+      &--icon-right {
+        .field_action_button__field_icon {
+          margin-left: rem-calc(8);
+        }
+      }
+
+      &--icon-left {
+        .field_action_button__field_icon {
+          margin-right: rem-calc(8);
+        }
+      }
+    }
+
+    &__field_icon {
+      display: inline-block;
+      vertical-align: middle;
+      width: rem-calc(20px);
+      height: rem-calc(20px);
+      line-height: 1;
+      border-radius: rem-calc(10px);
+    }
+  }
+}

@@ -1,0 +1,33 @@
+{#
+/**
+ * @file
+ * Default theme implementation to display a two-column layout.
+ *
+ * Available variables:
+ * - content: The content for this layout.
+ * - attributes: HTML attributes for the layout <div>.
+ *
+ * @ingroup themeable
+ */
+#}
+{%
+  set classes = [
+  'layout',
+  'layout--card-column-bg',
+]
+%}
+{% if content %}
+  <div{{ attributes.addClass(classes) }}>
+    {% if content.card_section_content_left %}
+      <div {{ region_attributes.card_section_content_left.addClass('layout__region', 'layout__region--left') }} style="{{ styles.card_section_content_left }}">
+        {{ content.card_section_content_left }}
+      </div>
+    {% endif %}
+
+    {% if content.card_section_content_right %}
+      <div {{ region_attributes.card_section_content_right.addClass('layout__region', 'layout__region--right') }} style="{{ styles.card_section_content_right }}">
+        {{ content.card_section_content_right }}
+      </div>
+    {% endif %}
+  </div>
+{% endif %}

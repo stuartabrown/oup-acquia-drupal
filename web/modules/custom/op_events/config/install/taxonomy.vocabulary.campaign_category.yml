@@ -1,0 +1,9 @@
+uuid: d4f60cc6-95f1-461d-8f52-cf3baeece641
+langcode: zh-hant
+status: true
+dependencies: {  }
+name: 'Campaign Category'
+vid: campaign_category
+description: ''
+hierarchy: 0
+weight: 0

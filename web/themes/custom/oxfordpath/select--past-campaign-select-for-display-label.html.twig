@@ -1,0 +1,27 @@
+{#
+/**
+ * @file
+ * Theme override for a select element.
+ *
+ * Available variables:
+ * - attributes: HTML attributes for the select tag.
+ * - options: The option element children.
+ *
+ * @see template_preprocess_select()
+ */
+#}
+{% spaceless %}
+    {% for option in options %}
+        {% if option.type == 'optgroup' %}
+            {% for sub_option in option.options %}
+                {% if sub_option.selected and sub_option.value != 'All' %}
+                    <div>{{ sub_option.label }}</div>
+                {% endif %}
+            {% endfor %}
+        {% elseif option.type == 'option' %}
+            {% if option.selected and option.value != 'All' %}
+                <div>{{ option.label }}</div>
+            {% endif %}
+        {% endif %}
+    {% endfor %}
+{% endspaceless %}

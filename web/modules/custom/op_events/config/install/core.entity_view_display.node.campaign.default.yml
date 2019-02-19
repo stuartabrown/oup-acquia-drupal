@@ -1,0 +1,101 @@
+uuid: d5916974-c10e-4d39-8dbc-48fdcf74c570
+langcode: zh-hant
+status: true
+dependencies:
+  config:
+    - field.field.node.campaign.field_campaign_code
+    - field.field.node.campaign.field_campaign_id
+    - field.field.node.campaign.field_charge_for_child
+    - field.field.node.campaign.field_charge_for_parent
+    - field.field.node.campaign.field_charge_paid
+    - field.field.node.campaign.field_display_date
+    - field.field.node.campaign.field_end_date
+    - field.field.node.campaign.field_event_category
+    - field.field.node.campaign.field_event_end_time
+    - field.field.node.campaign.field_event_start_time
+    - field.field.node.campaign.field_form_html
+    - field.field.node.campaign.field_form_id
+    - field.field.node.campaign.field_location
+    - field.field.node.campaign.field_max_capacity
+    - field.field.node.campaign.field_max_child_capacity
+    - field.field.node.campaign.field_max_parent_capacity
+    - field.field.node.campaign.field_member
+    - field.field.node.campaign.field_need_charge
+    - field.field.node.campaign.field_parent_campaign_id
+    - field.field.node.campaign.field_playground_type
+    - field.field.node.campaign.field_product_dimension
+    - field.field.node.campaign.field_registration
+    - field.field.node.campaign.field_registration_end_date
+    - field.field.node.campaign.field_registration_start_date
+    - field.field.node.campaign.field_speaker
+    - field.field.node.campaign.field_start_date
+    - field.field.node.campaign.field_target_audience
+    - field.field.node.campaign.field_target_audience_max
+    - field.field.node.campaign.field_version
+    - node.type.campaign
+  module:
+    - user
+_core:
+  default_config_hash: Q27bx42cvisOwsVq-K0Nnwc0KMjflemKE1E1TUQLmgw
+id: node.campaign.default
+targetEntityType: node
+bundle: campaign
+mode: default
+content:
+  field_event_category:
+    weight: 103
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_event_end_time:
+    weight: 101
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  field_event_start_time:
+    weight: 102
+    label: above
+    settings:
+      link_to_entity: false
+    third_party_settings: {  }
+    type: string
+    region: content
+  links:
+    weight: 100
+    settings: {  }
+    third_party_settings: {  }
+    region: content
+hidden:
+  field_campaign_code: true
+  field_campaign_id: true
+  field_charge_for_child: true
+  field_charge_for_parent: true
+  field_charge_paid: true
+  field_display_date: true
+  field_end_date: true
+  field_form_html: true
+  field_form_id: true
+  field_location: true
+  field_max_capacity: true
+  field_max_child_capacity: true
+  field_max_parent_capacity: true
+  field_member: true
+  field_need_charge: true
+  field_parent_campaign_id: true
+  field_playground_type: true
+  field_product_dimension: true
+  field_registration: true
+  field_registration_end_date: true
+  field_registration_start_date: true
+  field_speaker: true
+  field_start_date: true
+  field_target_audience: true
+  field_target_audience_max: true
+  field_version: true
+  langcode: true

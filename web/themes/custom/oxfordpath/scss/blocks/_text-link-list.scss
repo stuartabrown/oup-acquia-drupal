@@ -1,0 +1,31 @@
+.custom-block.text_link_list {
+  &--inline-link-list {
+    ul {
+      @include clear;
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    li {
+      display: inline-block;
+      float: left;
+
+      &:after {
+        display: inline-block;
+        content: '';
+        width: 1px;
+        height: rem-calc(13px);
+        vertical-align: middle;
+        background-color: $color_light_grey_blue_25;
+        margin: 0 rem-calc(8px);
+      }
+
+      &:last-child {
+        &:after {
+          display: none;
+        }
+      }
+    }
+  }
+}

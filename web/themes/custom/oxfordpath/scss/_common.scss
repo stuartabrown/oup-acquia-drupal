@@ -1,0 +1,18 @@
+.mobile-menu-toggler{
+  display: inline-block;
+  cursor: pointer;
+  padding: rem-calc(15) rem-calc(12);
+  line-height: 1;
+  .basic_text_block__field_description{
+    display: none;
+  }
+  &:before {
+    @include prepareIcon(20px, 14px);
+    @include imgAsBg;
+    background-image: $sym_hamburger_menu_button;
+  }
+}
+
+main {
+  display: block; // for old browsers
+}

@@ -1,0 +1,39 @@
+.custom-block.basic_image_block{
+  .basic_image_block-link{
+  	display: inline-block;
+  }
+
+  &--header-logo{
+  	display: inline-block;
+    height: rem-calc(45px);
+    margin-left: rem-calc(12px);
+    img{
+    	width: auto;
+    	height: 100%;
+    }
+  }
+  &--header-logo .basic_image_block-link{
+  	height: 100%;
+  }
+
+  // .image-position-(left|center|right) modifiers
+  &.image-position {
+    &-left {
+      text-align: left;
+    }
+    &-center {
+      text-align: center;
+    }
+    &-right {
+      text-align: right;
+    }
+  }
+}
+
+@include breakpoint(large){
+  .custom-block.basic_image_block{
+    &--header-logo{
+      height: rem-calc(55);
+    }
+  }
+}
