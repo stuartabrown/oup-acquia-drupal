@@ -1,14 +1,13 @@
 oauth2_token_extras.authorize:
   path: '/oauth/authorize'
   defaults:
-   _controller: 'Drupal\simple_oauth_extras\Controller\Oauth2AuthorizeController::authorize'
+   _form: '\Drupal\simple_oauth_extras\Controller\Oauth2AuthorizeForm'
    _title: 'Grant Access to Client'
   methods: [GET, POST]
   requirements:
     _access: 'TRUE'
   options:
     _auth: ['cookie']
-    no_cache: TRUE
 
 oauth2_token.user_debug:
   path: '/oauth/debug'

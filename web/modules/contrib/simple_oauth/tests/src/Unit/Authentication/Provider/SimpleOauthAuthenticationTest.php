@@ -3,9 +3,7 @@
 namespace Drupal\Tests\simple_oauth\Unit\Authentication\Provider;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use Drupal\Core\PageCache\RequestPolicyInterface;
 use Drupal\simple_oauth\Authentication\Provider\SimpleOauthAuthenticationProvider;
-use Drupal\simple_oauth\PageCache\DisallowSimpleOauthRequests;
 use Drupal\simple_oauth\Server\ResourceServerInterface;
 use Drupal\Tests\UnitTestCase;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,15 +17,9 @@ class SimpleOauthAuthenticationTest extends UnitTestCase {
   /**
    * The authentication provider.
    *
-   * @var \Drupal\simple_oauth\Authentication\Provider\SimpleOauthAuthenticationProvider
+   * @var \Drupal\simple_oauth\Authentication\Provider\SimpleOauthAuthenticationProviderInterface
    */
   protected $provider;
-  /**
-   * The OAuth page cache request policy.
-   *
-   * @var \Drupal\simple_oauth\PageCache\SimpleOauthRequestPolicyInterface
-   */
-  protected $oauthPageCacheRequestPolicy;
 
   /**
    * {@inheritdoc}
@@ -37,47 +29,46 @@ class SimpleOauthAuthenticationTest extends UnitTestCase {
 
     $resource_server = $this->prophesize(ResourceServerInterface::class);
     $entity_type_manager = $this->prophesize(EntityTypeManagerInterface::class);
-    $this->oauthPageCacheRequestPolicy = new DisallowSimpleOauthRequests();
     $this->provider = new SimpleOauthAuthenticationProvider(
       $resource_server->reveal(),
-      $entity_type_manager->reveal(),
-      $this->oauthPageCacheRequestPolicy
+      $entity_type_manager->reveal()
     );
   }
 
   /**
+   * @covers ::hasTokenValue
    * @covers ::applies
    *
    * @dataProvider hasTokenValueProvider
    */
-  public function testHasTokenValue($authorization, $has_token) {
-    $request = new Request();
-
-    if ($authorization !== NULL) {
-      $request->headers->set('Authorization', $authorization);
-    }
-
-    $this->assertSame($has_token, $this->provider->applies($request));
-    $this->assertSame(
-      $has_token ? RequestPolicyInterface::DENY : NULL,
-      $this->oauthPageCacheRequestPolicy->check($request)
-    );
+  public function testHasTokenValue(Request $request, $has_token) {
+    $this->assertSame($has_token, $this->provider->hasTokenValue($request));
   }
 
   public function hasTokenValueProvider() {
-    $token = $this->getRandomGenerator()->name();
     $data = [];
 
     // 1. Authentication header.
-    $data[] = ['Bearer ' . $token, TRUE];
+    $token = $this->getRandomGenerator()->name();
+    $request = new Request();
+    $request->headers->set('Authorization', 'Bearer ' . $token);
+    $data[] = [$request, TRUE];
+
     // 2. Authentication header. Trailing white spaces.
-    $data[] = ['  Bearer ' . $token, TRUE];
+    $token = $this->getRandomGenerator()->name();
+    $request = new Request();
+    $request->headers->set('Authorization', '  Bearer ' . $token);
+    $data[] = [$request, TRUE];
+
     // 3. Authentication header. No white spaces.
-    $data[] = ['Foo' . $token, FALSE];
-    // 4. Authentication header. Empty value.
-    $data[] = ['', FALSE];
-    // 5. Authentication header. Fail: no token.
-    $data[] = [NULL, FALSE];
+    $token = $this->getRandomGenerator()->name();
+    $request = new Request();
+    $request->headers->set('Authorization', 'Foo' . $token);
+    $data[] = [$request, FALSE];
+
+    // 4. Authentication header. Fail: no token.
+    $request = new Request();
+    $data[] = [$request, FALSE];
 
     return $data;
   }

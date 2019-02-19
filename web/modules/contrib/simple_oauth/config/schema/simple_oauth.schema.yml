@@ -35,6 +35,3 @@ simple_oauth.settings:
       type: path
       label: 'Private Key'
       description: 'The path to the private file.'
-    remember_clients:
-      type: boolean
-      label: 'Remember clients'

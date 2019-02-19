@@ -11,8 +11,6 @@ use Drupal\user\UserInterface;
 use League\OAuth2\Server\Exception\OAuthServerException;
 
 /**
- * The decorated user class with token information.
- *
  * @internal
  */
 class TokenAuthUser implements TokenAuthUserInterface {
@@ -32,26 +30,19 @@ class TokenAuthUser implements TokenAuthUserInterface {
   protected $token;
 
   /**
-   * The activated consumer instance.
-   *
-   * @var \Drupal\consumers\Entity\Consumer
-   */
-  protected $consumer;
-
-  /**
    * Constructs a TokenAuthUser object.
    *
    * @param \Drupal\simple_oauth\Entity\Oauth2TokenInterface $token
    *   The underlying token.
-   *
-   * @throws \League\OAuth2\Server\Exception\OAuthServerException
+   * @throws \Exception
    *   When there is no user.
    */
   public function __construct(Oauth2TokenInterface $token) {
-    $this->consumer = $token->get('client')->entity;
-
     if (!$this->subject = $token->get('auth_user_id')->entity) {
-      $this->subject = $this->consumer->get('user_id')->entity;
+      /** @var \Drupal\simple_oauth\Entity\Oauth2ClientInterface $client */
+      if ($client = $token->get('client')->entity) {
+        $this->subject = $client->getDefaultUser();
+      }
     }
     if (!$this->subject) {
       throw OAuthServerException::invalidClient();
@@ -69,17 +60,21 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public function getConsumer() {
-    return $this->consumer;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
   public function getRoles($exclude_locked_roles = FALSE) {
     return array_map(function ($item) {
       return $item['target_id'];
     }, $this->token->get('scopes')->getValue());
+  }
+
+  /* ---------------------------------------------------------------------------
+     All the methods below are delegated to the decorated user.
+  --------------------------------------------------------------------------- */
+
+  /**
+   * {@inheritdoc}
+   */
+  public function access($operation, AccountInterface $account = NULL, $return_as_object = FALSE) {
+    return $this->subject->access($operation, $account, $return_as_object);
   }
 
   /**
@@ -92,31 +87,6 @@ class TokenAuthUser implements TokenAuthUserInterface {
     }
 
     return $this->getRoleStorage()->isPermissionInRoles($permission, $this->getRoles());
-  }
-
-  /**
-   * Returns the role storage object.
-   *
-   * @return \Drupal\user\RoleStorageInterface
-   *   The role storage object.
-   *
-   * @throws \Drupal\Component\Plugin\Exception\InvalidPluginDefinitionException
-   */
-  protected function getRoleStorage() {
-    /** @var \Drupal\user\RoleStorageInterface $storage */
-    $storage = \Drupal::entityTypeManager()->getStorage('user_role');
-    return $storage;
-  }
-
-  /* ---------------------------------------------------------------------------
-  All the methods below are delegated to the decorated user.
-  --------------------------------------------------------------------------- */
-
-  /**
-   * {@inheritdoc}
-   */
-  public function access($operation, AccountInterface $account = NULL, $return_as_object = FALSE) {
-    return $this->subject->access($operation, $account, $return_as_object);
   }
 
   /**
@@ -311,14 +281,14 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public function urlInfo($rel = 'canonical', array $options = []) {
+  public function urlInfo($rel = 'canonical', array $options = array()) {
     return $this->subject->urlInfo($rel, $options);
   }
 
   /**
    * {@inheritdoc}
    */
-  public function url($rel = 'canonical', $options = []) {
+  public function url($rel = 'canonical', $options = array()) {
     return $this->subject->url($rel, $options);
   }
 
@@ -360,7 +330,7 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public static function create(array $values = []) {
+  public static function create(array $values = array()) {
     return User::create($values);
   }
 
@@ -696,7 +666,7 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public function addTranslation($langcode, array $values = []) {
+  public function addTranslation($langcode, array $values = array()) {
     return $this->subject->addTranslation($langcode, $values);
   }
 
@@ -850,7 +820,7 @@ class TokenAuthUser implements TokenAuthUserInterface {
   /**
    * {@inheritdoc}
    */
-  public function toUrl($rel = 'canonical', array $options = []) {
+  public function toUrl($rel = 'canonical', array $options = array()) {
     $this->subject->toUrl($rel, $options);
   }
 
@@ -883,60 +853,13 @@ class TokenAuthUser implements TokenAuthUserInterface {
   }
 
   /**
-   * {@inheritdoc}
+   * Returns the role storage object.
+   *
+   * @return \Drupal\user\RoleStorageInterface
+   *   The role storage object.
    */
-  public function wasDefaultRevision() {
-    return $this->subject->wasDefaultRevision();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isLatestRevision() {
-    return $this->subject->isLatestRevision();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isLatestTranslationAffectedRevision() {
-    return $this->subject->isLatestTranslationAffectedRevision();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isRevisionTranslationAffectedEnforced() {
-    return $this->subject->isRevisionTranslationAffectedEnforced();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setRevisionTranslationAffectedEnforced($enforced) {
-    return $this->subject->setRevisionTranslationAffectedEnforced($enforced);
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isDefaultTranslationAffectedOnly() {
-    return $this->subject->isDefaultTranslationAffectedOnly();
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function setSyncing($status) {
-    $this->subject->setSyncing($status);
-    return $this;
-  }
-
-  /**
-   * {@inheritdoc}
-   */
-  public function isSyncing() {
-    return $this->subject->isSyncing();
+  protected function getRoleStorage() {
+    return \Drupal::entityTypeManager()->getStorage('user_role');
   }
 
 }

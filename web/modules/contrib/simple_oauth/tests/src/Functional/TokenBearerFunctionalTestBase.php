@@ -1,34 +1,21 @@
 <?php
 
+
 namespace Drupal\Tests\simple_oauth\Functional;
 
 use Drupal\Component\Serialization\Json;
 use Drupal\Core\Url;
-use Drupal\consumers\Entity\Consumer;
+use Drupal\simple_oauth\Entity\Oauth2Client;
 use Drupal\Tests\BrowserTestBase;
 use Drupal\user\Entity\Role;
 use Drupal\user\RoleInterface;
+use GuzzleHttp\Exception\ClientException;
+use GuzzleHttp\Exception\ServerException;
 use Psr\Http\Message\ResponseInterface;
 
-/**
- * Class TokenBearerFunctionalTestBase.
- *
- * Base class that handles common logic and config for the token tests.
- *
- * @package Drupal\Tests\simple_oauth\Functional
- */
 abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
 
   use RequestHelperTrait;
-  use SimpleOauthTestTrait;
-
-  public static $modules = [
-    'image',
-    'node',
-    'serialization',
-    'simple_oauth',
-    'text',
-  ];
 
   /**
    * @var \Drupal\Core\Url
@@ -36,7 +23,7 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
   protected $url;
 
   /**
-   * @var \Drupal\consumers\Entity\Consumer
+   * @var \Drupal\simple_oauth\Entity\Oauth2ClientInterface
    */
   protected $client;
 
@@ -63,6 +50,16 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
   /**
    * @var string
    */
+  protected $privateKeyPath;
+
+  /**
+   * @var string
+   */
+  protected $publicKeyPath;
+
+  /**
+   * @var string
+   */
   protected $scope;
 
   /**
@@ -70,6 +67,8 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
    */
   protected function setUp() {
     parent::setUp();
+
+    $this->htmlOutputEnabled = FALSE;
 
     $this->url = Url::fromRoute('oauth2_token.token');
 
@@ -97,12 +96,11 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
 
     $this->clientSecret = $this->getRandomGenerator()->string();
 
-    $this->client = Consumer::create([
+    $this->client = Oauth2Client::create([
       'owner_id' => '',
       'label' => $this->getRandomGenerator()->name(),
       'secret' => $this->clientSecret,
       'confidential' => TRUE,
-      'third_party' => TRUE,
       'roles' => [['target_id' => $client_role->id()]],
     ]);
     $this->client->save();
@@ -115,7 +113,14 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
       'access content',
     ]);
 
-    $this->setUpKeys();
+    // Use the public and private keys.
+    $path = $this->container->get('module_handler')->getModule('simple_oauth')->getPath();
+    $this->publicKeyPath = DRUPAL_ROOT . '/' . $path . '/tests/certificates/public.key';
+    $this->privateKeyPath = DRUPAL_ROOT . '/' . $path . '/tests/certificates/private.key';
+    $settings = $this->config('simple_oauth.settings');
+    $settings->set('public_key', $this->publicKeyPath);
+    $settings->set('private_key', $this->privateKeyPath);
+    $settings->save();
 
     $num_roles = mt_rand(1, count($this->additionalRoles));
     $requested_roles = array_slice($this->additionalRoles, 0, $num_roles);
@@ -134,13 +139,10 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
    *   The response object.
    * @param bool $has_refresh
    *   TRUE if the response should return a refresh token. FALSE otherwise.
-   *
-   * @return array
-   *   An array representing the response of "/oauth/token".
    */
   protected function assertValidTokenResponse(ResponseInterface $response, $has_refresh = FALSE) {
     $this->assertEquals(200, $response->getStatusCode());
-    $parsed_response = Json::decode((string) $response->getBody());
+    $parsed_response = Json::decode($response->getBody()->getContents());
     $this->assertSame('Bearer', $parsed_response['token_type']);
     $expiration = $this->config('simple_oauth.settings')->get('access_token_expiration');
     $this->assertLessThanOrEqual($expiration, $parsed_response['expires_in']);
@@ -150,10 +152,8 @@ abstract class TokenBearerFunctionalTestBase extends BrowserTestBase {
       $this->assertNotEmpty($parsed_response['refresh_token']);
     }
     else {
-      $this->assertFalse(isset($parsed_response['refresh_token']));
+      $this->assertTrue(empty($parsed_response['refresh_token']));
     }
-
-    return $parsed_response;
   }
 
 }

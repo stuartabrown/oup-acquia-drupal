@@ -1,6 +1,8 @@
 <?php
 
+
 namespace Drupal\simple_oauth\Entity;
+
 
 interface ConfigEntityLockableInterface {
 

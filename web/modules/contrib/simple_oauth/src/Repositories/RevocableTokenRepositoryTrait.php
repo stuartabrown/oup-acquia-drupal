@@ -1,35 +1,22 @@
 <?php
 
+
 namespace Drupal\simple_oauth\Repositories;
 
 use Drupal\Core\Entity\EntityTypeManagerInterface;
-use League\OAuth2\Server\Entities\RefreshTokenEntityInterface;
 use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\SerializerInterface;
 
-/**
- * Common methods for token repositories on different grants.
- */
 trait RevocableTokenRepositoryTrait {
 
-  /**
-   * The entity type ID.
-   *
-   * @var string
-   */
   protected static $entity_type_id = 'oauth2_token';
 
   /**
-   * The entity type manager.
-   *
    * @var \Drupal\Core\Entity\EntityTypeManagerInterface
    */
   protected $entityTypeManager;
 
   /**
-   * The serializer.
-   *
-   * @var \Symfony\Component\Serializer\SerializerInterface
+   * @var \Symfony\Component\Serializer\Serializer
    */
   protected $serializer;
 
@@ -37,11 +24,9 @@ trait RevocableTokenRepositoryTrait {
    * Construct a revocable token.
    *
    * @param \Drupal\Core\Entity\EntityTypeManagerInterface $entity_type_manager
-   *   The entity type manager.
-   * @param \Symfony\Component\Serializer\SerializerInterface $serializer
-   *   The normalizer for tokens.
+   * @param \Drupal\simple_oauth\Normalizer\TokenEntityNormalizerInterface $normalizer
    */
-  public function __construct(EntityTypeManagerInterface $entity_type_manager, SerializerInterface $serializer) {
+  public function __construct(EntityTypeManagerInterface $entity_type_manager, Serializer $serializer) {
     $this->entityTypeManager = $entity_type_manager;
     $this->serializer = $serializer;
   }
@@ -50,20 +35,12 @@ trait RevocableTokenRepositoryTrait {
    * {@inheritdoc}
    */
   public function persistNew($token_entity) {
-    if (!is_a($token_entity, static::$entity_interface)) {
+    if (!is_a($token_entity, static::$entity_interface)){
       throw new \InvalidArgumentException(sprintf('%s does not implement %s.', get_class($token_entity), static::$entity_interface));
     }
     $values = $this->serializer->normalize($token_entity);
     $values['bundle'] = static::$bundle_id;
     $new_token = $this->entityTypeManager->getStorage(static::$entity_type_id)->create($values);
-
-    if ($token_entity instanceof RefreshTokenEntityInterface) {
-      $access_token = $token_entity->getAccessToken();
-      if (!empty($access_token->getUserIdentifier())) {
-        $new_token->set('auth_user_id', $access_token->getUserIdentifier());
-      }
-    }
-
     $new_token->save();
   }
 

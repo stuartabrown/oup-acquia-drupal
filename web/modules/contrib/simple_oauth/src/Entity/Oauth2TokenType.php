@@ -19,6 +19,9 @@ use Drupal\Core\Config\Entity\ConfigEntityBase;
  *     "id" = "id",
  *     "label" = "label",
  *     "uuid" = "uuid"
+ *   },
+ *   links = {
+ *     "canonical" = "/admin/config/people/accounts/oauth2_token_type/{oauth2_token_type}",
  *   }
  * )
  */

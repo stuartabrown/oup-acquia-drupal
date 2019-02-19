@@ -2,20 +2,19 @@
 
 /**
  * @file
+ *
  * Module implementation file.
  */
 
-use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Entity\EntityTypeInterface;
 use Drupal\Core\Field\BaseFieldDefinition;
-use Drupal\Core\Link;
+use Drupal\Core\Render\Element;
 use Drupal\Core\StringTranslation\TranslatableMarkup;
-use Drupal\Core\Url;
 
 /**
  * Implements hook_form_FORM_ID_alter().
  */
-function simple_oauth_extras_form_oauth2_token_settings_alter(&$form, FormStateInterface $form_state, $form_id) {
+function simple_oauth_extras_form_oauth2_token_settings_alter(&$form, \Drupal\Core\Form\FormStateInterface $form_state, $form_id) {
   $form['use_implicit'] = [
     '#type' => 'checkbox',
     '#title' => t('Enable the implicit grant?'),
@@ -33,10 +32,47 @@ function simple_oauth_extras_form_oauth2_token_settings_alter(&$form, FormStateI
  * @param \Drupal\Core\Form\FormStateInterface $form_state
  *   The current state of the form.
  */
-function simple_oauth_extras_form_oauth2_token_settings_submit(array &$form, FormStateInterface $form_state) {
+function simple_oauth_extras_form_oauth2_token_settings_submit(array &$form, \Drupal\Core\Form\FormStateInterface $form_state) {
   $settings = \Drupal::configFactory()->getEditable('simple_oauth_extras.settings');
   $settings->set('use_implicit', $form_state->getValue('use_implicit'));
   $settings->save();
+}
+
+/**
+ * Implements hook_theme().
+ */
+function simple_oauth_extras_theme($existing, $type, $theme, $path) {
+  return array(
+    'oauth2_client' => [
+      'render element' => 'elements',
+    ]
+  );
+}
+
+
+/**
+ * Prepares variables for oauth2_client templates.
+ *
+ * Default template: oauth2-client.html.twig.
+ *
+ * @param array $variables
+ *   An associative array containing:
+ *   - elements: An array of elements to display in view mode.
+ *   - node: The node object.
+ *   - view_mode: View mode; e.g., 'full', 'teaser', etc.
+ */
+function template_preprocess_oauth2_client(&$variables) {
+  $variables['client'] = $variables['elements']['#oauth2_client'];
+  $variables['view_mode'] = $variables['elements']['#view_mode'];
+  $variables['label'] = $variables['elements']['label'];
+  $variables['description'] = $variables['elements']['description'];
+  $variables['image'] = $variables['elements']['image'];
+
+  // Helpful $content variable for templates.
+  $variables += array('content' => array());
+  foreach (Element::children($variables['elements']) as $key) {
+    $variables['content'][$key] = $variables['elements'][$key];
+  }
 }
 
 /**
@@ -44,7 +80,43 @@ function simple_oauth_extras_form_oauth2_token_settings_submit(array &$form, For
  */
 function simple_oauth_extras_entity_base_field_info(EntityTypeInterface $entity_type) {
   $fields = [];
-  if ($entity_type->id() == 'consumer') {
+  if ($entity_type->id() == 'oauth2_client') {
+    $fields['description'] = BaseFieldDefinition::create('text_long')
+      ->setLabel(t('Description'))
+      ->setDescription(t('A description of the client. This text will be shown to the users to authorize sharing their data to create an access token.'))
+      ->setTranslatable(TRUE)
+      ->setDisplayOptions('view', array(
+        'label' => 'hidden',
+        'type' => 'text_default',
+        'weight' => 0,
+      ))
+      ->setDisplayConfigurable('view', TRUE)
+      ->setDisplayOptions('form', array(
+        'type' => 'text_textfield',
+        'weight' => 0,
+      ))
+      ->setDisplayConfigurable('form', TRUE);
+
+    $fields['image'] = BaseFieldDefinition::create('image')
+      ->setLabel(t('Logo'))
+      ->setDescription(t('Logo of the client. This text will be shown to the users to authorize sharing their data to create an access token.'))
+      ->setRevisionable(TRUE)
+      ->setDisplayOptions('view', array(
+        'label' => 'hidden',
+        'type' => 'image',
+        'weight' => -3,
+      ))
+      ->setDisplayOptions('form', array(
+        'type' => 'image',
+        'weight' => -3,
+        'settings' => array(
+          'preview_image_style' => 'thumbnail',
+          'progress_indicator' => 'throbber',
+        ),
+      ))
+      ->setDisplayConfigurable('form', TRUE)
+      ->setDisplayConfigurable('view', TRUE);
+
     $fields['redirect'] = BaseFieldDefinition::create('uri')
       ->setLabel(new TranslatableMarkup('Redirect URI'))
       ->setDescription(new TranslatableMarkup('The URI this client will redirect to when needed.'))
@@ -86,19 +158,4 @@ function simple_oauth_extras_entity_base_field_info(EntityTypeInterface $entity_
       ]);
   }
   return $fields;
-}
-
-/**
- * Implements hook_consumers_list_alter().
- */
-function simple_oauth_extras_consumers_list_alter(&$data, $context) {
-  if ($context['type'] === 'header') {
-    $data['redirect'] = t('Redirect');
-  }
-  elseif ($context['type'] === 'row') {
-    $data['redirect'] = NULL;
-    if ($redirect_url = $context['entity']->get('redirect')->value) {
-      $data['redirect'] = Link::fromTextAndUrl($redirect_url, Url::fromUri($redirect_url));
-    }
-  }
 }

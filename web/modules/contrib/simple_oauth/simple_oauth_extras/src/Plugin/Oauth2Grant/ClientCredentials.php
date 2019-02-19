@@ -3,7 +3,9 @@
 namespace Drupal\simple_oauth_extras\Plugin\Oauth2Grant;
 
 use Drupal\simple_oauth\Plugin\Oauth2GrantBase;
-use Drupal\simple_oauth_extras\Grant\ClientCredentialsOverrideGrant;
+use League\OAuth2\Server\Grant\ClientCredentialsGrant;
+use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * @Oauth2Grant(
@@ -17,7 +19,7 @@ class ClientCredentials extends Oauth2GrantBase {
    * {@inheritdoc}
    */
   public function getGrantType() {
-    return new ClientCredentialsOverrideGrant();
+    return new ClientCredentialsGrant();
   }
 
 }

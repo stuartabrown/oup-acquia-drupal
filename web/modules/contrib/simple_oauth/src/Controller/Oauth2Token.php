@@ -4,11 +4,13 @@ namespace Drupal\simple_oauth\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Drupal\simple_oauth\Plugin\Oauth2GrantManagerInterface;
+use Drupal\user\PermissionHandlerInterface;
 use GuzzleHttp\Psr7\Response;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\Http\Message\ServerRequestInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class Oauth2Token extends ControllerBase {
 
@@ -49,7 +51,6 @@ class Oauth2Token extends ControllerBase {
       $response = $this->handleToken($request, $auth_server);
     }
     catch (OAuthServerException $exception) {
-      watchdog_exception('simple_oauth', $exception);
       $response = $exception->generateHttpResponse(new Response());
     }
     return $response;
