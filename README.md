@@ -2,6 +2,17 @@
 
 [![Build Status](https://travis-ci.org/wodby/docker4drupal.svg?branch=master)](https://travis-ci.org/wodby/docker4drupal)
 
+## OUP Instructions
+1) Clone the repo locally and cd into the directory
+2) run composer install
+3) run docker-composer up -d
+4) copy a backup of the oxfordpath database into yor project
+5) connect to the php container - `docker-compose exec php bash`
+6) run `drush sql-drop -y` and then `drush sql-cli < path/to/sql` to import the db
+7) run `docker-compose stop` (nicer than docker-compose down because it keeps the containers) and then `docker-compose start`
+8) visit your site at http://drupal.docker.localhost:8000
+
+
 ## Introduction
 
 Docker4Drupal is a set of docker images optimized for Drupal. Use `docker-compose.yml` file from the [latest stable release](https://github.com/wodby/docker4drupal/releases) to spin up local environment on Linux, Mac OS X and Windows. 
