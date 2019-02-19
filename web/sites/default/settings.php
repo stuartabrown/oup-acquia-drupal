@@ -280,7 +280,7 @@ $config_directories = [];
  *   $settings['hash_salt'] = file_get_contents('/home/example/salt.txt');
  * @endcode
  */
-$settings['hash_salt'] = '';
+$settings['hash_salt'] = 'GdQl_TarMCeR5Oa5kVPp63LQ6eH9ua48vCxSUiZ8z0gfjXOQfj-98D-DGq_9gatDgA1Y_05enw';
 
 /**
  * Deployment identifier.
@@ -770,6 +770,16 @@ $settings['entity_update_batch_size'] = 50;
 # }
 // require DRUPAL_ROOT . "/../vendor/acquia/blt/settings/blt.settings.php";
 $config_directories['sync'] = '../config/sync';
+$databases['default']['default'] = array (
+  'database' => 'drupal',
+  'username' => 'drupal',
+  'password' => 'drupal',
+  'prefix' => '',
+  'host' => 'mariadb',
+  'port' => '3306',
+  'namespace' => 'Drupal\\Core\\Database\\Driver\\mysql',
+  'driver' => 'mysql',
+);
 $databases['default']['default'] = array (
   'database' => 'drupal',
   'username' => 'drupal',
