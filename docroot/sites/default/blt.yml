@@ -1,0 +1,16 @@
+project:
+  local:
+    hostname: local.ae-oxford-path.com
+    protocol: http
+  machine_name: ae-oxford-path
+drush:
+  aliases:
+    local: self
+    remote: ae-oxford-path.test
+drupal:
+  db:
+    database: drupal
+    username: drupal
+    password: dh97cx.mgc4s
+    host: localhost
+    port: 3306

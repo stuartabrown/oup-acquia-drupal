@@ -17,9 +17,10 @@
     ],
     "require": {
         "php": ">=5.6",
-        "composer/installers": "^1.2",
-        "cweagans/composer-patches": "^1.6.5",
+        "composer/installers": "^1.6",
+        "cweagans/composer-patches": "^1.6",
         "drupal-composer/drupal-scaffold": "^2.5",
+        "drupal/acquia_connector": "^1.16",
         "drupal/caps_lock_warning": "^1.0",
         "drupal/captcha": "^1.0@beta",
         "drupal/console": "^1.8",
@@ -33,10 +34,10 @@
         "drupal/rules": "^3.0@alpha",
         "drupal/simple_oauth": "2.x",
         "drupal/token_filter": "^1.1",
-        "drush/drush": "^9.0.0",
+        "drush/drush": "^9.5",
         "symfony/dom-crawler": "3.4.9",
         "vlucas/phpdotenv": "^2.4",
-        "webflo/drupal-finder": "^1.0.0",
+        "webflo/drupal-finder": "^1.1",
         "webmozart/path-util": "^2.3",
         "zaporylie/composer-drupal-optimizations": "^1.0"
     },
@@ -47,6 +48,7 @@
         "drupal/coder": "^8.2",
         "drupal/drupal-extension": "master-dev",
         "php-coveralls/php-coveralls": "^2.1",
+        "phpunit/phpunit": "6.5.9",
         "webflo/drupal-core-require-dev": "^8.6.0"
     },
     "conflict": {
@@ -64,6 +66,7 @@
         "files": ["load.environment.php"]
     },
     "scripts": {
+        "drupal-scaffold": "DrupalComposer\\DrupalScaffold\\Plugin::scaffold",
         "pre-install-cmd": [
             "DrupalProject\\composer\\ScriptHandler::checkComposerVersion"
         ],
