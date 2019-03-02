@@ -43,6 +43,7 @@ jobs:
     steps:
       - checkout
       - run: npm install
+      - run: echo "I am here"
       - run: composer install
       # - run: echo "Run linting" && composer lint
       - run: echo "Build assets for testing" && composer build-assets
